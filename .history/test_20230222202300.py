@@ -107,3 +107,15 @@
 
 # s.close()
 # #s.connect((IP, PORT))
+
+import pyvisa as pv
+import numpy as np
+
+tcpip_address = 'TCPIP0::localhost::6501::SOCKET'
+
+rm = pv.ResourceManager()
+
+nanonis_ins = rm.open_resource(tcpip_address)
+
+print(nanonis_ins.query('Bias.Get'))
+# print(nanonis_ins.query('Bias.Get'))
