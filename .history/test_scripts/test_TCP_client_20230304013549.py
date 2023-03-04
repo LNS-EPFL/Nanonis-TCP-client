@@ -50,19 +50,11 @@ def dtype_convert(original_fmt, target_fmt, data):
         print("TyPeError: Please check the data types! Supported data formats are: 'int', 'uint16', 'uint32', 'float32', 'float64', 'hex', 'str'")
 
 def header_construct(command_name, body_size, res = True):
-    header_bin_rep =  bytes(command_name, 'utf-8').ljust(32, b'\x00')  # convert command name to binary representation and pad it to 32 bytes long with b'\x00'
-    header_bin_rep += dtype_convert('int', 'bin', body_size)         # boty size
-    header_bin_rep += dtype_convert('uint16', 'bin', 1 if res else 0) # send response back (1) or not (0)
-    header_bin_rep += b'\x00\x00'
-    return header_bin_rep
-
-# todo: construct body
-def body_construct():
-    return
-
-# todo: decode respond message
-def cmd_construct():
-    return
+    bin_rep =  bytes(command_name, 'utf-8').ljust(32, b'\x00')  # convert command name to binary representation and pad it to 32 bytes long with b'\x00'
+    bin_rep += dtype_convert('int', 'bin', body_size)         # boty size
+    bin_rep += dtype_convert('uint16', 'bin', 1 if res else 0) # send response back (1) or not (0)
+    bin_rep += b'\x00\x00'
+    return bin_rep
 
 # todo: decode respond message
 def res_recv():

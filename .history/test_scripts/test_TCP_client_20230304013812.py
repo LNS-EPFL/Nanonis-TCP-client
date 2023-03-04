@@ -61,10 +61,6 @@ def body_construct():
     return
 
 # todo: decode respond message
-def cmd_construct():
-    return
-
-# todo: decode respond message
 def res_recv():
     return
 

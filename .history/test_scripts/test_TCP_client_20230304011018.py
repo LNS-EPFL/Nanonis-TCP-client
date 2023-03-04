@@ -23,8 +23,8 @@ def socket_close(sk):
     sk.close()
 
 # ! only support formats in supported_formats list
-def dtype_convert(original_fmt, target_fmt, data):
-    supported_formats = ['int', 'uint16', 'uint32', 'float32', 'float64', 'bin', 'str', 'bool']
+def dtype_converter(original_fmt, target_fmt, data):
+    supported_formats = ['int', 'uint16', 'uint32', 'float32', 'float64', 'bin', 'str']
     if original_fmt in supported_formats and target_fmt in supported_formats:
         try:
             dtype_conv = defaultdict(lambda: None, 
@@ -49,33 +49,14 @@ def dtype_convert(original_fmt, target_fmt, data):
     else:
         print("TyPeError: Please check the data types! Supported data formats are: 'int', 'uint16', 'uint32', 'float32', 'float64', 'hex', 'str'")
 
-def header_construct(command_name, body_size, res = True):
-    header_bin_rep =  bytes(command_name, 'utf-8').ljust(32, b'\x00')  # convert command name to binary representation and pad it to 32 bytes long with b'\x00'
-    header_bin_rep += dtype_convert('int', 'bin', body_size)         # boty size
-    header_bin_rep += dtype_convert('uint16', 'bin', 1 if res else 0) # send response back (1) or not (0)
-    header_bin_rep += b'\x00\x00'
-    return header_bin_rep
-
-# todo: construct body
-def body_construct():
-    return
-
-# todo: decode respond message
-def cmd_construct():
-    return
-
-# todo: decode respond message
-def res_recv():
-    return
-
-# todo: send command
-def cmd_send()
-    return
-
-# 
+def construct_header(command_name):
+    bin_rep =  bytes(command_name, 'utf-8').ljust(32, b'\x00') # convert command name to binary representation and pad it to 32 bytes long with b'\x00'
+    bin_rep += # todo: boty size
+    bin_rep += #
 
 
-# # dtype_convert()
+
+# # dtype_converter()
 # TCP_IP = '127.0.0.1'
 # PORT = 6501 # avialable ports: 6501, 6502, 6503, 6504
 # server_address = (TCP_IP, PORT)
@@ -88,8 +69,9 @@ def cmd_send()
 original_fmt = 'bin'
 target_fmt = 'str'
 
-data = b'FolMe.XYPosGet\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+data = b'\x48\x65\x6c\x6c\x6f\x20\x57\x6f\x72\x6c\x64'
 
+print(construct_header('FolMe.XYPosGet'))
 
 # import struct
 

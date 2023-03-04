@@ -56,14 +56,6 @@ def header_construct(command_name, body_size, res = True):
     header_bin_rep += b'\x00\x00'
     return header_bin_rep
 
-# todo: construct body
-def body_construct():
-    return
-
-# todo: decode respond message
-def cmd_construct():
-    return
-
 # todo: decode respond message
 def res_recv():
     return
