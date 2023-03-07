@@ -140,7 +140,7 @@ class tcp_ctrl:
                     res_arg.append(num_1d)
                     
                 elif arg_fmt in ['2dfloat32', '2dstr']:
-                    
+
 
                 elif arg_fmt == 'str':
                     int_size = arg_size_dict['int'] # the size of an integer 32 that give the size of the following string

@@ -157,12 +157,12 @@ def BiasGet(sk):
 original_fmt = 'bin'
 target_fmt = 'str'
 
-data = b'FolMe XYPosGet'
+data = b'FolMe.XYPosGet\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
 # import struct
 
 # byte_string = b'\x48\x65\x6c\x6c\x6f\x20\x57\x6f\x72\x6c\x64'   # The byte-like string to be unpacked
 # string = struct.unpack('%ds' % len(byte_string), byte_string)[0].decode('utf-8')  # Convert the byte-like string to a string
 # print(string)
-a = '1dfloat32'
 
-print(a[2:])
+
+print(len(data), leng('FolMe.XYPosGet'))

@@ -81,20 +81,12 @@ class nanonis_ctrl:
 
         self.tcp.print_err(err)
         print('Bias Spectroscopy opened.')
+    
+    def BiasSpectrStart(self, save_base_name_str_size, save_base_name, get_dat = 1):
 
-    # ! todo: finish this func
-    def BiasSpectrStart(self, save_base_name, get_data = 1):
-        save_base_name_str_size = len(save_base_name)
-        body  = self.tcp.dtype_convert(get_data, 'uint32', 'bin')
-        body += self.tcp.dtype_convert(save_base_name_str_size, 'int', 'bin')
-        body += self.tcp.dtype_convert(save_base_name, 'str', 'bin')
-        header = self.tcp.header_construct('BiasSpectr.Start', body_size = len(body))
-        cmd = header + body
 
-        self.tcp.cmd_send(cmd)
-        arg, err = self.tcp.res_recv()
-
-     
+        body = self.tcp.
+    
     def BiasSpectrStop(self):
         header = self.tcp.header_construct('BiasSpectr.Stop', body_size=0)
 
@@ -105,16 +97,9 @@ class nanonis_ctrl:
         print('Bias spectroscopy measurement stoped.')
 
     def BiasSpectrStatusGet(self):
-        header = self.tcp.header_construct('BiasSpectr.StatusGet', body_size=0)
+        header = 
 
-        self.tcp.cmd_send(header)
-        arg, err = self.tcp.res_recv('uint32')
-
-        self.tcp.print_err(err)
-        if arg[0] == 1:
-            print('A bias spectroscopy measurement is in process......')
-        else:
-            print('Currently there is no bias spectroscopy measurement.')      
+        
 ######################################## Current Module #############################################
 ######################################## Z-controller Module #############################################
 ######################################## Safe Tip Module #############################################
@@ -129,4 +114,4 @@ tcp = tcp_ctrl()
 ccc = nanonis_ctrl(tcp)
 ccc.BiasSet('3m')
 ccc.BiasGet()
-# ccc.BiasPulse('500m', 7)
+ccc.BiasPulse('500m', 7)

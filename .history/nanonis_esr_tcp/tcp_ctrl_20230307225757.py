@@ -110,7 +110,7 @@ class tcp_ctrl:
 
         # parse the arguments values of a response message
         if get_arg:
-            arg_byte_idx = 40   
+            arg_byte_idx = 40
             arg_size_dict = {'int': 4,'uint16': 2,'uint32': 4,'float32': 4,'float64': 8}
             for idx, arg_fmt in enumerate(varg_fmt):
                 if arg_fmt == '1dstr':
@@ -140,28 +140,23 @@ class tcp_ctrl:
                     res_arg.append(num_1d)
                     
                 elif arg_fmt in ['2dfloat32', '2dstr']:
-                    
-
+                    print('this part of the function is still in progress...')
+                elif arg_fmt == '1duint8':
+                    print('this part of the function is still in progress...')
                 elif arg_fmt == 'str':
-                    int_size = arg_size_dict['int'] # the size of an integer 32 that give the size of the following string
-                    str_size = self.dtype_convert(res_bin_rep[arg_byte_idx: arg_byte_idx + int_size], 'bin', 'int') # the size of the string 
-                    arg_byte_idx += int_size
+                    arg_size = arg_size_dict['int'] # the size of an integer 32 that give the size of the following string
+                    str_size = self.dtype_convert(res_bin_rep[arg_byte_idx: arg_byte_idx + arg_size], 'bin', 'int') # the size of the string 
+                    arg_byte_idx += arg_size
 
                     arg = self.dtype_convert(res_bin_rep[arg_byte_idx: arg_byte_idx + str_size], 'bin', arg_fmt) # convert the string from binary
                     arg_byte_idx += str_size                                           
                     res_arg.append(arg)
-
-                elif arg_fmt in arg_size_dict.keys(): # arg_fmts that are: 'int', 'uint16', 'uint32', 'float32', 'float64'
+                    
+                else: # arg_fmts that are: 'int', 'uint16', 'uint32', 'float32', 'float64'
                     arg_size = arg_size_dict[arg_fmt]
                     arg = self.dtype_convert(res_bin_rep[arg_byte_idx: arg_byte_idx + arg_size], 'bin', arg_fmt)
                     arg_byte_idx += arg_size                                           
                     res_arg.append(arg)
-                
-                elif arg_fmt == '1duint8':
-                    print('this part of the function is still in progress...')
-                
-                else: 
-                    pass
             res_bin_rep = res_bin_rep[arg_byte_idx-1:] # for parsing the error in a request or a response
 
         # parse the error of a response message

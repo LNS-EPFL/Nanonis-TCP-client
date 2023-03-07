@@ -140,7 +140,7 @@ class tcp_ctrl:
                     res_arg.append(num_1d)
                     
                 elif arg_fmt in ['2dfloat32', '2dstr']:
-                    
+
 
                 elif arg_fmt == 'str':
                     int_size = arg_size_dict['int'] # the size of an integer 32 that give the size of the following string
@@ -151,7 +151,7 @@ class tcp_ctrl:
                     arg_byte_idx += str_size                                           
                     res_arg.append(arg)
 
-                elif arg_fmt in arg_size_dict.keys(): # arg_fmts that are: 'int', 'uint16', 'uint32', 'float32', 'float64'
+                elif : # arg_fmts that are: 'int', 'uint16', 'uint32', 'float32', 'float64'
                     arg_size = arg_size_dict[arg_fmt]
                     arg = self.dtype_convert(res_bin_rep[arg_byte_idx: arg_byte_idx + arg_size], 'bin', arg_fmt)
                     arg_byte_idx += arg_size                                           
