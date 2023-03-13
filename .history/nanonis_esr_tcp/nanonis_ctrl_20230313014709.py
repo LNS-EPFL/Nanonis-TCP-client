@@ -10,15 +10,14 @@ import numpy as np
 class nanonis_ctrl:
     def __init__(self, tcp):
         self.tcp = tcp
-
 # recommend to construct body first so that you don't need to calculate the body size by yourself
 ######################################## Bias Module #############################################
     def BiasSet(self, bias):
-        bias = self.tcp.unit_cvt(bias)
-        if bias > 10:
+        self.bias = self.tcp.unit_cvt(bias)
+        if self.bias > 10:
             raise ValueError('The maximum allowed bias is 10V. Please check your input! Bias has been set to 0 to protect the tip!')    
         
-        body = self.tcp.dtype_cvt(bias, 'float32', 'bin')
+        body = self.tcp.dtype_cvt(self.bias, 'float32', 'bin')
         header = self.tcp.header_construct('Bias.Set', body_size = len(body))
         cmd = header+body
 
@@ -35,9 +34,9 @@ class nanonis_ctrl:
         _, res_arg, res_err = self.tcp.res_recv('float32')
 
         self.tcp.print_err(res_err)
-        bias = str(res_arg[0]) + 'V' # first [0] gives the res_arg list, second [0] gives the bias value in the list
-        print(f'Current bias: {bias}')
-        return bias
+        self.bias = str(res_arg[0]) + 'V' # first [0] gives the res_arg list, second [0] gives the bias value in the list
+        print(f'Current bias: {self.bias}')
+        return self.bias
     
     def BiasRangeSet(): 
         return print('function in progress......')
@@ -211,8 +210,7 @@ class nanonis_ctrl:
                                  'Parameters:': res_arg[9].tolist(),
                                  'Number of fixed parameters:': res_arg[11],
                                  'Fixed parameters:': res_arg[12].tolist()
-                                 },
-                                 index=[0]).T
+                                 }).T
         print('\n'+
               props_df.to_string(header=False) + 
               '\n\nBias spectroscopy properties returned.')
@@ -234,8 +232,7 @@ class nanonis_ctrl:
                                  'Z-Controller hold:': self.tcp.tristate_cvt(z_ctrl_hold), 
                                  'Record final Z:': self.tcp.tristate_cvt(rec_final_z), 
                                  'Lockin Run:': self.tcp.tristate_cvt(lock_in_run), 
-                                 },
-                                 index=[0]).T
+                                 }).T
         print('\n'+
               props_df.to_string(header=False)+
               '\n\nBias spectroscopy advanced properties set.')
@@ -293,7 +290,7 @@ class nanonis_ctrl:
                                  index=[0]).T
         print('\n'+
               limits_df.to_string(header=False)+
-              '\n\nBias spectroscopy bias limits returned.')
+              '\n\nBias spectroscopy limits returned.')
         return limits_df
     
     def BiasSpectrTimingSet(self, z_avg_t, z_offset, init_settling_t, max_slew_rate, settling_t, int_t, end_settling_t, z_ctrl_t):
@@ -328,8 +325,7 @@ class nanonis_ctrl:
                                    'Settling time (s):': settling_t,
                                    'Integration time (s):': int_t,
                                    'End settling time (s):': end_settling_t,
-                                   'Z control time (s):': z_ctrl_t},
-                                 index=[0]).T
+                                   'Z control time (s):': z_ctrl_t}).T
         print('\n'+
               timing_df.to_string(header=False)+
               '\n\nBias spectroscopy timing set.')
@@ -339,321 +335,38 @@ class nanonis_ctrl:
         header = self.tcp.header_construct('BiasSpectrTimingGet', 0)
 
         self.tcp.cmd_send(header)
-        _, res_arg, res_err = self.tcp.res_recv('float32','float32','float32','float32','float32','float32','float32','float32')
+        _, _, res_err = self.tcp.res_recv('float32','float32','float32','float32','float32','float32','float32','float32')
 
         self.tcp.print_err(res_err)
-        timing_df = pd.DataFrame({'Z averaging time (s):': res_arg[0],
-                                  'Z offset (m):': res_arg[1],
-                                  'Initial settling time (s):': res_arg[2],
-                                  'Maximum slew rate (V/s):': res_arg[3],
-                                  'Settling time (s):': res_arg[4],
-                                  'Integration time (s):': res_arg[5],
-                                  'End settling time (s):': res_arg[6],
-                                  'Z control time (s):': res_arg[7]},
-                                 index=[0]).T
-        print('\n'+
-              timing_df.to_string(header=False)+
-              '\n\nBias spectroscopy timing settings retured.')
-        return timing_df
 
-    def BiasSpectrTTLSyncSet(self):
-        return print('function in progress......')
-    
-    def BiasSpectrTTLSyncGet(self):
-        return print('function in progress......')
-    
-    def BiasSpectrAltZCtrlSet(self):
-        return print('function in progress......')
-    
-    def BiasSpectrAltZCtrlGet(self):
-        return print('function in progress......')
-    
-    def BiasSpectrMLSLockinPerSegSet(self):
-        return print('function in progress......')
-    
-    def BiasSpectrMLSLockinPerSegGet(self):
-        return print('function in progress......')
-    
-    def BiasSpectrMLSModeSet(self):
-        return print('function in progress......')
-    
-    def BiasSpectrMLSModeGet(self):
-        return print('function in progress......')
-    
-    def BiasSpectrMLSValsSet(self):
-        return print('function in progress......')
-    
-    def BiasSpectrMLSValsGet(self):
-        return print('function in progress......')
 
+
+        
+
+
+
+        
+        
+
+  
 ######################################## Current Module #############################################
-    def CurrentGet(self):
-        return
-
-    def Current100Get(self):
-        return
-
-    def CurrentBEEMGet(self):
-        return
-
-    def CurrentGainSet(self):
-        return
-
-    def CurrentGainsGet(self):
-        return
-
-    def CurrentCalibrSet(self):
-        return
-
-    def CurrentCalibrGet(self):
-        return
-
 ######################################## Z-controller Module #############################################
-    def ZCtrlZPosSet(self):
-        return
-          
-    def ZCtrlZPosGet(self):
-        return
-          
-    def ZCtrlOnOffSet(self):
-        return
-         
-    def ZCtrlOnOffGet(self):
-        return
-         
-    def ZCtrlSetpntSet(self):
-        return
-        
-    def ZCtrlSetpntGet(self):
-        return
-        
-    def ZCtrlGainSet(self):
-        return
-          
-    def ZCtrlGainGet(self):
-        return
-          
-    def ZCtrlSwitchOffDelaySet(self):
-        return
-
-    def ZCtrlSwitchOffDelayGet(self):
-        return
-
-    def ZCtrlTipLiftSet(self):
-        return
-
-    def ZCtrlTipLiftGet(self):
-        return
-
-    def ZCtrlHome(self):
-        return
-
-    def ZCtrlHomePropsSet(self):
-        return
-
-    def ZCtrlHomePropsGet(self):
-        return
-
-    def ZCtrlActiveCtrlSet(self):
-        return
-
-    def ZCtrlCtrlListGet(self):
-        return
-
-    def ZCtrlWithdraw(self):
-        return
-
-    def ZCtrlWithdrawRateSet(self):
-        return
-
-    def ZCtrlWithdrawRateGet(self):
-        return
-
-    def ZCtrlLimitsEnabledSet(self):
-        return
-
-    def ZCtrlLimitsEnabledGet(self):
-        return
-
-    def ZCtrlLimitsSet(self):
-        return
-
-    def ZCtrlLimitsGet(self):
-        return
-
-    def ZCtrlStatusGet(self):
-        return
-
 ######################################## Safe Tip Module #############################################
 ######################################## Auto Approach Module #############################################
 ######################################## Scan Module #############################################
 ######################################## Follow Me Module #############################################
 ######################################## Tip Shaper Module #############################################
-    def TipShaperStart(self):
-        return
-
-    def TipShaperPropsSet(self):
-        return
-
-    def TipShaperPropsGet(self):
-        return
-
-######################################## Generic Sweeper Module #############################################
-    def GenSwpAcqChsSet(self):
-        return
-
-    def GenSwpAcqChsGet(self):
-        return
-
-    def GenSwpSwpSignalSet(self):
-        return
-
-    def GenSwpSwpSignalGet(self):
-        return
-
-    def GenSwpLimitsSet(self):
-        return
-
-    def GenSwpLimitsGet(self):
-        return
-
-    def GenSwpPropsSet(self):
-        return
-
-    def GenSwpPropsGet(self):
-        return
-
-    def GenSwpStart(self):
-        return
-
-    def GenSwpStop(self):
-        return
-
-    def GenSwpOpen(self):
-        return
-
 ######################################## Atom Tracking Module #############################################
-    def AtomTrackCtrlSet(self):
-        return
-
-    def AtomTrackStatusGet(self):
-        return
-
-    def AtomTrackPropsSet(self):
-        return
-
-    def AtomTrackPropsGet(self):
-        return
-
-    def AtomTrackQuickCompStart(self):
-        return
-
-    def AtomTrackDriftComp(self):
-        return
-
 ######################################## Lock-in Module #############################################
-    def LockInModOnOffSet(self):
-        return
 
-    def LockInModOnOffGet(self):
-        return
-
-    def LockInModSignalSet(self):
-        return
-
-    def LockInModSignalGet(self):
-        return
-
-    def LockInModPhasRegSet(self):
-        return
-
-    def LockInModPhasRegGet(self):
-        return
-
-    def LockInModHarmonicSet(self):
-        return
-
-    def LockInModHarmonicGet(self):
-        return
-
-    def LockInModPhasSet(self):
-        return
-
-    def LockInModPhasGet(self):
-        return
-
-    def LockInModAmpSet(self):
-        return
-
-    def LockInModAmpGet(self):
-        return
-
-    def LockInModPhasFreqSet(self):
-        return
-
-    def LockInModPhasFreqGet(self):
-        return
-
-    def LockInDemodSignalSet(self):
-        return
-
-    def LockInDemodSignalGet(self):
-        return
-
-    def LockInDemodHarmonicSet(self):
-        return
-
-    def LockInDemodHarmonicGet(self):
-        return
-
-    def LockInDemodHPFilterSet(self):
-        return
-
-    def LockInDemodHPFilterGet(self):
-        return
-
-    def LockInDemodLPFilterSet(self):
-        return
-
-    def LockInDemodLPFilterGet(self):
-        return
-
-    def LockInDemodPhasRegSet(self):
-        return
-
-    def LockInDemodPhasRegGet(self):
-        return
-
-    def LockInDemodPhasSet(self):
-        return
-
-    def LockInDemodPhasGet(self):
-        return
-
-    def LockInDemodSyncFilterSet(self):
-        return
-
-    def LockInDemodSyncFilterGet(self):
-        return
-
-    def LockInDemodRTSignalsSet(self):
-        return
-
-    def LockInDemodRTSignalsGet(self):
-        return
-
-
-
-
-
-# tcp = tcp_ctrl()
-# ccc = nanonis_ctrl(tcp)
+tcp = tcp_ctrl()
+ccc = nanonis_ctrl(tcp)
 # ccc.help()
-# ccc.BiasSet('700m')
+ccc.BiasSet('700m')
 # ccc.BiasGet()
 # ccc.BiasPulse('600m', '7')
 # ccc.BiasSpectrOpen()
 # ccc.BiasSpectrStart('drfue')
-# ccc.BiasSpectrTimingGet()
+ccc.BiasSpectrTimingGet()
 # ccc.BiasSpectrPropsSet(0, 1, 0, 101, '5n', 0)
  
