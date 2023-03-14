@@ -1143,24 +1143,12 @@ class nanonis_ctrl:
     def LockInDemodRTSignalsGet(self):
         return
 ######################################## Signals Module #############################################
-    def SignalsNamesGet(self):
-        header = self.tcp.header_construct('Signals.NamesGet', 0)
-
-        self.tcp.cmd_send(header)
-        _, res_arg, res_err = self.tcp.res_recv('int', 'int', '1dstr')
-
-        self.tcp.print_err(res_err)
-        signal_name_df = pd.DataFrame({'Signal names': res_arg[2].flatten()})
-        # print(res_arg[2][0])
-        pd.set_option('display.max_rows', None)
-        print('\n'+
-              signal_name_df.to_string()+
-              '\n\nSignal name list returned.')
-        return signal_name_df
 
 
-tcp = tcp_ctrl()
-ccc = nanonis_ctrl(tcp)
+
+
+# tcp = tcp_ctrl()
+# ccc = nanonis_ctrl(tcp)
 # ccc.help()
 # ccc.BiasSet('700m')
 # ccc.BiasGet()
@@ -1173,4 +1161,3 @@ ccc = nanonis_ctrl(tcp)
 # ccc.TipShaperPropsGet()
 # bias_start = tcp.unit_cvt([1e-9,2,89.8e-9])
 # ccc.TipShaperStart(1, 0.3)
-ccc.SignalsNamesGet()

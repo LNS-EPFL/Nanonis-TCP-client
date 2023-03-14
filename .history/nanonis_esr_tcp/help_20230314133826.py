@@ -532,4 +532,4 @@ class help:
 
 help = help()    
 # print(help.general_info)
-help.SignalsNamesGet()
+help.BiasSpectrPropsSet()

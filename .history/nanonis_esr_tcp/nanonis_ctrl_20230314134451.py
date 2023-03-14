@@ -1148,15 +1148,16 @@ class nanonis_ctrl:
 
         self.tcp.cmd_send(header)
         _, res_arg, res_err = self.tcp.res_recv('int', 'int', '1dstr')
+        print(res_arg)
 
         self.tcp.print_err(res_err)
-        signal_name_df = pd.DataFrame({'Signal names': res_arg[2].flatten()})
-        # print(res_arg[2][0])
-        pd.set_option('display.max_rows', None)
-        print('\n'+
-              signal_name_df.to_string()+
-              '\n\nSignal name list returned.')
-        return signal_name_df
+        # signal_name_df = pd.DataFrame({'Signal names': res_arg[2][0]},
+        #                          index=[0]).T
+        print(res_arg[2][0])
+        # print('\n'+
+        #       signal_name_df.to_string(header=False)+
+        #       '\n\nSignal name list returned.')
+        # return signal_name_df
 
 
 tcp = tcp_ctrl()

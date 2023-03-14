@@ -1154,7 +1154,7 @@ class nanonis_ctrl:
         # print(res_arg[2][0])
         pd.set_option('display.max_rows', None)
         print('\n'+
-              signal_name_df.to_string()+
+              signal_name_df+
               '\n\nSignal name list returned.')
         return signal_name_df
 

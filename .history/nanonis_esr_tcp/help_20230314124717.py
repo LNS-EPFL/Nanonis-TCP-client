@@ -339,197 +339,73 @@ class help:
             \n- Error described in the Response message>Body section')
         
     def ZCtrlOnOffSet(self):
-        print('ZCtrl.OnOffSet\
-            \nSwitches the Z-Controller On or Off.\
-            \nArguments:\
-            \n- Z-Controller status (unsigned int32) switches the controller Off (=0) or On (=1)\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Error described in the Response message>Body section')
+        print('ZCtrl.OnOffSet
+Switches the Z-Controller On or Off.
+Arguments:
+- Z-Controller status (unsigned int32) switches the controller Off (=0) or On (=1)
+Return arguments (if Send response back flag is set to True when sending request message):
+- Error described in the Response message>Body section')
 
     def ZCtrlOnOffGet(self):
-        print('ZCtrl.OnOffGet\
-            \nReturns the status of the Z-Controller.\
-            \nThis function returns the status from the real-time controller (i.e. not from the Z-Controller module).\
-            \nThis function is useful to make sure that the Z-controller is really off before starting an experiment. Due to the communication delay, switch-off delay... sending the off command with the ZCtrl.OnOffGet function might take some time before the controller is off.\
-            \nArguments: None\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Z-Controller status (unsigned int32) indicates if the controller is Off (=0) or On (=1)\
-            \n- Error described in the Response message>Body section')
+        print('ZCtrl.OnOffGet
+Returns the status of the Z-Controller.
+This function returns the status from the real-time controller (i.e. not from the Z-Controller module).
+This function is useful to make sure that the Z-controller is really off before starting an experiment. Due to the
+communication delay, switch-off delay... sending the off command with the ZCtrl.OnOffGet function might take
+some time before the controller is off.
+Arguments: None
+Return arguments (if Send response back flag is set to True when sending request message):
+- Z-Controller status (unsigned int32) indicates if the controller is Off (=0) or On (=1)
+- Error described in the Response message>Body section')
 
     def ZCtrlSetpntSet(self):
-        print('ZCtrl.SetpntSet\
-            \nSets the setpoint of the Z-Controller.\
-            \nArguments:\
-            \n- Z-Controller setpoint (float32)\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Error described in the Response message>Body section')
+        print('')
 
     def ZCtrlSetpntGet(self):
-        print('ZCtrl.SetpntGet\
-            \nReturns the setpoint of the Z-Controller.\
-            \nArguments: None\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Z-Controller setpoint (float32)\
-            \n- Error described in the Response message>Body section')
+        print('')
 
     def TipShaperStart(self):
-        print('TipShaper.Start\
-            \nStarts the tip shaper procedure.\
-            \nArguments:\
-            \n- Wait until finished (unsigned int32) defines if this function waits (1=True) until the Tip Shaper procedure stops.\
-            \n- Timeout (ms) (int) sets the number of milliseconds to wait if Wait until Finished is set to True.\
-            \nA value equal to -1 means waiting forever.\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Error described in the Response message>Body section')
+        print('')
 
     def TipShaperPropsSet(self):
-        print('TipShaper.PropsSet\
-            \nSets the configuration of the tip shaper procedure.\
-            \nArguments:\
-            \n- Switch Off Delay (float32) is the time during which the Z position is averaged right before switching the Z-Controller off.\
-            \n- Change Bias? (unsigned int32) decides whether the Bias value is applied (0=no change, 1=True, 2=False) right before the first Z ramping.\
-            \n- Bias (V) (float32) is the value applied to the Bias signal if Change Bias? is True.\
-            \n- Tip Lift (m) (float32) defines the relative height the tip is going to ramp for the first time (from the current Z position).\
-            \n- Lift Time 1 (s) (float32) defines the time to ramp Z from the current Z position by the Tip Lift amount.\
-            \n- Bias Lift (V) (float32) is the Bias voltage applied just after the first Z ramping.\
-            \n- Bias Settling Time (s) (float32) is the time to wait after applying the Bias Lift value, and it is also the time to wait after applying Bias (V) before ramping Z for the first time.\
-            \n- Lift Height (m) (float32) defines the height the tip is going to ramp for the second time.\
-            \n- Lift Time 2 (s) (float32) is the given time to ramp Z in the second ramping.\
-            \n- End Wait Time (s) (float32) is the time to wait after restoring the initial Bias voltage (just after finishing the second ramping).\
-            \n- Restore Feedback? (unsigned int32) defines whether the initial Z-Controller status is restored (0=no change, 1=True, 2=False) at the end of the tip shaper procedure.\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Error described in the Response message>Body section')
+        print('')
 
     def TipShaperPropsGet(self):
-        print('TipShaper.PropsGet\
-            \nReturns the configuration of the tip shaper procedure.\
-            \nArguments: None\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Switch Off Delay (float32) is the time during which the Z position is averaged right before switching the Z-Controller off.\
-            \n- Change Bias? (unsigned int32) returns whether the Bias value is applied (0=False, 1=True) right before the first Z ramping.\
-            \n- Bias (V) (float32) is the value applied to the Bias signal if Change Bias? is True.\
-            \n- Tip Lift (m) (float32) returns the relative height the tip is going to ramp for the first time (from the current Z position).\
-            \n- Lift Time 1 (s) (float32) returns the time to ramp Z from the current Z position by the Tip Lift amount.\
-            \n- Bias Lift (V) (float32) is the Bias voltage applied just after the first Z ramping.\
-            \n- Bias Settling Time (s) (float32) is the time to wait after applying the Bias Lift value, and it is also the time to wait after applying Bias (V) before ramping Z for the first time.\
-            \n- Lift Height (m) (float32) returns the height the tip is going to ramp for the second time.\
-            \n- Lift Time 2 (s) (float32) is the given time to ramp Z in the second ramping.\
-            \n- End Wait Time (s) (float32) is the time to wait after restoring the initial Bias voltage (just after finishing the second ramping).\
-            \n- Restore Feedback? (unsigned int32) returns whether the initial Z-Controller status is restored (0=False, 1=True) at the end of the tip shaper procedure.\
-            \n- Error described in the Response message>Body section')
+        print('')
 
     def AtomTrackCtrlSet(self):
-        print('AtomTrack.CtrlSet\
-            \nTurns the selected Atom Tracking control (modulation, controller or drift measurement) On or Off.\
-            \nArguments:\
-            \n- AT control (unsigned int16) sets which control to switch. 0 means Modulation, 1 means Controller, and 2 means Drift Measurement\
-            \n- Status (unsigned int16) switches the selected control Off (=0) or On (=1)\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Error described in the Response message>Body section')
+        print('')
 
     def AtomTrackStatusGet(self):
-        print('AtomTrack.StatusGet\
-            \nReturns the status of the selected Atom Tracking control (modulation, controller or drift measurement).\
-            \nArguments:\
-            \n- AT control (unsigned int16) sets which control to read the status from. 0 means Modulation, 1 means Controller, and 2 means Drift Measurement\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Status (unsigned int16) returns the status of the selected control, where 0 means Off and 1 means On\
-            \n- Error described in the Response message>Body section')
+        print('')
 
     def AtomTrackPropsSet(self):
-        print('AtomTrack.PropsSet\
-            \nSets the Atom Tracking parameters.\
-            \nArguments:\
-            \n- Integral gain (float32) is the gain of the Atom Tracking controller\
-            \n- Frequency (Hz) (float32) is the frequency of the modulation\
-            \n- Amplitude (m) (float32) is the amplitude of the modulation\
-            \n- Phase (deg) (float32) is the phase of the modulation\
-            \n- Switch Off delay (s) (float32) means that before turning off the controller, the position is averaged over this time delay. The averaged position is then applied. This leads to reproducible positions when switching off the Atom Tracking controller\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Error described in the Response message>Body section')
+        print('')
 
     def AtomTrackPropsGet(self):
-        print('AtomTrack.PropsGet\
-            \nReturns the Atom Tracking parameters.\
-            \nArguments: None\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Integral gain (float32) is the gain of the Atom Tracking controller\
-            \n- Frequency (Hz) (float32) is the frequency of the modulation\
-            \n- Amplitude (m) (float32) is the amplitude of the modulation\
-            \n- Phase (deg) (float32) is the phase of the modulation\
-            \n- Switch Off delay (s) (float32) means that before turning off the controller, the position is averaged over this time delay. The averaged position is then applied. This leads to reproducible positions when switching off the Atom Tracking controller\
-            \n- Error described in the Response message>Body section')
+        print('')
 
     def LockInModOnOffSet(self):
-        print('LockIn.ModOnOffSet\
-            \nTurns the specified Lock-In modulator on or off.\
-            \nArguments:\
-            \n- Modulator number (int) is the number that specifies which modulator to use. It starts from number 1 (=Modulator 1)\
-            \n- Lock-In On/Off (unsigned int32) turns the specified modulator on or off, where 0=Off and 1=On\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Error described in the Response message>Body section')
+        print('')
 
     def LockInModOnOffGet(self):
-        print('LockIn.ModOnOffGet\
-            \nReturns if the specified Lock-In modulator is turned on or off.\
-            \nArguments:\
-            \n- Modulator number (int) is the number that specifies which modulator to use. It starts from number 1 (=Modulator 1)\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Lock-In On/Off (unsigned int32) returns if the specified modulator is turned on or off, where 0=Off and 1=On\
-            \n- Error described in the Response message>Body section')
+        print('')
+
+    def LockInModPhasGet(self):
+        print('')
 
     def LockInModAmpSet(self):
-        print('LockIn.ModAmpSet\
-            \nSets the modulation amplitude of the specified Lock-In modulator.\
-            \nArguments:\
-            \n- Modulator number (int) is the number that specifies which modulator to use. It starts from number 1 (=Modulator 1)\
-            \n- Amplitude (float32) is the modulation amplitude of the specified Lock-In modulator\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Error described in the Response message>Body section')
+        print('')
 
     def LockInModAmpGet(self):
-        print('LockIn.ModAmpGet\
-            \nReturns the modulation amplitude of the specified Lock-In modulator.\
-            \nArguments:\
-            \n- Modulator number (int) is the number that specifies which modulator to use. It starts from number 1 (=Modulator 1)\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Amplitude (float32) is the modulation amplitude of the specified Lock-In modulator\
-            \n- Error described in the Response message>Body section')
+        print('')
 
     def LockInModPhasFreqSet(self):
-        print('LockIn.ModPhasFreqSet\
-            \nSets the frequency of the specified Lock-In phase register/modulator.\
-            \nThe Lock-in module has a total of 8 frequency generators / phase registers. Each modulator and demodulator can be bound to one of the phase registers.\
-            \nThis function sets the frequency of one of the phase registers.\
-            \nArguments:\
-            \n- Modulator number (int) is the number that specifies which phase register/modulator to use. It starts from number 1 (=Modulator 1)\
-            \n- Frequency (Hz) (float64) is the frequency of the specified Lock-In phase register\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Error described in the Response message>Body section')
+        print('')
 
     def LockInModPhasFreqGet(self):
-        print('LockIn.ModPhasFreqGet\
-            \nReturns the frequency of the specified Lock-In phase register/modulator.\
-            \nThe Lock-in module has a total of 8 frequency generators / phase registers. Each modulator and demodulator can be bound to one of the phase registers.\
-            \nThis function gets the frequency of one of the phase registers.\
-            \nArguments:\
-            \n- Modulator number (int) is the number that specifies which phase register/modulator to use. It starts from number 1 (=Modulator 1)\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Frequency (Hz) (float64) is the frequency of the specified Lock-In phase register\
-            \n- Error described in the Response message>Body section')
-        
-    def SignalsNamesGet(self):
-        print('Signals.NamesGet\
-            \nReturns the signals names list of the 128 signals available in the software.\
-            \nThe 128 signals are physical inputs, physical outputs and internal channels. By searching in the list the channel’s name you are interested in, you can get its index (0-127).\
-            \nArguments: None\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Signals names size (int) is the size in bytes of the signals names array\
-            \n- Signals names number (int) is the number of elements of the signals names array\
-            \n- Signals names (1D array string) returns an array of signals names strings, where each string comes prepended by its size in bytes\
-            \n- Error described in the Response message>Body sectionSignals.CalibrGet\
-            \nReturns the calibration and offset of the selected signal.')
+        print('')
 
 help = help()    
 # print(help.general_info)
-help.SignalsNamesGet()
+help.BiasSpectrPropsSet()

@@ -517,19 +517,7 @@ class help:
             \nReturn arguments (if Send response back flag is set to True when sending request message):\
             \n- Frequency (Hz) (float64) is the frequency of the specified Lock-In phase register\
             \n- Error described in the Response message>Body section')
-        
-    def SignalsNamesGet(self):
-        print('Signals.NamesGet\
-            \nReturns the signals names list of the 128 signals available in the software.\
-            \nThe 128 signals are physical inputs, physical outputs and internal channels. By searching in the list the channel’s name you are interested in, you can get its index (0-127).\
-            \nArguments: None\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Signals names size (int) is the size in bytes of the signals names array\
-            \n- Signals names number (int) is the number of elements of the signals names array\
-            \n- Signals names (1D array string) returns an array of signals names strings, where each string comes prepended by its size in bytes\
-            \n- Error described in the Response message>Body sectionSignals.CalibrGet\
-            \nReturns the calibration and offset of the selected signal.')
 
 help = help()    
 # print(help.general_info)
-help.SignalsNamesGet()
+help.BiasSpectrPropsSet()
