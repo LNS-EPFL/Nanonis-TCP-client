@@ -1159,8 +1159,8 @@ class nanonis_ctrl:
         return signal_name_df
 
 
-# tcp = tcp_ctrl()
-# ccc = nanonis_ctrl(tcp)
+tcp = tcp_ctrl()
+ccc = nanonis_ctrl(tcp)
 # ccc.help()
 # ccc.BiasSet('700m')
 # ccc.BiasGet()
@@ -1173,4 +1173,4 @@ class nanonis_ctrl:
 # ccc.TipShaperPropsGet()
 # bias_start = tcp.unit_cvt([1e-9,2,89.8e-9])
 # ccc.TipShaperStart(1, 0.3)
-# ccc.SignalsNamesGet()
+ccc.SignalsNamesGet()

@@ -530,6 +530,6 @@ class help:
             \n- Error described in the Response message>Body sectionSignals.CalibrGet\
             \nReturns the calibration and offset of the selected signal.')
 
-# help = help()    
-# # print(help.general_info)
-# help.SignalsNamesGet()
+help = help()    
+# print(help.general_info)
+help.SignalsNamesGet()
