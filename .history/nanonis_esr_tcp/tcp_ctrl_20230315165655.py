@@ -234,34 +234,26 @@ class tcp_ctrl:
         if not res_err.empty:
             print(res_err['error description'])
 
-    def tristate_cvt(self, status):
-        if status == 0:
+    def tristate_cvt(self, num_status):
+        if num_status == 0:
             return 'No change'
-        elif status == 1:
+        elif num_status == 1:
             return 'Yes/On'
-        elif status == 2:
+        elif num_status == 2:
             return 'No/Off'
-        elif status == 'No change':
-            return 0
-        elif status == 'Yes/On':
-            return 1
-        elif status == 'No/Off':
-            return 2
         else:
-            print("Error: A valid input should be either in [0, 1, 2] or in ['No change', 'Yes/On', 'No/Off']")
-            return status
+            print('Error: A valid input should be in [0, 1, 2]')
+            return num_status
         
-    def bistate_cvt(self, status):
-        if status == 0:
+    def bistate_cvt(self, num_status):
+        if num_status == 0:
             return 'False/Off'
-        elif status == 1:
+        elif num_status == 1:
             return 'True/On'
-        elif status == 'False/Off':
-            return 0
-        elif status == 'True/On':
-            return 1
         else:
-            print("Error: A valid input should be either in [0, 1] or in ['False/Off', ''True/On].")
-            return status      
+            print('Error: A valid input should be either 0 or 1.')
+            return num_status    
+
+    def tristate_      
 
         

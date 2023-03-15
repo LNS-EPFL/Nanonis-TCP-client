@@ -1160,7 +1160,7 @@ class nanonis_ctrl:
 
 
 tcp = tcp_ctrl()
-ccc = nanonis_ctrl(tcp) 
+ccc = nanonis_ctrl(tcp)
 # ccc.help()
 # ccc.BiasSet('700m')
 # ccc.BiasGet()
