@@ -3,6 +3,7 @@
 @Time    :   2023/03/04 01:54:34
 @Author  :   Shixuan Shan 
 '''
+# from tcp_ctrl import tcp_ctrl
 import pandas as pd
 import numpy as np
 
@@ -1157,3 +1158,20 @@ class nanonis_ctrl:
               signal_name_df.to_string()+
               '\n\nSignal name list returned.')
         return signal_name_df
+
+
+# tcp = tcp_ctrl()
+# ccc = nanonis_ctrl(tcp) 
+# ccc.help()
+# ccc.BiasSet('700m')
+# ccc.BiasGet()
+# ccc.BiasPulse('600m', '7')
+# ccc.BiasSpectrOpen()
+# ccc.BiasSpectrStart(1, 'drfue')
+# df = ccc.BiasSpectrTimingGet()
+# print(np.sqrt(df.T['Z averaging time (s):']))
+# ccc.TipShaperPropsGet()
+# bias_start = tcp.unit_cvt([1e-9,2,89.8e-9])
+# ccc.TipShaperStart(1, 0.3)
+# ccc.SignalsNamesGet()
+# ccc.LockInModPhasFreqGet(1)
