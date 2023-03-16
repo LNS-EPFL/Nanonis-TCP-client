@@ -169,7 +169,7 @@ class nanonis_ctrl:
         body  = self.tcp.dtype_cvt(save_all, 'uint16', 'bin')
         body += self.tcp.dtype_cvt(num_sweeps, 'int', 'bin')
         body += self.tcp.dtype_cvt(bw_sweep, 'uint16', 'bin')
-        body += self.tcp.dtype_cvt(num_pts, 'uint16', 'bin')
+        body += self.tcp.dtype_cvt(num_pts, 'int', 'bin')
         body += self.tcp.dtype_cvt(z_offset, 'float32', 'bin')
         body += self.tcp.dtype_cvt(auto_save, 'uint16', 'bin')
         body += self.tcp.dtype_cvt(show_save_dialog, 'uint16', 'bin')
@@ -1084,6 +1084,7 @@ class nanonis_ctrl:
 
         self.tcp.cmd_send(cmd)
         _, res_arg, res_err = self.tcp.res_recv('float64')
+        print(res_arg)
 
         self.tcp.print_err(res_err)
         lockin_freq_df = pd.DataFrame({'Modulator number': modu_num,
@@ -1174,3 +1175,4 @@ ccc = nanonis_ctrl(tcp)
 # bias_start = tcp.unit_cvt([1e-9,2,89.8e-9])
 # ccc.TipShaperStart(1, 0.3)
 # ccc.SignalsNamesGet()
+ccc.LockInModPhasFreqGet(1)
