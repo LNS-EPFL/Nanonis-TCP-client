@@ -109,7 +109,7 @@ class tcp_ctrl:
         elif original_fmt == 'bin' and target_fmt == '2dfloat32': 
             return [np.frombuffer(data, '>f').reshape(arg), len(data)]
         #* binary to float64
-        elif original_fmt == 'bin' and target_fmt == ['float64', '1dfloat64']:
+        elif original_fmt == 'bin' and target_fmt in ['float64', '1dfloat64']:
             data_cvted = np.frombuffer(data, '>d')
             if len(data_cvted) == 1:
                 data_cvted = data_cvted[0] 

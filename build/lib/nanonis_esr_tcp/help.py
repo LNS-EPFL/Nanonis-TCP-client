@@ -5,7 +5,6 @@
 '''
 
 #  This is a help module if you don't know how to use the funcitons in nanonis_ctrl.py file
-from nanonis_ctrl import nanonis_ctrl
 import pandas as pd
 import numpy as np
 
@@ -14,14 +13,14 @@ class help:
         self.general_info = "This is a help module if you don't know how to use the funcitons in nanonis_ctrl.py file \n Call help() to get a list of the function included in the module.\n Call the name of that function to get the help of that function, eg BiasSet()"        
 
     def help(self):
-        func_list = [func for func in dir(nanonis_ctrl) if callable(getattr(nanonis_ctrl, func)) and not func.startswith("__")]
+        # func_list = [func for func in dir(nanonis_ctrl) if callable(getattr(nanonis_ctrl, func)) and not func.startswith("__")]
 
         print('Here are some tips of using this Nanonis TCP module: \
               \n 1. For a tristate setting, such as "save all" in "BiasSpectrPropsSet" function, there are three valid input values: \n\
               1) 0 --> No change \n\
               2) 1 --> Yes/On \n\
               3) 2 --> No/Off')
-        print(f'All available {len(func_list)} functions:\n',func_list)
+        # print(f'All available {len(func_list)} functions:\n',func_list)
 
     def BiasSet(self):
         print('Bias.Set\
@@ -530,6 +529,3 @@ class help:
             \n- Error described in the Response message>Body sectionSignals.CalibrGet\
             \nReturns the calibration and offset of the selected signal.')
 
-# help = help()    
-# # print(help.general_info)
-# help.SignalsNamesGet()

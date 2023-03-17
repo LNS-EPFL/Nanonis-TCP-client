@@ -724,6 +724,22 @@ class nanonis_ctrl:
 ######################################## Safe Tip Module #############################################
 ######################################## Auto Approach Module #############################################
 ######################################## Scan Module #############################################
+######################################## Current Module #############################################
+    def CurrentCalibrGet(self):
+        header = self.tcp.header_construct('Current.CalibrGet', 0)
+
+        self.tcp.cmd_send(header)
+        _, res_arg, res_err = self.tcp.res_recv('float64', 'float64')
+        self.tcp.print_err(res_err)
+        at_props_df = pd.DataFrame({'Calibration': res_arg[0],
+                                    'Offset': res_arg[1]},
+                                 index=[0]).T
+        print('\n'+
+              at_props_df.to_string(header=False)+
+              '\n\nAtom track parameters returned.')
+        return at_props_df
+    # def PLLCenterFreqGet(self, modu_uidx):
+    #     body = self.tcp.dtype_cvt()
 ######################################## Follow Me Module #############################################
 ######################################## Tip Shaper Module #############################################
     def TipShaperStart(self, wait_until_fin, timeout):
@@ -1078,12 +1094,11 @@ class nanonis_ctrl:
 
     def LockInModPhasFreqGet(self, modu_num):
         body  = self.tcp.dtype_cvt(modu_num, 'int', 'bin')
-        header = self.tcp.header_construct('LockIn.ModPhasFreqSet', len(body))
+        header = self.tcp.header_construct('LockIn.ModPhasFreqGet', len(body))
         cmd = header + body
 
         self.tcp.cmd_send(cmd)
         _, res_arg, res_err = self.tcp.res_recv('float64')
-        print(res_arg)
 
         self.tcp.print_err(res_err)
         lockin_freq_df = pd.DataFrame({'Modulator number': modu_num,
