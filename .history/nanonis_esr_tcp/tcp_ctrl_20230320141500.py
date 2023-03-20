@@ -65,8 +65,7 @@ class tcp_ctrl:
         
         #############* FROM BYTES ####################
         #* binary to string (expression after '%' gives the size of the string in bytes)
-        #* for string, no need to put 'int' before 'str'
-        elif original_fmt == 'bin' and target_fmt == 'str': 
+        elif original_fmt == 'bin' and target_fmt == 'str': # for string, no need to put 'int' before 'str'
             data_cvted = np.frombuffer(data, '>%dS' % arg)[0].decode('utf-8') 
             return [data_cvted, len(data)]
         #* binary to 1d or 2d string
