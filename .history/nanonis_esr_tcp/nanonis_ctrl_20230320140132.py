@@ -610,23 +610,23 @@ class nanonis_ctrl:
                                  index=[0]).T
         print('\n'+
               z_pos_df.to_string(header=False)+
-              '\n\nZ position of the tip set. Note: to change the Z-position of the tip, the Z-controller must be switched OFF!!!')
+              '\n\n Z position of the tip set. Note: to change the Z-position of the tip, the Z-controller must be switched OFF!!!')
         return z_pos_df
           
     def ZCtrlZPosGet(self):
         header = self.tcp.header_construct('ZCtrl.ZPosGet', 0)
 
         self.tcp.cmd_send(header)
-        _, res_arg, res_err = self.tcp.res_recv('float32')
+        _, res_arg, res_err = self.tcp.res_recv('uint32')
         print(res_arg)
 
         self.tcp.print_err(res_err)
-        z_pos_df = pd.DataFrame({'Z position of the tip (m)': res_arg[0]},
+        z_ctrl_df = pd.DataFrame({'Z-controller status': self.tcp.bistate_cvt(res_arg[0])},
                                  index=[0]).T
         print('\n'+
-              z_pos_df.to_string(header=False)+
-              '\n\nZ position of the tip returned.')
-        return z_pos_df
+              z_ctrl_df.to_string(header=False)+
+              '\n\nZ-controller on/off set.')
+        return z_ctrl_df
          
           
     def ZCtrlOnOffSet(self, z_ctrl_status):

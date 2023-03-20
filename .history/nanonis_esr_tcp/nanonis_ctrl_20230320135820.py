@@ -596,38 +596,23 @@ class nanonis_ctrl:
 
 ######################################## Z-controller Module #############################################
     def ZCtrlZPosSet(self, z_pos):
-        z_pos = self.tcp.unit_cvt(z_pos)
-
         body = self.tcp.dtype_cvt(z_pos, 'float32', 'bin')
-        header = self.tcp.header_construct('ZCtrl.ZPosSet', len(body))
+        header = self.tcp.header_construct('ZCtrl.OnOffSet', len(body))
         cmd = header + body
 
         self.tcp.cmd_send(cmd)
         _, _, res_err = self.tcp.res_recv()
 
         self.tcp.print_err(res_err)
-        z_pos_df = pd.DataFrame({'Z position of the tip (m)': z_pos},
+        z_ctrl_df = pd.DataFrame({'Z-controller status': self.tcp.bistate_cvt(z_ctrl_status)},
                                  index=[0]).T
         print('\n'+
-              z_pos_df.to_string(header=False)+
-              '\n\nZ position of the tip set. Note: to change the Z-position of the tip, the Z-controller must be switched OFF!!!')
-        return z_pos_df
+              z_ctrl_df.to_string(header=False)+
+              '\n\nZ-controller on/off set.')
+        return z_ctrl_df
           
     def ZCtrlZPosGet(self):
-        header = self.tcp.header_construct('ZCtrl.ZPosGet', 0)
-
-        self.tcp.cmd_send(header)
-        _, res_arg, res_err = self.tcp.res_recv('float32')
-        print(res_arg)
-
-        self.tcp.print_err(res_err)
-        z_pos_df = pd.DataFrame({'Z position of the tip (m)': res_arg[0]},
-                                 index=[0]).T
-        print('\n'+
-              z_pos_df.to_string(header=False)+
-              '\n\nZ position of the tip returned.')
-        return z_pos_df
-         
+        return
           
     def ZCtrlOnOffSet(self, z_ctrl_status):
         body = self.tcp.dtype_cvt(z_ctrl_status, 'uint32', 'bin')

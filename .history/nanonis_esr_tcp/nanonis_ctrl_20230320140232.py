@@ -625,7 +625,7 @@ class nanonis_ctrl:
                                  index=[0]).T
         print('\n'+
               z_pos_df.to_string(header=False)+
-              '\n\nZ position of the tip returned.')
+              '\n\nZ-controller on/off set.')
         return z_pos_df
          
           
