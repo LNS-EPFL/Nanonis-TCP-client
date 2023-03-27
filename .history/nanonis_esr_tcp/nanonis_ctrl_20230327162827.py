@@ -592,18 +592,7 @@ class nanonis_ctrl:
         return
 
     def CurrentCalibrGet(self):
-        header = self.tcp.header_construct('Current.CalibrGet', 0)
-
-        self.tcp.cmd_send(header)
-        _, res_arg, res_err = self.tcp.res_recv('float64', 'float64')
-        self.tcp.print_err(res_err)
-        at_props_df = pd.DataFrame({'Calibration': res_arg[0],
-                                    'Offset': res_arg[1]},
-                                 index=[0]).T
-        print('\n'+
-              at_props_df.to_string(header=False)+
-              '\n\nCalibration and offset of the selected gain returned.')
-        return at_props_df
+        return
 
 ######################################## Z-controller Module #############################################
     def ZCtrlZPosSet(self, z_pos):
@@ -763,6 +752,22 @@ class nanonis_ctrl:
 ######################################## Safe Tip Module #############################################
 ######################################## Auto Approach Module #############################################
 ######################################## Scan Module #############################################
+######################################## Current Module #############################################
+    def CurrentCalibrGet(self):
+        header = self.tcp.header_construct('Current.CalibrGet', 0)
+
+        self.tcp.cmd_send(header)
+        _, res_arg, res_err = self.tcp.res_recv('float64', 'float64')
+        self.tcp.print_err(res_err)
+        at_props_df = pd.DataFrame({'Calibration': res_arg[0],
+                                    'Offset': res_arg[1]},
+                                 index=[0]).T
+        print('\n'+
+              at_props_df.to_string(header=False)+
+              '\n\nAtom track parameters returned.')
+        return at_props_df
+    # def PLLCenterFreqGet(self, modu_uidx):
+    #     body = self.tcp.dtype_cvt()
 ######################################## Follow Me Module #############################################
 ######################################## Tip Shaper Module #############################################
     def TipShaperStart(self, wait_until_fin, timeout):
@@ -1383,39 +1388,20 @@ class nanonis_ctrl:
         header = self.tcp.header_construct('Util.SessionPathGet', 0)
 
         self.tcp.cmd_send(header)
-        _, res_arg, res_err = self.tcp.res_recv('str')
+        _, res_arg, res_err = self.tcp.res_recv('int', 'str')
 
         self.tcp.print_err(res_err)
-        util_session_path_df = pd.DataFrame({'Session path': res_arg[1]},
+        util_session_path_df = pd.DataFrame({'Lower limit': res_arg[0],
+                                       'Upper limit': res_arg[1]},
                                        index=[0]).T
         print('\n'+
               util_session_path_df.to_string(header=False)+
-              '\n\nSession folder path returned.')
+              '\n\nThe limits of the Sweep signals returned.')
         return util_session_path_df
-    
 
-    def UtilSessionPathSet(self, sess_path, save_settings_to_prev):
-        sess_path_size = len(sess_path)
+    def UtilSessionPathSet(self):
 
-        body  = self.tcp.dtype_cvt(sess_path_size, 'int', 'bin')
-        body += self.tcp.dtype_cvt(sess_path, 'str', 'bin')
-        body += self.tcp.dtype_cvt(save_settings_to_prev, 'uint32', 'bin')
-        header = self.tcp.header_construct('Util.SessionPathSet', len(body))
-        cmd = header + body
-
-        self.tcp.cmd_send(cmd)
-        _, _, res_err = self.tcp.res_recv()
-
-        self.tcp.print_err(res_err)
-        util_session_path_df = pd.DataFrame({'Session path': sess_path,
-                                             'Save settings to previous': self.tcp.bistate_cvt(save_settings_to_prev)}, 
-                                             index=[0]).T
-        
-        print('\n'+
-              util_session_path_df.to_string(header=False)+
-              '\n\nSession folder path set.')
-        return util_session_path_df
-    
+        return
 
     def UtilSettingsLoad(self):
 

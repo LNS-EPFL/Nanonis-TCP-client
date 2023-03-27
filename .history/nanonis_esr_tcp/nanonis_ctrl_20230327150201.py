@@ -505,14 +505,14 @@ class nanonis_ctrl:
               '\n\nLock-In per Segment flag in Multi line segment editor settings returned.')
         return mls_mode_df 
     
-    def BiasSpectrMLSValsSet(self, num_segs, bias_start, bias_end, init_settling_t, settling_t, inte_t, steps, lockin_run):
+    def BiasSpectrMLSValsSet(self, num_of_segs, bias_start, bias_end, init_settling_t, settling_t, inte_t, steps, lockin_run):
         bias_start = self.tcp.unit_cvt(bias_start)
         bias_end = self.tcp.unit_cvt(bias_end)
         init_settling_t = self.tcp.unit_cvt(init_settling_t)
         settling_t = self.tcp.unit_cvt(settling_t)
         inte_t = self.tcp.unit_cvt(inte_t)
 
-        body  = self.tcp.dtype_cvt(num_segs, 'int', 'bin')
+        body  = self.tcp.dtype_cvt(num_of_segs, 'int', 'bin')
         body += self.tcp.dtype_cvt(bias_start, '1dfloat', 'bin')
         body += self.tcp.dtype_cvt(bias_end, '1dfloat', 'bin')
         body += self.tcp.dtype_cvt(init_settling_t, '1dfloat', 'bin')
@@ -527,7 +527,7 @@ class nanonis_ctrl:
         _, _, res_err = self.tcp.res_recv()
 
         self.tcp.print_err(res_err)
-        mls_df = pd.DataFrame({'Number of segments': num_segs,
+        mls_df = pd.DataFrame({'Number of segments': num_of_segs,
                                'Bias start (V)': bias_start,
                                'Bias end (V)': bias_end,
                                'Initial settling time (s)': init_settling_t,
@@ -592,18 +592,7 @@ class nanonis_ctrl:
         return
 
     def CurrentCalibrGet(self):
-        header = self.tcp.header_construct('Current.CalibrGet', 0)
-
-        self.tcp.cmd_send(header)
-        _, res_arg, res_err = self.tcp.res_recv('float64', 'float64')
-        self.tcp.print_err(res_err)
-        at_props_df = pd.DataFrame({'Calibration': res_arg[0],
-                                    'Offset': res_arg[1]},
-                                 index=[0]).T
-        print('\n'+
-              at_props_df.to_string(header=False)+
-              '\n\nCalibration and offset of the selected gain returned.')
-        return at_props_df
+        return
 
 ######################################## Z-controller Module #############################################
     def ZCtrlZPosSet(self, z_pos):
@@ -763,6 +752,22 @@ class nanonis_ctrl:
 ######################################## Safe Tip Module #############################################
 ######################################## Auto Approach Module #############################################
 ######################################## Scan Module #############################################
+######################################## Current Module #############################################
+    def CurrentCalibrGet(self):
+        header = self.tcp.header_construct('Current.CalibrGet', 0)
+
+        self.tcp.cmd_send(header)
+        _, res_arg, res_err = self.tcp.res_recv('float64', 'float64')
+        self.tcp.print_err(res_err)
+        at_props_df = pd.DataFrame({'Calibration': res_arg[0],
+                                    'Offset': res_arg[1]},
+                                 index=[0]).T
+        print('\n'+
+              at_props_df.to_string(header=False)+
+              '\n\nAtom track parameters returned.')
+        return at_props_df
+    # def PLLCenterFreqGet(self, modu_uidx):
+    #     body = self.tcp.dtype_cvt()
 ######################################## Follow Me Module #############################################
 ######################################## Tip Shaper Module #############################################
     def TipShaperStart(self, wait_until_fin, timeout):
@@ -859,8 +864,8 @@ class nanonis_ctrl:
         return tip_shaper_props_df
 
 ######################################## Generic Sweeper Module #############################################
-    def GenSwpAcqChsSet(self, num_chs, ch_idx):
-        body  = self.tcp.dtype_cvt(num_chs, 'int', 'bin')
+    def GenSwpAcqChsSet(self, num_of_chs, ch_idx):
+        body  = self.tcp.dtype_cvt(num_of_chs, 'int', 'bin')
         body += self.tcp.dtype_cvt(ch_idx, '1dint', 'bin')
         header = self.tcp.header_construct('GenSwp.AcqChsSet', len(body))
         cmd = header + body
@@ -869,7 +874,7 @@ class nanonis_ctrl:
         _, _, res_err = self.tcp.res_recv()
 
         self.tcp.print_err(res_err)
-        gen_swp_chs_df = pd.DataFrame({'Number of channels': num_chs,
+        gen_swp_chs_df = pd.DataFrame({'Number of channels': num_of_chs,
                                  'Channel indexes': ch_idx},
                                  index=[0]).T
         print('\n'+
@@ -961,60 +966,11 @@ class nanonis_ctrl:
               '\n\nThe limits of the Sweep signals returned.')
         return gen_swp_lmt_df
 
-    # ! -1=no change, 0=Off, 1=On different from other functions!!!
-    def GenSwpPropsSet(self, init_settling_t, max_slew_rate, num_steps, periods, autosave, save_dialog, settling_t):
-        init_settling_t = self.tcp.unit_cvt(init_settling_t)*1000
-        periods = int(self.tcp.unit_cvt(periods)*1000)
-        settling_t = self.tcp.unit_cvt(settling_t)*1000
-
-
-        body  = self.tcp.dtype_cvt(init_settling_t, 'float32', 'bin')
-        body += self.tcp.dtype_cvt(max_slew_rate, 'float32', 'bin')
-        body += self.tcp.dtype_cvt(num_steps, 'int', 'bin') #* 0 means no change
-        body += self.tcp.dtype_cvt(periods, 'uint16', 'bin') #* 0 means no change
-        body += self.tcp.dtype_cvt(autosave, 'int', 'bin')
-        body += self.tcp.dtype_cvt(save_dialog, 'int', 'bin')
-        body += self.tcp.dtype_cvt(settling_t, 'float32', 'bin')
-        header = self.tcp.header_construct('GenSwp.PropsSet', len(body))
-        cmd = header + body
-
-        self.tcp.cmd_send(cmd)
-        _, _, res_err = self.tcp.res_recv()
-
-        self.tcp.print_err(res_err)
-        gen_swp_props_df = pd.DataFrame({'Initial Settling time (ms)': init_settling_t,
-                                         'Maximum slew rate (units/s)': max_slew_rate,
-                                         'Number of steps': num_steps, 
-                                         'Period (ms)': periods, 
-                                         'Autosave': self.tcp.tristate_cvt_2(autosave), 
-                                         'Save dialog box': self.tcp.tristate_cvt_2(save_dialog),
-                                         'Settling time (ms)': settling_t},
-                                        index=[0]).T
-        
-        print('\n'+
-              gen_swp_props_df.to_string(header=False)+
-              '\n\nGeneric sweeper parameters set.')
-        return gen_swp_props_df
+    def GenSwpPropsSet(self):
+        return
 
     def GenSwpPropsGet(self):
-        header = self.tcp.header_construct('GenSwp.PropsGet', 0)
-
-        self.tcp.cmd_send(header)
-        _, res_arg, res_err = self.tcp.res_recv('float32', 'float32', 'int', 'uint16', 'uint32', 'uint32', 'float32')
-
-        self.tcp.print_err(res_err)
-        gen_swp_props_df = pd.DataFrame({'Initial Settling time (ms)': res_arg[0],
-                                         'Maximum slew rate (units/s)': res_arg[1],
-                                         'Number of steps': res_arg[2], 
-                                         'Period (ms)': res_arg[3], 
-                                         'Autosave': self.tcp.bistate_cvt(res_arg[4]), 
-                                         'Save dialog box': self.tcp.bistate_cvt(res_arg[5]),
-                                         'Settling time (ms)': res_arg[6]},
-                                 index=[0]).T
-        print('\n'+
-              gen_swp_props_df.to_string(header=False)+
-              '\n\nGeneric sweeper parameters returned.')
-        return gen_swp_props_df
+        return
 
     def GenSwpStart(self, get_data, sweep_dir, save_base_name, reset_signal):
         save_base_name_str_size = len(save_base_name)
@@ -1033,22 +989,14 @@ class nanonis_ctrl:
         self.tcp.print_err(res_err)
         gen_swp_df = pd.DataFrame(res_arg[5].T, columns = res_arg[2][0])
 
-        gen_swp_param_df = pd.DataFrame({'Get data': self.tcp.bistate_cvt(get_data),
-                                         'Sweep direction': sweep_dir,
-                                         'Save base name string size': save_base_name_str_size,
-                                         'Save base name string': save_base_name,
-                                         'Reset signal': self.tcp.bistate_cvt(reset_signal), 
-                                         'Channels names size': res_arg[0],
-                                         'Number of channels': res_arg[1],
-                                         'Channels names': res_arg[2],
-                                         'Number of rows': res_arg[3],
-                                         'Number of columns': res_arg[4]},
+        gen_swp_param_df = pd.DataFrame({'Get data': ,
+                                         'Sweep direction': res_arg[1],
+                                         'Save base name string size'},
                                         index=[0]).T
-        print(gen_swp_df)
-        print('\n\n'+
-              gen_swp_param_df.to_string(header=False)+
-              '\n\nGeneric sweep done!')
-        return gen_swp_df, gen_swp_param_df
+        print('\n'+
+              gen_swp_df.to_string(header=False)+
+              '\n\nThe limits of the Sweep signals returned.')
+        return gen_swp_df
 
     def GenSwpStop(self):
         header = self.tcp.header_construct('GenSwp.Stop', 0)
@@ -1059,7 +1007,7 @@ class nanonis_ctrl:
         self.tcp.print_err(res_err)
 
         print('\n'+
-              '\n\nGeneric sweeper stopped.')
+              '\n\nGeneric Sweep stopped.')
         return 
 
     def GenSwpOpen(self):
@@ -1071,7 +1019,7 @@ class nanonis_ctrl:
         self.tcp.print_err(res_err)
 
         print('\n'+
-              '\n\nGeneric sweep module opened.')
+              '\n\nGeneric Sweep module opened.')
         return 
 
 ######################################## Atom Tracking Module #############################################
@@ -1377,94 +1325,3 @@ class nanonis_ctrl:
               signal_name_df.to_string()+
               '\n\nSignal name list returned.')
         return signal_name_df
-
-######################################## Utilities Module #############################################
-    def UtilSessionPathGet(self):
-        header = self.tcp.header_construct('Util.SessionPathGet', 0)
-
-        self.tcp.cmd_send(header)
-        _, res_arg, res_err = self.tcp.res_recv('str')
-
-        self.tcp.print_err(res_err)
-        util_session_path_df = pd.DataFrame({'Session path': res_arg[1]},
-                                       index=[0]).T
-        print('\n'+
-              util_session_path_df.to_string(header=False)+
-              '\n\nSession folder path returned.')
-        return util_session_path_df
-    
-
-    def UtilSessionPathSet(self, sess_path, save_settings_to_prev):
-        sess_path_size = len(sess_path)
-
-        body  = self.tcp.dtype_cvt(sess_path_size, 'int', 'bin')
-        body += self.tcp.dtype_cvt(sess_path, 'str', 'bin')
-        body += self.tcp.dtype_cvt(save_settings_to_prev, 'uint32', 'bin')
-        header = self.tcp.header_construct('Util.SessionPathSet', len(body))
-        cmd = header + body
-
-        self.tcp.cmd_send(cmd)
-        _, _, res_err = self.tcp.res_recv()
-
-        self.tcp.print_err(res_err)
-        util_session_path_df = pd.DataFrame({'Session path': sess_path,
-                                             'Save settings to previous': self.tcp.bistate_cvt(save_settings_to_prev)}, 
-                                             index=[0]).T
-        
-        print('\n'+
-              util_session_path_df.to_string(header=False)+
-              '\n\nSession folder path set.')
-        return util_session_path_df
-    
-
-    def UtilSettingsLoad(self):
-
-        return
-
-    def UtilSettingsSave(self):
-
-        return
-
-    def UtilLayoutLoad(self):
-
-        return
-
-    def UtilLayoutSave(self):
-
-        return
-
-    def UtilLock(self):
-
-        return
-
-    def UtilUnLock(self):
-
-        return
-
-    def UtilRTFreqSet(self):
-
-        return
-
-    def UtilRTFreqGet(self):
-
-        return
-
-    def UtilAcqPeriodSet(self):
-
-        return
-
-    def UtilAcqPeriodGet(self):
-
-        return
-
-    def UtilRTOversamplSet(self):
-
-        return
-
-    def UtilRTOversamplGet(self):
-
-        return
-
-    def UtilQuit(self):
-
-        return

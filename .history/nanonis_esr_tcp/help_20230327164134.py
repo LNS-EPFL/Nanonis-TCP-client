@@ -337,39 +337,9 @@ class help:
             \nOtherwise, the Lock-In is set globally according to the flag in the Advanced section of Bias spectroscopy\
             \n- Error described in the Response message>Body section')
         
-    def CurrentGet(self):
-        print('Current.Get\
-            \nReturns the tunneling current value.\
-            \nArguments: None\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Current value (A) (float32)\
-            \n- Error described in the Response message>Body section')
-        
-    def CurrentCalibrGet(self):
-        print('Current.CalibrGet\
-            \nGets the calibration and offset of the selected gain in the Current module.\
-            \nArguments: None\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Calibration (float64)\
-            \n- Offset (float64)\
-            \n- Error described in the Response message>Body section')
-        
     def ZCtrlZPosSet(self):
-        print('ZCtrl.ZPosSet\
-            \nSets the Z position of the tip.\
-            \nNote: to change the Z-position of the tip, the Z-controller must be switched OFF.\
-            \nArguments:\
-            \n- Z position (m) (float32)\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Error described in the Response message>Body section')
     
     def ZCtrlZPosGet(self):
-        print('ZCtrl.ZPosGet\
-            \nReturns the current Z position of the tip.\
-            \nArguments: None\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Z position (m) (float32)\
-            \n- Error described in the Response message>Body section')
         
     def ZCtrlOnOffSet(self):
         print('ZCtrl.OnOffSet\
@@ -450,134 +420,6 @@ class help:
             \n- End Wait Time (s) (float32) is the time to wait after restoring the initial Bias voltage (just after finishing the second ramping).\
             \n- Restore Feedback? (unsigned int32) returns whether the initial Z-Controller status is restored (0=False, 1=True) at the end of the tip shaper procedure.\
             \n- Error described in the Response message>Body section')
-        
-
-    def GenSwpAcqChsSet(self):
-        print('GenSwp.AcqChsSet\
-            \nSets the list of recorded channels of the Generic Sweeper.\
-            \nArguments:\
-            \n- Number of channels (int) is the number of recorded channels. It defines the size of the Channel indexes\
-            \narray\
-            \n- Channel indexes (1D array int) are the indexes of recorded channels. The indexes correspond to the list of\
-            \nMeasurement in the Nanonis software.\
-            \nTo get the Measurements names use the Signals.MeasNamesGet function\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Error described in the Response message>Body section')
-
-    def GenSwpAcqChsGet(self):
-        print('GenSwp.AcqChsGet\
-            \nReturns the list of recorded channels of the Generic Sweeper.\
-            \nArguments: None\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Number of channels (int) is the number of recorded channels. It defines the size of the Channel indexes\
-            \narray\
-            \n- Channel indexes (1D array int) are the indexes of the recorded channels. The indexes correspond to the list\
-            \nof Measurement in the Nanonis software.\
-            \nTo get the Measurements names use the Signals.MeasNamesGet function\
-            \n- Error described in the Response message>Body section')
-
-    def GenSwpSwpSignalSet(self):
-        print('GenSwp.SwpSignalSet\
-            \nSets the Sweep signal in the Generic Sweeper.\
-            \nArguments:\
-            \n- Sweep channel name size (int) is the number of characters of the sweep channel name string\
-            \n- Sweep channel name (string) is the name of the signal selected for the sweep channel\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Error described in the Response message>Body section')
-
-    def GenSwpSwpSignalGet(self):
-        print('GenSwp.SwpSignalGet\
-            \nReturns the selected Sweep signal in the Generic Sweeper.\
-            \nArguments: None\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Sweep channel name size (int) is the number of characters of the sweep channel name string\
-            \n- Sweep channel name (string) is the name of the signal selected for the sweep channel\
-            \n- Channels names size (int) is the size in bytes of the Channels names string array\
-            \n- Number of channels (int) is the number of elements of the Channels names string array\
-            \n- Channels names (1D array string) returns the list of channels names. The size of each string item comes\
-            \nright before it as integer 32\
-            \n- Error described in the Response message>Body section')
-
-    def GenSwpLimitsSet(self):
-        print('GenSwp.LimitsSet\
-            \nSets the limits of the Sweep signal in the Generic Sweeper.\
-            \nArguments:\
-            \n- Lower limit (float32) defines the lower limit of the sweep range\
-            \n- Upper limit (float32) defines the upper limit of the sweep range\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Error described in the Response message>Body section')
-
-    def GenSwpLimitsGet(self):
-        print('GenSwp.LimitsGet\
-            \nReturns the limits of the Sweep signal in the Generic Sweeper.\
-            \nArguments: None\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Lower limit (float32) defines the lower limit of the sweep range\
-            \n- Upper limit (float32) defines the upper limit of the sweep range\
-            \n- Error described in the Response message>Body section')
-
-    def GenSwpPropsSet(self):
-        print('GenSwp.PropsSet\
-            \nSets the configuration of the parameters in the Generic Sweeper.\
-            \nArguments:\
-            \n- Initial Settling time (ms) (float32)\
-            \n- Maximum slew rate (units/s) (float32)\
-            \n- Number of steps (int) defines the number of steps of the sweep. 0 points means no change\
-            \n- Period (ms) (unsigned int16) where 0 means no change\
-            \n- Autosave (int) defines if the sweep is automatically saved, where -1=no change, 0=Off, 1=On\
-            \n- Save dialog box (int) defines if the save dialog box shows up or not, where -1=no change, 0=Off, 1=On\
-            \n- Settling time (ms) (float32)\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Error described in the Response message>Body section')
-
-    def GenSwpPropsGet(self):
-        print('GenSwp.PropsGet\
-            \nReturns the configuration of the parameters in the Generic Sweeper.\
-            \nArguments: None\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Initial Settling time (ms) (float32)\
-            \n- Maximum slew rate (units/s) (float32)\
-            \n- Number of steps (int) defines the number of steps of the sweep\
-            \n- Period (ms) (unsigned int16)\
-            \n- Autosave (unsigned int32) defines if the sweep is automatically saved, where 0=Off, 1=On\
-            \n- Save dialog box (unsigned int32) defines if the save dialog box shows up or not, where 0=Off, 1=On\
-            \n- Settling time (ms) (float32)\
-            \n- Error described in the Response message>Body section')
-
-    def GenSwpStart(self):
-        print('GenSwp.Start\
-            \nStarts the sweep in the Generic Sweeper.\
-            \nArguments:\
-            \n- Get data (unsigned int32) defines if the function returns the sweep data (1=True) or not (0=False)\
-            \n- Sweep direction (unsigned int32) defines if the sweep starts from the lower limit (=1) or from the upper\
-            \nlimit (=0)\
-            \n- Save base name string size (int) defines the number of characters of the Save base name string\
-            \n- Save base name (string) is the basename used by the saved files. If empty string, there is no change\
-            \n- Reset signal (unsigned int32) where 0=Off, 1=On\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Channels names size (int) is the size in bytes of the Channels names string array\
-            \n- Number of channels (int) is the number of elements of the Channels names string array\
-            \n- Channels names (1D array string) returns the list of channels names. The size of each string item comes\
-            \nright before it as integer 32\
-            \n- Data rows (int) defines the numer of rows of the Data array\
-            \n- Data columns (int) defines the numer of columns of the Data array\
-            \n- Data (2D array float32) returns the sweep data\
-            \n- Error described in the Response message>Body section')
-
-    def GenSwpStop(self):
-        print('GenSwp.Stop\
-            \nStops the sweep in the Generic Sweeper module.\
-            \nArguments: None\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Error described in the Response message>Body section')
-
-    def GenSwpOpen(self):
-        print('GenSwp.Open\
-            \nOpens the Generic Sweeper module.\
-            \nArguments: None\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Error described in the Response message>Body section')
-
 
     def AtomTrackCtrlSet(self):
         print('AtomTrack.CtrlSet\
@@ -690,25 +532,4 @@ class help:
             \n- Signals names (1D array string) returns an array of signals names strings, where each string comes prepended by its size in bytes\
             \n- Error described in the Response message>Body sectionSignals.CalibrGet\
             \nReturns the calibration and offset of the selected signal.')
-
-    def UtilSessionPathGet(self):
-        print('Util.SessionPathGet\
-            \nReturns the session path.\
-            \nArguments: None\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Session path size (int) is the number of characters of the Session path string\
-            \n- Session path (string)\
-            \n- Error described in the Response message>Body section')
-
-    def UtilSessionPathSet(self):
-        print('Util.SessionPathSet\
-            \nSets the session folder path.\
-            \nArguments:\
-            \n- Session path size (int) is the number of characters of the Session path string\
-            \n- Session path (string)\
-            \n- Save settings to previous (unsigned int32) determines if the settings are saved to the previous session file\
-            \nbefore changing it, where 0=False and 1=True\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Error described in the Response message>Body section')
-
 

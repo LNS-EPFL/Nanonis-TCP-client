@@ -592,18 +592,7 @@ class nanonis_ctrl:
         return
 
     def CurrentCalibrGet(self):
-        header = self.tcp.header_construct('Current.CalibrGet', 0)
-
-        self.tcp.cmd_send(header)
-        _, res_arg, res_err = self.tcp.res_recv('float64', 'float64')
-        self.tcp.print_err(res_err)
-        at_props_df = pd.DataFrame({'Calibration': res_arg[0],
-                                    'Offset': res_arg[1]},
-                                 index=[0]).T
-        print('\n'+
-              at_props_df.to_string(header=False)+
-              '\n\nCalibration and offset of the selected gain returned.')
-        return at_props_df
+        return
 
 ######################################## Z-controller Module #############################################
     def ZCtrlZPosSet(self, z_pos):
@@ -763,6 +752,22 @@ class nanonis_ctrl:
 ######################################## Safe Tip Module #############################################
 ######################################## Auto Approach Module #############################################
 ######################################## Scan Module #############################################
+######################################## Current Module #############################################
+    def CurrentCalibrGet(self):
+        header = self.tcp.header_construct('Current.CalibrGet', 0)
+
+        self.tcp.cmd_send(header)
+        _, res_arg, res_err = self.tcp.res_recv('float64', 'float64')
+        self.tcp.print_err(res_err)
+        at_props_df = pd.DataFrame({'Calibration': res_arg[0],
+                                    'Offset': res_arg[1]},
+                                 index=[0]).T
+        print('\n'+
+              at_props_df.to_string(header=False)+
+              '\n\nAtom track parameters returned.')
+        return at_props_df
+    # def PLLCenterFreqGet(self, modu_uidx):
+    #     body = self.tcp.dtype_cvt()
 ######################################## Follow Me Module #############################################
 ######################################## Tip Shaper Module #############################################
     def TipShaperStart(self, wait_until_fin, timeout):
@@ -975,7 +980,7 @@ class nanonis_ctrl:
         body += self.tcp.dtype_cvt(autosave, 'int', 'bin')
         body += self.tcp.dtype_cvt(save_dialog, 'int', 'bin')
         body += self.tcp.dtype_cvt(settling_t, 'float32', 'bin')
-        header = self.tcp.header_construct('GenSwp.PropsSet', len(body))
+        header = self.tcp.header_construct('GenSwp.Start', len(body))
         cmd = header + body
 
         self.tcp.cmd_send(cmd)
@@ -997,24 +1002,29 @@ class nanonis_ctrl:
         return gen_swp_props_df
 
     def GenSwpPropsGet(self):
-        header = self.tcp.header_construct('GenSwp.PropsGet', 0)
+        header = self.tcp.header_construct('TipShaper.PropsGet', 0)
 
         self.tcp.cmd_send(header)
-        _, res_arg, res_err = self.tcp.res_recv('float32', 'float32', 'int', 'uint16', 'uint32', 'uint32', 'float32')
+        _, res_arg, res_err = self.tcp.res_recv('float32', 'uint32', 'float32', 'float32', 'float32', 'float32', 'float32', 'float32', 'float32', 'float32', 'uint32')
 
         self.tcp.print_err(res_err)
-        gen_swp_props_df = pd.DataFrame({'Initial Settling time (ms)': res_arg[0],
-                                         'Maximum slew rate (units/s)': res_arg[1],
-                                         'Number of steps': res_arg[2], 
-                                         'Period (ms)': res_arg[3], 
-                                         'Autosave': self.tcp.bistate_cvt(res_arg[4]), 
-                                         'Save dialog box': self.tcp.bistate_cvt(res_arg[5]),
-                                         'Settling time (ms)': res_arg[6]},
+        tip_shaper_props_df = pd.DataFrame({'Switch off delay (s)': res_arg[0],
+                                            'Change bias': self.tcp.tristate_cvt(res_arg[1]),
+                                            'Bias (V)': res_arg[2],
+                                            'Tip lift (m)': res_arg[3],
+                                            'Lift time 1 (s)': res_arg[4],
+                                            'Bias lift (V)': res_arg[5],
+                                            'Bias settling time (s)': res_arg[6],
+                                            'Lift height (m)': res_arg[7],
+                                            'Lift time 2 (s)': res_arg[8],
+                                            'End wait time (s)': res_arg[9],
+                                            'Restore feedback': self.tcp.tristate_cvt(res_arg[10]),
+                                            },
                                  index=[0]).T
         print('\n'+
-              gen_swp_props_df.to_string(header=False)+
-              '\n\nGeneric sweeper parameters returned.')
-        return gen_swp_props_df
+              tip_shaper_props_df.to_string(header=False)+
+              '\n\nTip shaper procedure returned.')
+        return tip_shaper_props_df
 
     def GenSwpStart(self, get_data, sweep_dir, save_base_name, reset_signal):
         save_base_name_str_size = len(save_base_name)
@@ -1059,7 +1069,7 @@ class nanonis_ctrl:
         self.tcp.print_err(res_err)
 
         print('\n'+
-              '\n\nGeneric sweeper stopped.')
+              '\n\nGeneric Sweep stopped.')
         return 
 
     def GenSwpOpen(self):
@@ -1071,7 +1081,7 @@ class nanonis_ctrl:
         self.tcp.print_err(res_err)
 
         print('\n'+
-              '\n\nGeneric sweep module opened.')
+              '\n\nGeneric Sweep module opened.')
         return 
 
 ######################################## Atom Tracking Module #############################################
@@ -1377,94 +1387,3 @@ class nanonis_ctrl:
               signal_name_df.to_string()+
               '\n\nSignal name list returned.')
         return signal_name_df
-
-######################################## Utilities Module #############################################
-    def UtilSessionPathGet(self):
-        header = self.tcp.header_construct('Util.SessionPathGet', 0)
-
-        self.tcp.cmd_send(header)
-        _, res_arg, res_err = self.tcp.res_recv('str')
-
-        self.tcp.print_err(res_err)
-        util_session_path_df = pd.DataFrame({'Session path': res_arg[1]},
-                                       index=[0]).T
-        print('\n'+
-              util_session_path_df.to_string(header=False)+
-              '\n\nSession folder path returned.')
-        return util_session_path_df
-    
-
-    def UtilSessionPathSet(self, sess_path, save_settings_to_prev):
-        sess_path_size = len(sess_path)
-
-        body  = self.tcp.dtype_cvt(sess_path_size, 'int', 'bin')
-        body += self.tcp.dtype_cvt(sess_path, 'str', 'bin')
-        body += self.tcp.dtype_cvt(save_settings_to_prev, 'uint32', 'bin')
-        header = self.tcp.header_construct('Util.SessionPathSet', len(body))
-        cmd = header + body
-
-        self.tcp.cmd_send(cmd)
-        _, _, res_err = self.tcp.res_recv()
-
-        self.tcp.print_err(res_err)
-        util_session_path_df = pd.DataFrame({'Session path': sess_path,
-                                             'Save settings to previous': self.tcp.bistate_cvt(save_settings_to_prev)}, 
-                                             index=[0]).T
-        
-        print('\n'+
-              util_session_path_df.to_string(header=False)+
-              '\n\nSession folder path set.')
-        return util_session_path_df
-    
-
-    def UtilSettingsLoad(self):
-
-        return
-
-    def UtilSettingsSave(self):
-
-        return
-
-    def UtilLayoutLoad(self):
-
-        return
-
-    def UtilLayoutSave(self):
-
-        return
-
-    def UtilLock(self):
-
-        return
-
-    def UtilUnLock(self):
-
-        return
-
-    def UtilRTFreqSet(self):
-
-        return
-
-    def UtilRTFreqGet(self):
-
-        return
-
-    def UtilAcqPeriodSet(self):
-
-        return
-
-    def UtilAcqPeriodGet(self):
-
-        return
-
-    def UtilRTOversamplSet(self):
-
-        return
-
-    def UtilRTOversamplGet(self):
-
-        return
-
-    def UtilQuit(self):
-
-        return

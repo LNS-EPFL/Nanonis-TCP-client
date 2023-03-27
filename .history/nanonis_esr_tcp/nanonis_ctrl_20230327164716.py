@@ -590,7 +590,7 @@ class nanonis_ctrl:
 
     def CurrentCalibrSet(self):
         return
-
+######################################## Current Module #############################################
     def CurrentCalibrGet(self):
         header = self.tcp.header_construct('Current.CalibrGet', 0)
 
@@ -602,7 +602,7 @@ class nanonis_ctrl:
                                  index=[0]).T
         print('\n'+
               at_props_df.to_string(header=False)+
-              '\n\nCalibration and offset of the selected gain returned.')
+              '\n\nAtom track parameters returned.')
         return at_props_df
 
 ######################################## Z-controller Module #############################################

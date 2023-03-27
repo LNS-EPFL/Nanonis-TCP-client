@@ -590,7 +590,7 @@ class nanonis_ctrl:
 
     def CurrentCalibrSet(self):
         return
-
+######################################## Current Module #############################################
     def CurrentCalibrGet(self):
         header = self.tcp.header_construct('Current.CalibrGet', 0)
 

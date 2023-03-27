@@ -592,18 +592,7 @@ class nanonis_ctrl:
         return
 
     def CurrentCalibrGet(self):
-        header = self.tcp.header_construct('Current.CalibrGet', 0)
-
-        self.tcp.cmd_send(header)
-        _, res_arg, res_err = self.tcp.res_recv('float64', 'float64')
-        self.tcp.print_err(res_err)
-        at_props_df = pd.DataFrame({'Calibration': res_arg[0],
-                                    'Offset': res_arg[1]},
-                                 index=[0]).T
-        print('\n'+
-              at_props_df.to_string(header=False)+
-              '\n\nCalibration and offset of the selected gain returned.')
-        return at_props_df
+        return
 
 ######################################## Z-controller Module #############################################
     def ZCtrlZPosSet(self, z_pos):
@@ -763,6 +752,22 @@ class nanonis_ctrl:
 ######################################## Safe Tip Module #############################################
 ######################################## Auto Approach Module #############################################
 ######################################## Scan Module #############################################
+######################################## Current Module #############################################
+    def CurrentCalibrGet(self):
+        header = self.tcp.header_construct('Current.CalibrGet', 0)
+
+        self.tcp.cmd_send(header)
+        _, res_arg, res_err = self.tcp.res_recv('float64', 'float64')
+        self.tcp.print_err(res_err)
+        at_props_df = pd.DataFrame({'Calibration': res_arg[0],
+                                    'Offset': res_arg[1]},
+                                 index=[0]).T
+        print('\n'+
+              at_props_df.to_string(header=False)+
+              '\n\nAtom track parameters returned.')
+        return at_props_df
+    # def PLLCenterFreqGet(self, modu_uidx):
+    #     body = self.tcp.dtype_cvt()
 ######################################## Follow Me Module #############################################
 ######################################## Tip Shaper Module #############################################
     def TipShaperStart(self, wait_until_fin, timeout):
