@@ -566,7 +566,7 @@ class nanonis_ctrl:
         header = self.tcp.header_construct('Current.Get', 0)
 
         self.tcp.cmd_send(header)
-        _, res_arg, res_err = self.tcp.res_recv('float32') 
+        _, res_arg, res_err = self.tcp.res_recv('float32') # for string, no need to put 'int' before 'str'
 
         self.tcp.print_err(res_err)
         current_df = pd.DataFrame({'Current value (A)': res_arg},
@@ -596,38 +596,23 @@ class nanonis_ctrl:
 
 ######################################## Z-controller Module #############################################
     def ZCtrlZPosSet(self, z_pos):
-        z_pos = self.tcp.unit_cvt(z_pos)
-
         body = self.tcp.dtype_cvt(z_pos, 'float32', 'bin')
-        header = self.tcp.header_construct('ZCtrl.ZPosSet', len(body))
+        header = self.tcp.header_construct('ZCtrl.OnOffSet', len(body))
         cmd = header + body
 
         self.tcp.cmd_send(cmd)
         _, _, res_err = self.tcp.res_recv()
 
         self.tcp.print_err(res_err)
-        z_pos_df = pd.DataFrame({'Z position of the tip (m)': z_pos},
+        z_ctrl_df = pd.DataFrame({'Z-controller status': self.tcp.bistate_cvt(z_ctrl_status)},
                                  index=[0]).T
         print('\n'+
-              z_pos_df.to_string(header=False)+
-              '\n\nZ position of the tip set. Note: to change the Z-position of the tip, the Z-controller must be switched OFF!!!')
-        return z_pos_df
+              z_ctrl_df.to_string(header=False)+
+              '\n\nZ-controller on/off set.')
+        return z_ctrl_df
           
     def ZCtrlZPosGet(self):
-        header = self.tcp.header_construct('ZCtrl.ZPosGet', 0)
-
-        self.tcp.cmd_send(header)
-        _, res_arg, res_err = self.tcp.res_recv('float32')
-        print(res_arg)
-
-        self.tcp.print_err(res_err)
-        z_pos_df = pd.DataFrame({'Z position of the tip (m)': res_arg[0]},
-                                 index=[0]).T
-        print('\n'+
-              z_pos_df.to_string(header=False)+
-              '\n\nZ position of the tip returned.')
-        return z_pos_df
-         
+        return
           
     def ZCtrlOnOffSet(self, z_ctrl_status):
         body = self.tcp.dtype_cvt(z_ctrl_status, 'uint32', 'bin')
@@ -864,107 +849,23 @@ class nanonis_ctrl:
         return tip_shaper_props_df
 
 ######################################## Generic Sweeper Module #############################################
-    def GenSwpAcqChsSet(self, num_of_chs, ch_idx):
-        body  = self.tcp.dtype_cvt(num_of_chs, 'int', 'bin')
-        body += self.tcp.dtype_cvt(ch_idx, '1dint', 'bin')
-        header = self.tcp.header_construct('GenSwp.AcqChsSet', len(body))
-        cmd = header + body
-
-        self.tcp.cmd_send(cmd)
-        _, _, res_err = self.tcp.res_recv()
-
-        self.tcp.print_err(res_err)
-        gen_swp_chs_df = pd.DataFrame({'Number of channels': num_of_chs,
-                                 'Channel indexes': ch_idx},
-                                 index=[0]).T
-        print('\n'+
-              gen_swp_chs_df.to_string(header=False)+
-              '\n\nThe recorded channels of the Generic Sweeper set.')
-        return gen_swp_chs_df
+    def GenSwpAcqChsSet(self):
+        return
 
     def GenSwpAcqChsGet(self):
-        header = self.tcp.header_construct('GenSwp.AcqChsGet', 0)
+        return
 
-        self.tcp.cmd_send(header)
-        _, res_arg, res_err = self.tcp.res_recv('int', '1dint')
-
-        self.tcp.print_err(res_err)
-        gen_swp_chs_df = pd.DataFrame({'Number of channels': res_arg[0],
-                                 'Channel indexes': res_arg[1]},
-                                 index=[0]).T
-        print('\n'+
-              gen_swp_chs_df.to_string(header=False)+
-              '\n\nThe recorded channels of the Generic Sweeper returned.')
-        return gen_swp_chs_df
-    
-    def GenSwpSwpSignalSet(self, swp_ch_name_size, swp_ch_name):
-        body  = self.tcp.dtype_cvt(swp_ch_name_size, 'int', 'bin')
-        body += self.tcp.dtype_cvt(swp_ch_name, 'str', 'bin')
-        header = self.tcp.header_construct('GenSwp.SwpSignalSet', len(body))
-        cmd = header + body
-
-        self.tcp.cmd_send(cmd)
-        _, _, res_err = self.tcp.res_recv()
-
-        self.tcp.print_err(res_err)
-        gen_swp_sgn_df = pd.DataFrame({'Sweep channel name size': swp_ch_name_size,
-                                 'Sweep channel name': swp_ch_name},
-                                 index=[0]).T
-        print('\n'+
-              gen_swp_sgn_df.to_string(header=False)+
-              '\n\nThe recorded channels of the Generic Sweeper set.')
-        return gen_swp_sgn_df
+    def GenSwpSwpSignalSet(self):
+        return
 
     def GenSwpSwpSignalGet(self):
-        header = self.tcp.header_construct('GenSwp.SwpSignalGet', 0)
+        return
 
-        self.tcp.cmd_send(header)
-        _, res_arg, res_err = self.tcp.res_recv('str', 'int', 'int', 'qdstr')
-
-        self.tcp.print_err(res_err)
-        gen_swp_sgn_df = pd.DataFrame({'Sweep channel name': res_arg[0],
-                                       'Channel names': res_arg[3]},
-                                 index=[0]).T
-        print('\n'+
-              gen_swp_sgn_df.to_string(header=False)+
-              '\n\nThe recorded channels of the Generic Sweeper returned.')
-        return gen_swp_sgn_df
-    
-    def GenSwpLimitsSet(self, lo_lmt, up_lmt):
-        lo_lmt = self.tcp.unit_cvt(lo_lmt)
-        up_lmt = self.tcp.unit_cvt(up_lmt)
-
-        body  = self.tcp.dtype_cvt(lo_lmt, 'float32', 'bin')
-        body += self.tcp.dtype_cvt(up_lmt, 'float32', 'bin')
-        header = self.tcp.header_construct('GenSwp.LimitsSet', len(body))
-        cmd = header + body
-
-        self.tcp.cmd_send(cmd)
-        _, _, res_err = self.tcp.res_recv()
-
-        self.tcp.print_err(res_err)
-        gen_swp_lmt_df = pd.DataFrame({'Lower limit': lo_lmt,
-                                       'Upper limit': up_lmt},
-                                       index=[0]).T
-        print('\n'+
-              gen_swp_lmt_df.to_string(header=False)+
-              '\n\nThe limits of the Sweep signals set.')
-        return gen_swp_lmt_df
+    def GenSwpLimitsSet(self):
+        return
 
     def GenSwpLimitsGet(self):
-        header = self.tcp.header_construct('GenSwp.LimitsGet', 0)
-
-        self.tcp.cmd_send(header)
-        _, res_arg, res_err = self.tcp.res_recv('float32', 'float32')
-
-        self.tcp.print_err(res_err)
-        gen_swp_lmt_df = pd.DataFrame({'Lower limit': res_arg[0],
-                                       'Upper limit': res_arg[1]},
-                                       index=[0]).T
-        print('\n'+
-              gen_swp_lmt_df.to_string(header=False)+
-              '\n\nThe limits of the Sweep signals returned.')
-        return gen_swp_lmt_df
+        return
 
     def GenSwpPropsSet(self):
         return
@@ -976,28 +877,10 @@ class nanonis_ctrl:
         return
 
     def GenSwpStop(self):
-        header = self.tcp.header_construct('GenSwp.Stop', 0)
-
-        self.tcp.cmd_send(header)
-        _, _, res_err = self.tcp.res_recv()
-
-        self.tcp.print_err(res_err)
-
-        print('\n'+
-              '\n\nGeneric Sweep stopped.')
-        return 
+        return
 
     def GenSwpOpen(self):
-        header = self.tcp.header_construct('GenSwp.Open', 0)
-
-        self.tcp.cmd_send(header)
-        _, _, res_err = self.tcp.res_recv()
-
-        self.tcp.print_err(res_err)
-
-        print('\n'+
-              '\n\nGeneric Sweep module opened.')
-        return 
+        return
 
 ######################################## Atom Tracking Module #############################################
     def AtomTrackCtrlSet(self, at_ctrl, status): #Modulation: 0; Controller: 1; Drift measurement:2

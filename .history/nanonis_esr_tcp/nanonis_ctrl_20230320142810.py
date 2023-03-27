@@ -955,7 +955,7 @@ class nanonis_ctrl:
         header = self.tcp.header_construct('GenSwp.LimitsGet', 0)
 
         self.tcp.cmd_send(header)
-        _, res_arg, res_err = self.tcp.res_recv('float32', 'float32')
+        _, res_arg, res_err = self.tcp.res_recv()
 
         self.tcp.print_err(res_err)
         gen_swp_lmt_df = pd.DataFrame({'Lower limit': res_arg[0],
@@ -963,7 +963,7 @@ class nanonis_ctrl:
                                        index=[0]).T
         print('\n'+
               gen_swp_lmt_df.to_string(header=False)+
-              '\n\nThe limits of the Sweep signals returned.')
+              '\n\nThe limits of the Sweep signals set.')
         return gen_swp_lmt_df
 
     def GenSwpPropsSet(self):
@@ -976,28 +976,10 @@ class nanonis_ctrl:
         return
 
     def GenSwpStop(self):
-        header = self.tcp.header_construct('GenSwp.Stop', 0)
-
-        self.tcp.cmd_send(header)
-        _, _, res_err = self.tcp.res_recv()
-
-        self.tcp.print_err(res_err)
-
-        print('\n'+
-              '\n\nGeneric Sweep stopped.')
-        return 
+        return
 
     def GenSwpOpen(self):
-        header = self.tcp.header_construct('GenSwp.Open', 0)
-
-        self.tcp.cmd_send(header)
-        _, _, res_err = self.tcp.res_recv()
-
-        self.tcp.print_err(res_err)
-
-        print('\n'+
-              '\n\nGeneric Sweep module opened.')
-        return 
+        return
 
 ######################################## Atom Tracking Module #############################################
     def AtomTrackCtrlSet(self, at_ctrl, status): #Modulation: 0; Controller: 1; Drift measurement:2

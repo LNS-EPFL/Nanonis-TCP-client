@@ -979,7 +979,7 @@ class nanonis_ctrl:
         header = self.tcp.header_construct('GenSwp.Stop', 0)
 
         self.tcp.cmd_send(header)
-        _, _, res_err = self.tcp.res_recv()
+        _, res_arg, res_err = self.tcp.res_recv()
 
         self.tcp.print_err(res_err)
 
@@ -988,16 +988,7 @@ class nanonis_ctrl:
         return 
 
     def GenSwpOpen(self):
-        header = self.tcp.header_construct('GenSwp.Open', 0)
-
-        self.tcp.cmd_send(header)
-        _, _, res_err = self.tcp.res_recv()
-
-        self.tcp.print_err(res_err)
-
-        print('\n'+
-              '\n\nGeneric Sweep module opened.')
-        return 
+        return
 
 ######################################## Atom Tracking Module #############################################
     def AtomTrackCtrlSet(self, at_ctrl, status): #Modulation: 0; Controller: 1; Drift measurement:2
