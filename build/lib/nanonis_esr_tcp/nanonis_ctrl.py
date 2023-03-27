@@ -1045,7 +1045,7 @@ class nanonis_ctrl:
 
         self.tcp.print_err(res_err)
         lockin_amp_df = pd.DataFrame({'Modulator number': modu_num,
-                                      'Amplitude (m)': ampl},
+                                      'Amplitude': ampl},
                                       index=[0]).T
         
         print('\n'+
@@ -1063,7 +1063,7 @@ class nanonis_ctrl:
 
         self.tcp.print_err(res_err)
         lockin_amp_df = pd.DataFrame({'Modulator number': modu_num,
-                                      'Amplitude (m)': res_arg[0]},
+                                      'Amplitude': res_arg[0]},
                                       index=[0]).T
         
         print('\n'+
@@ -1107,7 +1107,7 @@ class nanonis_ctrl:
         
         print('\n'+
               lockin_freq_df.to_string(header=False)+
-              '\n\nLock-in modulator frequency set.')
+              '\n\nLock-in modulator frequency returned.')
         return lockin_freq_df
 
     def LockInDemodSignalSet(self):
