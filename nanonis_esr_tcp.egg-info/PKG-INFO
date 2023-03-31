@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: nanonis-esr-tcp
-Version: 1.0
+Version: 1.0.1
 Summary: A TCP client written in Python which communicates with Nanonis software
 Home-page: https://github.com/LNS-EPFL/Nanonis-TCP-client
 Author: Shixuan Shan, Johannes Schwenk, Clement Soulard 
