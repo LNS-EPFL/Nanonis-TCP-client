@@ -77,17 +77,7 @@ class nanonis_ctrl:
         _, _, res_err = self.tcp.res_recv()
 
         self.tcp.print_err(res_err)
-        bias_pulse_df = pd.DataFrame({'Wait until done': self.tcp.bistate_cvt(wait_until_done),
-                                      'Bias pulse width (s)': bias_pulse_width,
-                                      'Bias value (V)': bias_value,
-                                      'Z-Controller on hold': self.tcp.tristate_cvt(zctrl_on_hold),
-                                      'Pulse absolute/relative': pulse_abs_rel
-                                       },
-                                index=[0]).T
-        print('\n'+
-              bias_pulse_df.to_string(header=False)+
-              '\n\nBias pulse set.')
-        return bias_pulse_df 
+        print(f'Bias pulse finished. \n Pulse width: {bias_pulse_width}s \n Pulse value: {bias_value}V')
 
 ######################################## Bias Spectroscopy Module #############################################
     def BiasSpectrOpen(self):

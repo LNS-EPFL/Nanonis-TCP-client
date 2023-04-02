@@ -86,7 +86,7 @@ class nanonis_ctrl:
                                 index=[0]).T
         print('\n'+
               bias_pulse_df.to_string(header=False)+
-              '\n\nBias pulse set.')
+              '\n\nBias set.')
         return bias_pulse_df 
 
 ######################################## Bias Spectroscopy Module #############################################

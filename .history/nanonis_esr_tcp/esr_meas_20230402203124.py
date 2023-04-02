@@ -43,7 +43,11 @@ class esr_meas:
         with open(fdir + '/' + fname, 'rb') as handle:
             bias_par = pickle.load(handle)
         for keys in bias_par:
-            bias_par[keys] = bias_par[keys].replace(['No change', 'Yes/On', 'No/Off', 'False/Off', 'True/On'], [0, 1, 2, 0, 1])
+            bias_par[keys] = bias_par[keys].map({'No change': 0,
+                                                     'Yes/On': 1,
+                                                     'No/Off': 2,
+                                                     'False/Off': 0,
+                                                     'True/On': 1})
         return bias_par
 
     def bias_spectr(self, par, data_folder, basename = '%Y%m%d_'):
