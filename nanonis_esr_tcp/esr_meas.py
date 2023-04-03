@@ -19,7 +19,7 @@ class esr_meas:
             print("Directory ", dirName,  " Created ")
         return dirName
     
-    def bias_spectr_par_save(self, fdir, fname = ''):
+    def bias_spectr_par_get(self):
         bias_par = {'Bias': self.connect.BiasGet(),
                     'BiasSpectrChs': self.connect.BiasSpectrChsGet(),
                     'BiasSpectrProps': self.connect.BiasSpectrPropsGet(),
@@ -36,6 +36,9 @@ class esr_meas:
                     'LockInModFreq1': self.connect.LockInModPhasFreqGet(1),
                     'LockInOnOff1': self.connect.LockInModOnOffGet(1),
                     }
+        return bias_par
+    
+    def bias_spectr_par_save(self, bias_par, fdir, fname = ''):
         with open(fdir + '/BiasSpectr' + fname + '.par', 'wb') as handle:
             pickle.dump(bias_par, handle)
         print(f'".par" file created in {fdir}')
@@ -77,5 +80,6 @@ class esr_meas:
         bias_spectr_path = self.check_dirs(sess_path + '\\' + data_folder)
         self.connect.UtilSessionPathSet(bias_spectr_path, 0)
         data, parameters = self.connect.BiasSpectrStart(1, basename)
+        self.connect.LockInModOnOffSet(1, 0)
         self.connect.UtilSessionPathSet(sess_path, 0)
         return data, parameters
