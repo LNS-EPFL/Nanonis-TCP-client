@@ -60,7 +60,7 @@ def bias_spectr(com, par, data_folder, basename = '%Y%m%d_'):
              par['BiasSpectrMore'].loc['Auto save', 0],
              par['BiasSpectrMore'].loc['Save dialog', 0])
     print(par['BiasSpectrChs'])
-    com.BiasSpectrChsSet(par['BiasSpectrChs'].values[0], list(par['BiasSpectrChs'].values[1]))
+    com.BiasSpectrChsSet(*par['BiasSpectrChs'].values)
     com.BiasSpectrPropsSet(*props)
     com.BiasSpectrAdvPropsSet(*par['BiasSpectrAdvProps'].values)
     com.BiasSpectrLimitsSet(*par['BiasSpectrLimits'].values)
@@ -86,10 +86,13 @@ def bias_spectr(com, par, data_folder, basename = '%Y%m%d_'):
 bias_spectr_par_save(connect, 'C:/Personal_files/Study/Python_scripts/GitHub/Scripts/')
 print('done')
 bias_par = bias_spectr_par_load('C:/Personal_files/Study/Python_scripts/GitHub/Scripts/', 'BiasSpectr.par')
+print(bias_par['BiasSpectrChs'].values[0][0], bias_par['BiasSpectrChs'].values[1]) #bias_par['BiasSpectrChs'].values[0]
 
-# connect.BiasSpectrChsSet([3], [np.array([ 0, 24, 27])])
-data, _ = bias_spectr(connect, bias_par, 'FER')
-# np.array([np.array([ 0, 24, 27])], '>i').tobytes()
+connect.BiasSpectrChsSet(bias_par['BiasSpectrChs'].values[0][0], bias_par['BiasSpectrChs'].values[1])
+
+# connect.BiasSpectrChsSet(3, [np.array([ 0, 24, 27])])
+# data, _ = bias_spectr(connect, bias_par, 'FER')
+np.array([np.array([ 0, 24, 27])], '>i').tobytes()
 
 my_tcp.socket_close()
 

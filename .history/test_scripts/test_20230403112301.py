@@ -86,9 +86,10 @@ def bias_spectr(com, par, data_folder, basename = '%Y%m%d_'):
 bias_spectr_par_save(connect, 'C:/Personal_files/Study/Python_scripts/GitHub/Scripts/')
 print('done')
 bias_par = bias_spectr_par_load('C:/Personal_files/Study/Python_scripts/GitHub/Scripts/', 'BiasSpectr.par')
+connect.BiasSpectrChsSet(bias_par['BiasSpectrChs'].values[0], list(bias_par['BiasSpectrChs'].values[1]))
 
 # connect.BiasSpectrChsSet([3], [np.array([ 0, 24, 27])])
-data, _ = bias_spectr(connect, bias_par, 'FER')
+# data, _ = bias_spectr(connect, bias_par, 'FER')
 # np.array([np.array([ 0, 24, 27])], '>i').tobytes()
 
 my_tcp.socket_close()

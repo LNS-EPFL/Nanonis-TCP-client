@@ -59,8 +59,8 @@ def bias_spectr(com, par, data_folder, basename = '%Y%m%d_'):
              float(par['BiasSpectrTiming'].loc['Z offset (m)']),
              par['BiasSpectrMore'].loc['Auto save', 0],
              par['BiasSpectrMore'].loc['Save dialog', 0])
-    print(par['BiasSpectrChs'])
-    com.BiasSpectrChsSet(par['BiasSpectrChs'].values[0], list(par['BiasSpectrChs'].values[1]))
+    
+    com.BiasSpectrChsSet(*par['BiasSpectrChs'].values)
     com.BiasSpectrPropsSet(*props)
     com.BiasSpectrAdvPropsSet(*par['BiasSpectrAdvProps'].values)
     com.BiasSpectrLimitsSet(*par['BiasSpectrLimits'].values)
@@ -83,25 +83,17 @@ def bias_spectr(com, par, data_folder, basename = '%Y%m%d_'):
     com.UtilSessionPathSet(sess_path, 0)
     return data, parameters
 
-bias_spectr_par_save(connect, 'C:/Personal_files/Study/Python_scripts/GitHub/Scripts/')
-print('done')
-bias_par = bias_spectr_par_load('C:/Personal_files/Study/Python_scripts/GitHub/Scripts/', 'BiasSpectr.par')
-
-# connect.BiasSpectrChsSet([3], [np.array([ 0, 24, 27])])
-data, _ = bias_spectr(connect, bias_par, 'FER')
-# np.array([np.array([ 0, 24, 27])], '>i').tobytes()
+# bias_spectr_par_save(connect, 'C:/Personal_files/Study/Python_scripts/GitHub/Scripts/')
+# print('done')
+# bias_par = bias_spectr_par_load('C:/Personal_files/Study/Python_scripts/GitHub/Scripts/', 'BiasSpectr.par')
+# data, _ = bias_spectr(connect, bias_par, 'FER')
 
 my_tcp.socket_close()
 
+def func(num, idx):
+    num = num
+    binary = np.array(idx, '>i').tobytes()
+    return num, binary
 
-# import numpy as np
-# import pandas as pd
-
-# def func(num, idx):
-#     binary = np.array(idx, '>i').tobytes()
-#     return num, binary
-
-# dict = {'a': pd.DataFrame({'num': [2], 'idx': [np.array([1,2,3])]}).T}
-
-# num, binary = func(*dict['a'].values[0])
-# print(dict['a'])
+dict = {'a': pd.DataFrame({'num': 2, 'idx': np.array([1,2,3])}).T}
+func(*dict['a'].values)

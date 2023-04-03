@@ -56,7 +56,7 @@ class esr_meas:
                  par['BiasSpectrMore'].loc['Auto save', 0],
                  par['BiasSpectrMore'].loc['Save dialog', 0])
 
-        self.connect.BiasSpectrChsSet(par['BiasSpectrChs'].values[0], list(par['BiasSpectrChs'].values[1]))
+        self.connect.BiasSpectrChsSet(*par['BiasSpectrChs'].values)
         self.connect.BiasSpectrPropsSet(*props)
         self.connect.BiasSpectrAdvPropsSet(*par['BiasSpectrAdvProps'].values)
         self.connect.BiasSpectrLimitsSet(*par['BiasSpectrLimits'].values)
