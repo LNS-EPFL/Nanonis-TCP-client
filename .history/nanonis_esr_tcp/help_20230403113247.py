@@ -717,18 +717,3 @@ class esr_meas_help:
         print('check_dirs(self, dirName)\
               \nChecks if the given directory exists. If not, the function creates it.')
     def bias_spectr_par_save(self):
-        print('bias_spectr_par_save(self, fdir, fname = '')\
-              \nSaves the measurement parameters in Nanonis software as a ".par" file in the given directory.\
-              \n"fname" is the suffix of the saved ".par" file')
-        
-    def bias_spectr_par_load(self):
-        print('bias_spectr_par_load(self, fdir, fname)\
-              \nLoads the ".par" file as a dictionary\
-              \nReturns the dictionary')
-        
-    def bias_spectr(self):
-        print("bias_spectr(self, par, data_folder, basename = '%Y%m%d_')\
-              \nRun the bias spectroscopy measurement. \
-              \n'par' should be the dictionary returned by 'bias_spectr_par_load' function.\
-              \n'data_folder' is the subfolder of the current session folder.\
-              \n'basename' is the name of the file, eg. '%Y%m%d_', 'STS_%Y%m%d_', etc. ")

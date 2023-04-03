@@ -19,7 +19,7 @@ def check_dirs(dirName):
     return dirName
 
 def bias_spectr_par_save(com, fdir, fname = ''):
-    bias_par = {'Bias': com.BiasGet(),
+    bias_par = {'Bias': self.connect.BiasGet(),
                 'BiasSpectrChs': com.BiasSpectrChsGet(),
                 'BiasSpectrProps': com.BiasSpectrPropsGet(),
                 'BiasSpectrAdvProps': com.BiasSpectrAdvPropsGet(),
@@ -60,9 +60,7 @@ def bias_spectr(com, par, data_folder, basename = '%Y%m%d_'):
              float(par['BiasSpectrTiming'].loc['Z offset (m)']),
              par['BiasSpectrMore'].loc['Auto save', 0],
              par['BiasSpectrMore'].loc['Save dialog', 0])
-    
-    com.BiasSet(*par['Bias'].values)
-
+    print(par['BiasSpectrChs'])
     com.BiasSpectrChsSet(par['BiasSpectrChs'].values[0], list(par['BiasSpectrChs'].values[1]))
     com.BiasSpectrPropsSet(*props)
     com.BiasSpectrAdvPropsSet(*par['BiasSpectrAdvProps'].values)

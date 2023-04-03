@@ -730,5 +730,4 @@ class esr_meas_help:
         print("bias_spectr(self, par, data_folder, basename = '%Y%m%d_')\
               \nRun the bias spectroscopy measurement. \
               \n'par' should be the dictionary returned by 'bias_spectr_par_load' function.\
-              \n'data_folder' is the subfolder of the current session folder.\
-              \n'basename' is the name of the file, eg. '%Y%m%d_', 'STS_%Y%m%d_', etc. ")
+              \n'data_folder' is the subfolder")
