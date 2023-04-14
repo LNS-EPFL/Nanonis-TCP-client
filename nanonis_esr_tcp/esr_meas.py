@@ -50,7 +50,7 @@ class esr_meas:
             bias_par[keys] = bias_par[keys].replace(['No change', 'Yes/On', 'No/Off', 'False/Off', 'True/On'], [0, 1, 2, 0, 1])
         return bias_par
 
-    def bias_spectr(self, par, data_folder, basename = '%Y%m%d_'):
+    def bias_spectr(self, par, data_folder, basename = '%Y%m%d_', run = True):
         self.connect.BiasSpectrOpen()
         props = (int(par['BiasSpectrProps'].loc['Save all', 0]),
                  int(par['BiasSpectrProps'].loc['Number of sweeps']),
@@ -73,13 +73,13 @@ class esr_meas:
 
         self.connect.LockInModAmpSet(*par['LockInModAmp1'].values)
         self.connect.LockInModPhasFreqSet(*par['LockInModFreq1'].values)
-        self.connect.LockInModOnOffSet(*par['LockInOnOff1'].values)
 
-
-        sess_path = self.connect.UtilSessionPathGet().loc['Session path', 0]
-        bias_spectr_path = self.check_dirs(sess_path + '\\' + data_folder)
-        self.connect.UtilSessionPathSet(bias_spectr_path, 0)
-        data, parameters = self.connect.BiasSpectrStart(1, basename)
-        self.connect.LockInModOnOffSet(1, 0)
-        self.connect.UtilSessionPathSet(sess_path, 0)
-        return data, parameters
+        if run:
+            self.connect.LockInModOnOffSet(*par['LockInOnOff1'].values)
+            sess_path = self.connect.UtilSessionPathGet().loc['Session path', 0]
+            bias_spectr_path = self.check_dirs(sess_path + '\\' + data_folder)
+            self.connect.UtilSessionPathSet(bias_spectr_path, 0)
+            data, parameters = self.connect.BiasSpectrStart(1, basename)
+            self.connect.LockInModOnOffSet(1, 0)
+            self.connect.UtilSessionPathSet(sess_path, 0)
+            return data, parameters
