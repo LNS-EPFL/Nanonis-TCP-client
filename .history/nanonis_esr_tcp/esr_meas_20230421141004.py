@@ -88,32 +88,17 @@ class esr_meas:
         
     ##################################### PICK UP ATOMS ##################################
     def Fe_pickup(self):
-        bias_ini = self.connect.BiasGet()
-
-        # tracking the atom for 3s
         self.connect.AtomTrackCtrlSet(0,1)
         self.connect.AtomTrackCtrlSet(1,1)
         print('Wait atom tracking for 3 seconds...')
         time.sleep(3)
+
         self.connect.AtomTrackCtrlSet(0,0)
         self.connect.AtomTrackCtrlSet(1,0)
-
-        # get z value before picking up Fe
-        self.connect.ZCtrlOnOffSet(1)
-        z_start = self.connect.ZCtrlZPosGet()
 
         self.connect.BiasSet('50u')
         self.connect.ZCtrlOnOffSet(0)
         self.connect.BiasPulse(1, '150m', '650m', 1, 0)
-        self.connect.BiasSet(bias_ini.loc['Bias (V)', 0])
-
-        # get z value after picking up Fe
         self.connect.ZCtrlOnOffSet(1)
-        z_end = self.connect.ZCtrlZPosGet()
-        delta_z = z_end.loc['Z position of the tip (m)', 0] - z_start.loc['Z position of the tip (m)', 0] 
-
-        if delta_z > 80e-12:
-            print('Atom picked up.')
-        else:
-            print('Atom not picked up. Try again!')
+        self.connect.BiasSet('100m')
         return

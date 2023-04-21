@@ -112,6 +112,8 @@ class esr_meas:
         z_end = self.connect.ZCtrlZPosGet()
         delta_z = z_end.loc['Z position of the tip (m)', 0] - z_start.loc['Z position of the tip (m)', 0] 
 
+        # set the bias back to initail value
+
         if delta_z > 80e-12:
             print('Atom picked up.')
         else:

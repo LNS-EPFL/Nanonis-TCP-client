@@ -105,12 +105,14 @@ class esr_meas:
         self.connect.BiasSet('50u')
         self.connect.ZCtrlOnOffSet(0)
         self.connect.BiasPulse(1, '150m', '650m', 1, 0)
-        self.connect.BiasSet(bias_ini.loc['Bias (V)', 0])
 
         # get z value after picking up Fe
         self.connect.ZCtrlOnOffSet(1)
         z_end = self.connect.ZCtrlZPosGet()
         delta_z = z_end.loc['Z position of the tip (m)', 0] - z_start.loc['Z position of the tip (m)', 0] 
+
+        # set the bias back to initail value
+        self.connect.BiasSet(bias_ini.loc['Bias (V)', 0])
 
         if delta_z > 80e-12:
             print('Atom picked up.')
