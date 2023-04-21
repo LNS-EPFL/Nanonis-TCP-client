@@ -62,7 +62,7 @@ class esr_meas:
                  par['BiasSpectrMore'].loc['Auto save', 0],
                  par['BiasSpectrMore'].loc['Save dialog', 0])
         self.connect.BiasSet(*par['Bias'].values)
-        self.connect.BiasSpectrChsSet(*par['BiasSpectrChs'].value.tolist())
+        self.connect.BiasSpectrChsSet(*par['BiasSpectrChs'].values.tolist())
         self.connect.BiasSpectrPropsSet(*props)
         self.connect.BiasSpectrAdvPropsSet(*par['BiasSpectrAdvProps'].values)
         self.connect.BiasSpectrLimitsSet(*par['BiasSpectrLimits'].values)
@@ -112,7 +112,7 @@ class esr_meas:
         z_end = self.connect.ZCtrlZPosGet()
         delta_z = z_end.loc['Z position of the tip (m)', 0] - z_start.loc['Z position of the tip (m)', 0] 
 
-        print('delta z (pm): ' + delta_z*1e12)
+        print(f'delta z (pm): {delta_z*1e12}')
         if delta_z > 80e-12:
             print('Atom picked up.')
         else:
