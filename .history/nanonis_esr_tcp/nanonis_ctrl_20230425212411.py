@@ -1058,7 +1058,7 @@ class nanonis_ctrl:
         print('\n'+
               scan_frame_data_grab_df.to_string(header=False)+
               '\n\nScan data returned.')
-        return scan_data_df, scan_frame_data_grab_df
+        return scan_frame_data_grab_df
 
 ######################################## Follow Me Module #############################################
 ######################################## Tip Shaper Module #############################################

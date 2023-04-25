@@ -185,7 +185,7 @@ class tcp_ctrl:
                     if str_size != 0:
                         arg, _ = self.dtype_cvt(res_bin_rep[arg_byte_idx: arg_byte_idx + str_size], 'bin', arg_fmt, str_size)
                     else:
-                        arg = 'EmptyString'
+                        arg = 'Empty string'
                     arg_byte_idx += str_size
                     res_arg.append(arg)
 

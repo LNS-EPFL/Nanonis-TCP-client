@@ -182,11 +182,9 @@ class tcp_ctrl:
 
                 elif arg_fmt == 'str': 
                     str_size = res_arg[idx-1]
-                    if str_size != 0:
-                        arg, _ = self.dtype_cvt(res_bin_rep[arg_byte_idx: arg_byte_idx + str_size], 'bin', arg_fmt, str_size)
-                    else:
-                        arg = 'EmptyString'
-                    arg_byte_idx += str_size
+                    print(res_arg)
+                    arg, _ = self.dtype_cvt(res_bin_rep[arg_byte_idx: arg_byte_idx + str_size], 'bin', arg_fmt, str_size)
+                    arg_byte_idx += arg_size
                     res_arg.append(arg)
 
                 elif arg_fmt in ['1dstr', '2dstr']:

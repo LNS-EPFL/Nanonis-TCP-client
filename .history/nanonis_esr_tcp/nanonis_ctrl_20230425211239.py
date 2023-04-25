@@ -1045,20 +1045,18 @@ class nanonis_ctrl:
         _, res_arg, res_err = self.tcp.res_recv('int', 'str', 'int', 'int', '2dfloat32', 'uint32')
 
         self.tcp.print_err(res_err)
-        scan_data_df = pd.DataFrame(res_arg[4])
-
-
         scan_frame_data_grab_df = pd.DataFrame({'Channels name size': res_arg[0],
                                        'Channel name':res_arg[1],
                                        'Scan data rows': res_arg[2],
                                        'Scan data columns': res_arg[3],
+                                       'Scan data': res_arg[4],
                                        'Scan direction': res_arg[5]
                                       },
                                       index=[0]).T
         print('\n'+
               scan_frame_data_grab_df.to_string(header=False)+
               '\n\nScan data returned.')
-        return scan_data_df, scan_frame_data_grab_df
+        return scan_frame_data_grab_df
 
 ######################################## Follow Me Module #############################################
 ######################################## Tip Shaper Module #############################################

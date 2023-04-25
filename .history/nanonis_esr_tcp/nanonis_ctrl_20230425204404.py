@@ -559,7 +559,7 @@ class nanonis_ctrl:
               '\n\nBias sepectroscopy line segment configuration for Multi Line Segment mode set.')
         return mls_df 
        
-    def BiasSpectrMLSValsGet(self, prt_df = False): # might encounter issues when having multiple segaments
+    def BiasSpectrMLSValsGet(self, prt_df = False):
         header = self.tcp.header_construct('BiasSpectr.MLSValsGet', body_size = 0)
 
         self.tcp.cmd_send(header)
@@ -907,7 +907,7 @@ class nanonis_ctrl:
                                       index=[0]).T
         print('\n'+
               scan_buffer_df.to_string(header=False)+
-              '\n\nScan buffer set.')
+              '\n\nScan frame set.')
         return scan_buffer_df
 
 
@@ -919,14 +919,14 @@ class nanonis_ctrl:
 
         self.tcp.print_err(res_err)
         scan_buffer_df = pd.DataFrame({'Number of channels': res_arg[0],
-                                      'Channel indexes': [res_arg[1]],
+                                      'Channel indexes': res_arg[1],
                                       'Pixels': res_arg[2],
                                       'Lines': res_arg[3]
                                       },
                                       index=[0]).T
         print('\n'+
               scan_buffer_df.to_string(header=False)+
-              '\n\nScan buffer settings returned.')
+              '\n\nScan frame set.')
         return scan_buffer_df
 
     def ScanPropsSet(self, cont_scan, bouncy_scan, autosave, series_name, comment, prt_df = False):
@@ -941,124 +941,36 @@ class nanonis_ctrl:
         body += self.tcp.dtype_cvt(comment_size, 'int', 'bin')
         body += self.tcp.dtype_cvt(comment, 'str', 'bin')
         
-        header = self.tcp.header_construct('Scan.PropsSet', len(body))
+        header = self.tcp.header_construct('Scan.BufferSet', len(body))
         cmd = header + body
 
         self.tcp.cmd_send(cmd)
         _, _, res_err = self.tcp.res_recv()
 
         self.tcp.print_err(res_err)
-        scan_props_df = pd.DataFrame({'Continuous scan': cont_scan,
-                                       'Bouncy scan':bouncy_scan,
-                                       'Autosave': autosave,
-                                       'Series name': series_name,
-                                       'Comment': comment
+        scan_buffer_df = pd.DataFrame({'Continuous scan': num_chs,
+                                       'Bouncy scan': ch_idx,
+                                       'Autosave': px,
+                                       'Lines': lines
                                       },
                                       index=[0]).T
         print('\n'+
-              scan_props_df.to_string(header=False)+
-              '\n\nScan properties set.')
-        return scan_props_df
-        
+              scan_buffer_df.to_string(header=False)+
+              '\n\nScan frame set.')
+        return scan_buffer_df
+        return
 
     def ScanPropsGet(self, prt_df = False):
-        header = self.tcp.header_construct('Scan.PropsGet', body_size = 0)
-        
-        self.tcp.cmd_send(header)
-        _, res_arg, res_err = self.tcp.res_recv('uint32', 'uint32', 'uint32', 'int', 'str', 'int', 'str')
+        return
 
-        self.tcp.print_err(res_err)
-        scan_props_df = pd.DataFrame({'Continuous scan': res_arg[0],
-                                       'Bouncy scan': res_arg[1],
-                                       'Autosave': res_arg[2],
-                                       'Series name': res_arg[4],
-                                       'Comment': res_arg[6]
-                                      },
-                                      index=[0]).T
-        print('\n'+
-              scan_props_df.to_string(header=False)+
-              '\n\nScan properties returned.')
-        return scan_props_df
-
-    def ScanSpeedSet(self, fwd_li_spd, bwd_li_spd, fwd_t_per_line, bwd_t_per_line, keep_cst, spd_ratio, prt_df = False):
-        fwd_li_spd = self.tcp.unit_cvt(fwd_li_spd)
-        bwd_li_spd = self.tcp.unit_cvt(bwd_li_spd)
-        fwd_t_per_line = self.tcp.unit_cvt(fwd_t_per_line)
-        bwd_t_per_line = self.tcp.unit_cvt(bwd_t_per_line)
-
-
-        body  = self.tcp.dtype_cvt(fwd_li_spd, 'float32', 'bin')
-        body += self.tcp.dtype_cvt(bwd_li_spd, 'float32', 'bin')
-        body += self.tcp.dtype_cvt(fwd_t_per_line, 'float32', 'bin')
-        body += self.tcp.dtype_cvt(bwd_t_per_line, 'float32', 'bin')
-        body += self.tcp.dtype_cvt(keep_cst, 'uint16', 'bin')
-        body += self.tcp.dtype_cvt(spd_ratio, 'float32', 'bin')
-        
-        header = self.tcp.header_construct('Scan.SpeedSet', len(body))
-        cmd = header + body
-
-        self.tcp.cmd_send(cmd)
-        _, _, res_err = self.tcp.res_recv()
-
-        self.tcp.print_err(res_err)
-        scan_spd_df = pd.DataFrame({'Forward linear speed (m/s)': fwd_li_spd,
-                                       'Backward linear speed (m/s)':bwd_li_spd,
-                                       'Forward time per line (s)': fwd_t_per_line,
-                                       'Backward time per line (s)': bwd_t_per_line,
-                                       'Keep parameter constant': keep_cst,
-                                       'Speed ratio': spd_ratio
-                                      },
-                                      index=[0]).T
-        print('\n'+
-              scan_spd_df.to_string(header=False)+
-              '\n\nScan speed set.')
-        return scan_spd_df
+    def ScanSpeedSet(self, prt_df = False):
+        return
 
     def ScanSpeedGet(self, prt_df = False):
-        header = self.tcp.header_construct('Scan.SpeedGet', body_size = 0)
-        
-        self.tcp.cmd_send(header)
-        _, res_arg, res_err = self.tcp.res_recv('float32', 'float32', 'float32', 'float32', 'uint16', 'float32')
+        return
 
-        self.tcp.print_err(res_err)
-        scan_spd_df = pd.DataFrame({'Forward linear speed (m/s)': res_arg[0],
-                                       'Backward linear speed (m/s)':res_arg[1],
-                                       'Forward time per line (s)': res_arg[2],
-                                       'Backward time per line (s)': res_arg[3],
-                                       'Keep parameter constant': res_arg[4],
-                                       'Speed ratio': res_arg[5]
-                                      },
-                                      index=[0]).T
-        print('\n'+
-              scan_spd_df.to_string(header=False)+
-              '\n\nScan speed settings returned.')
-        return scan_spd_df
-
-    def ScanFrameDataGrab(self, ch_idx, data_dir, prt_df = False):
-        body  = self.tcp.dtype_cvt(ch_idx, 'uint32', 'bin')
-        body += self.tcp.dtype_cvt(data_dir, 'uint32', 'bin')
-        
-        header = self.tcp.header_construct('Scan.FrameDataGrab', len(body))
-        cmd = header + body
-
-        self.tcp.cmd_send(cmd)
-        _, res_arg, res_err = self.tcp.res_recv('int', 'str', 'int', 'int', '2dfloat32', 'uint32')
-
-        self.tcp.print_err(res_err)
-        scan_data_df = pd.DataFrame(res_arg[4])
-
-
-        scan_frame_data_grab_df = pd.DataFrame({'Channels name size': res_arg[0],
-                                       'Channel name':res_arg[1],
-                                       'Scan data rows': res_arg[2],
-                                       'Scan data columns': res_arg[3],
-                                       'Scan direction': res_arg[5]
-                                      },
-                                      index=[0]).T
-        print('\n'+
-              scan_frame_data_grab_df.to_string(header=False)+
-              '\n\nScan data returned.')
-        return scan_data_df, scan_frame_data_grab_df
+    def ScanFrameDataGrab(self, prt_df = False):
+        return
 
 ######################################## Follow Me Module #############################################
 ######################################## Tip Shaper Module #############################################
@@ -1182,7 +1094,7 @@ class nanonis_ctrl:
 
         self.tcp.print_err(res_err)
         gen_swp_chs_df = pd.DataFrame({'Number of channels': res_arg[0],
-                                 'Channel indexes': [res_arg[1]]},
+                                 'Channel indexes': res_arg[1]},
                                  index=[0]).T
         print('\n'+
               gen_swp_chs_df.to_string(header=False)+
