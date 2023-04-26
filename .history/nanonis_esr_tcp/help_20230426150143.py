@@ -6,9 +6,6 @@
 from .nanonis_ctrl import *
 import pandas as pd
 #  This is a help module if you want to know more about how to use the funcitons in nanonis_ctrl.py file
-pd.set_option('display.max_rows', 1000)
-pd.set_option('display.max_columns', 1000)
-pd.set_option('display.width', 1000)
 
 class help:
     def __init__(self):

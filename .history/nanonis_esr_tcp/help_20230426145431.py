@@ -6,9 +6,6 @@
 from .nanonis_ctrl import *
 import pandas as pd
 #  This is a help module if you want to know more about how to use the funcitons in nanonis_ctrl.py file
-pd.set_option('display.max_rows', 1000)
-pd.set_option('display.max_columns', 1000)
-pd.set_option('display.width', 1000)
 
 class help:
     def __init__(self):
@@ -17,21 +14,19 @@ class help:
     def help(self):
         func_list = [func for func in dir(nanonis_ctrl) if callable(getattr(nanonis_ctrl, func)) and not func.startswith("__")]
 
-        columns = {}
-        for ele in func_list:
-            first_letter = ele[0]
+        for element in my_list:
+            first_letter = element[0]
             if first_letter not in columns:
                 columns[first_letter] = []
-            columns[first_letter].append(ele)
+            columns[first_letter].append(element)
 
-        df = pd.DataFrame.from_dict(columns, orient='index').T
-
+        df = pd.DataFrame(columns)
         print('Here are some tips of using this Nanonis TCP module: \
               \n 1. For a tristate setting, such as "save all" in "BiasSpectrPropsSet" function, there are two possible sets of three valid input values: \n\
               1) 0/-1 --> No change \n\
               2) 1/1 --> Yes/On \n\
               3) 2/0 --> No/Off')
-        print(f'All available {len(func_list)} functions:\n', df)
+        print(f'All available {len(func_list)} functions:\n',func_list)
 
     def BiasSet(self):
         print('Bias.Set\
