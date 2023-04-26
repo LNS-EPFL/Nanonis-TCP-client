@@ -11,14 +11,14 @@ class help:
         self.general_info = "This is a help module if you want to know more about how to use the funcitons in nanonis_ctrl module \n Call help() to get a list of the function included in the module.\n Call the name of that function to get the help of that function, eg. BiasSet()"        
 
     def help(self):
-        func_list = [func for func in dir(nanonis_ctrl) if callable(getattr(nanonis_ctrl, func)) and not func.startswith("__")]
+        # func_list = [func for func in dir(nanonis_ctrl) if callable(getattr(nanonis_ctrl, func)) and not func.startswith("__")]
 
         print('Here are some tips of using this Nanonis TCP module: \
               \n 1. For a tristate setting, such as "save all" in "BiasSpectrPropsSet" function, there are two possible sets of three valid input values: \n\
               1) 0/-1 --> No change \n\
               2) 1/1 --> Yes/On \n\
               3) 2/0 --> No/Off')
-        print(f'All available {len(func_list)} functions:\n',func_list)
+        # print(f'All available {len(func_list)} functions:\n',func_list)
 
     def BiasSet(self):
         print('Bias.Set\
@@ -35,47 +35,7 @@ class help:
               \n Return arguments (if Send response back flag is set to True when sending request message):\
               \n - Bias value (V) (float32)\
               \n - Error described in the Response message>Body section')
-    def BiasRangeSet(self):
-        print('Bias.RangeSet\
-            \nSets the range of the Bias voltage, if different ranges are available.\
-            \nArguments:\
-            \n- Bias range index (unsigned int16) is the index out of the list of ranges which can be retrieved by the\
-            \nfunction Bias.RangeGet.\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Error described in the Response message>Body section')
-
-    def BiasRangeGet(self):
-        print('Bias.RangeGet\
-            \nReturns the selectable ranges of bias voltage and the index of the selected one.\
-            \nArguments: None\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Bias ranges size (int) is the size in bytes of the bias ranges array\
-            \n- Number of ranges (int) is the number of elements of the bias ranges array\
-            \n- Bias ranges (1D array string) returns an array of selectable bias ranges. Each element of the array is\
-            \npreceded by its size in bytes\
-            \n- Bias range index (unsigned int16) is the index out of the list of bias ranges.\
-            \n- Error described in the Response message>Body section')
-
-    def BiasCalibrSet(self):
-        print('Bias.CalibrSet\
-            \nSets the calibration and offset of bias voltage.\
-            \nIf several ranges are available, this function sets the values for the selected one.\
-            \nArguments:\
-            \n- Calibration (float32)\
-            \n- Offset (float32)\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Error described in the Response message>Body section')
-
-    def BiasCalibrGet(self):
-        print('Bias.CalibrGet\
-            \nGets the calibration and offset of bias voltage.\
-            \nIf several ranges are available, this function returns the values of the selected one.\
-            \nArguments: None\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Calibration (float32)\
-            \n- Offset (float32)\
-            \n- Error described in the Response message>Body section')
-
+    
     def BiasPulse(self):
         print("Bias.Pulse\
               \nGenerates one bias pulse\
@@ -619,145 +579,144 @@ class help:
             \n- Error described in the Response message>Body section')
 
     def FolMeXYPosSet(self):
-        print('FolMe.XYPosSet\
-            \nMoves the tip.\
-            \nThis function moves the tip to the specified X and Y target coordinates (in meters). It moves at the speed specified\
-            \nby the "Speed" parameter in the Follow Me mode of the Scan Control module.\
-            \nThis function will return when the tip reaches its destination or if the movement stops.\
-            \nArguments:\
-            \n- X (m) (float64) sets the target X position of the tip\
-            \n- Y (m) (float64) sets the target Y position of the tip\
-            \n- Wait end of move (unsigned int32) selects whether the function immediately (=0) or if it waits until the\
-            \ntarget is reached or the movement is stopped (=1)\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Error described in the Response message>Body section')
+        print('FolMe.XYPosSet
+Moves the tip.
+This function moves the tip to the specified X and Y target coordinates (in meters). It moves at the speed specified
+by the "Speed" parameter in the Follow Me mode of the Scan Control module.
+This function will return when the tip reaches its destination or if the movement stops.
+Arguments:
+- X (m) (float64) sets the target X position of the tip
+- Y (m) (float64) sets the target Y position of the tip
+- Wait end of move (unsigned int32) selects whether the function immediately (=0) or if it waits until the
+target is reached or the movement is stopped (=1)
+Return arguments (if Send response back flag is set to True when sending request message):
+- Error described in the Response message>Body section')
+        return
 
     def FolMeXYPosGet(self):
-        print('FolMe.XYPosGet\
-            \nReturns the X,Y tip coordinates (oversampled during the Acquisition Period time, Tap).\
-            \nArguments:\
-            \n- Wait for newest data (unsigned int32) selects whether the function returns the next available signal value\
-            \nor if it waits for a full period of new data.\
-            \nIf 0, this function returns a value 0 to Tap seconds after being called.\
-            \nIf 1, the function discards the first oversampled signal value received but returns the second value received.\
-            \nThus, the function returns a value Tap to 2*Tap seconds after being called\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- X (m) (float64) is the current X position of the tip\
-            \n- Y (m) (float64) is the current Y position of the tip\
-            \n- Error described in the Response message>Body section')
+        print('FolMe.XYPosGet
+Returns the X,Y tip coordinates (oversampled during the Acquisition Period time, Tap).
+Arguments:
+- Wait for newest data (unsigned int32) selects whether the function returns the next available signal value
+or if it waits for a full period of new data.
+If 0, this function returns a value 0 to Tap seconds after being called.
+If 1, the function discards the first oversampled signal value received but returns the second value received.
+Thus, the function returns a value Tap to 2*Tap seconds after being called
+Return arguments (if Send response back flag is set to True when sending request message):
+- X (m) (float64) is the current X position of the tip
+- Y (m) (float64) is the current Y position of the tip
+- Error described in the Response message>Body section')
+        return
 
     def FolMeSpeedSet(self):
-        print('FolMe.SpeedSet\
-            \nConfigures the tip speed when moving in Follow Me mode.\
-            \nArguments:\
-            \n- Speed (m/s) (float32) sets the surface speed in Follow Me mode\
-            \n- Custom speed (unsigned int32) sets whether custom speed setting is used for Follow Me mode (=1) or if\
-            \nscan speed is used (=0)\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Error described in the Response message>Body section')
+        print('FolMe.SpeedSet
+Configures the tip speed when moving in Follow Me mode.
+Arguments:
+- Speed (m/s) (float32) sets the surface speed in Follow Me mode
+- Custom speed (unsigned int32) sets whether custom speed setting is used for Follow Me mode (=1) or if
+scan speed is used (=0)
+Return arguments (if Send response back flag is set to True when sending request message):
+- Error described in the Response message>Body section')
+        return
 
     def FolMeSpeedGet(self):
-        print('FolMe.SpeedGet\
-            \nReturns the tip speed when moving in Follow Me mode.\
-            \nArguments: None\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Speed (m/s) (float32) is the surface speed in Follow Me mode\
-            \n- Custom speed (unsigned int32) returns whether custom speed setting is used for Follow Me mode (=1) or\
-            \nif scan speed is used (=0)\
-            \n- Error described in the Response message>Body section')
+        print('FolMe.SpeedGet
+Returns the tip speed when moving in Follow Me mode.
+Arguments: None
+Return arguments (if Send response back flag is set to True when sending request message):
+- Speed (m/s) (float32) is the surface speed in Follow Me mode
+- Custom speed (unsigned int32) returns whether custom speed setting is used for Follow Me mode (=1) or
+if scan speed is used (=0)
+- Error described in the Response message>Body section')
+        return
 
     def FolMeOversamplSet(self):
-        print('FolMe.OversamplSet\
-            \nSets the oversampling of the acquired data when the tip is moving in Follow Me mode.\
-            \nArguments:\
-            \n- Oversampling (int)\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Error described in the Response message>Body section')
+        print('FolMe.OversamplSet
+Sets the oversampling of the acquired data when the tip is moving in Follow Me mode.
+Arguments:
+- Oversampling (int)
+Return arguments (if Send response back flag is set to True when sending request message):
+- Error described in the Response message>Body section')
+        return
 
     def FolMeOversamplGet(self):
-        print('FolMe.OversamplGet\
-            \nReturns the oversampling and rate of the acquired data when the tip is moving in Follow Me mode.\
-            \nArguments: None\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Oversampling (int)\
-            \n- Sampling rate (Samples/s) (float32)\
-            \n- Error described in the Response message>Body section')
+        print('FolMe.OversamplGet
+Returns the oversampling and rate of the acquired data when the tip is moving in Follow Me mode.
+Arguments: None
+Return arguments (if Send response back flag is set to True when sending request message):
+- Oversampling (int)
+- Sampling rate (Samples/s) (float32)
+- Error described in the Response message>Body section')
+        return
 
     def FolMeStop(self):
-        print('FolMe.Stop\
-            \nStops the tip movement in Follow Me mode.\
-            \nArguments: None\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Error described in the Response message>Body section')
+        print('FolMe.Stop
+Stops the tip movement in Follow Me mode.
+Arguments: None
+Return arguments (if Send response back flag is set to True when sending request message):
+- Error described in the Response message>Body section')
+        return
 
     def FolMePSOnOffGet(self):
-        print('FolMe.PSOnOffGet\
-            \nReturns if Point & Shoot is enabled or disabled in Follow Me mode.\
-            \nArguments: None\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Point & Shoot status (unsigned int32) returns whether Point & Shoot is enabled (=1) or disabled (=0)\
-            \n- Error described in the Response message>Body section')
+        print('FolMe.PSOnOffGet
+Returns if Point & Shoot is enabled or disabled in Follow Me mode.
+Arguments: None
+Return arguments (if Send response back flag is set to True when sending request message):
+- Point & Shoot status (unsigned int32) returns whether Point & Shoot is enabled (=1) or disabled (=0)
+- Error described in the Response message>Body section')
+        return
 
     def FolMePSOnOffSet(self):
-        print('FolMe.PSOnOffSet\
-            \nEnables or disables Point & Shoot in Follow Me mode.\
-            \nArguments:\
-            \n- Point & Shoot status (unsigned int32) enables (=1) or disables (=0) Point & Shoot\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Error described in the Response message>Body section')
+        print('FolMe.PSOnOffSet
+Enables or disables Point & Shoot in Follow Me mode.
+Arguments:
+- Point & Shoot status (unsigned int32) enables (=1) or disables (=0) Point & Shoot
+Return arguments (if Send response back flag is set to True when sending request message):
+- Error described in the Response message>Body section')
+        return
 
     def FolMePSExpGet(self):
-        print('FolMe.PSExpGet\
-            \nReturns the Point & Shoot experiment selected in Follow Me mode.\
-            \nArguments: None\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Point & Shoot experiment (unsigned int16) returns the selected Point & Shoot experiment\
-            \n- Size of the list of experiments (int) is the full size in bytes of the List of experiments string array\
-            \n- Number of experiments (int) is the number of elements of the List of experiments string array\
-            \n- List of experiments (1D array string) returns the list of experiments available in the Pattern section. The\
-            \nsize of each string item comes right before it as integer 32\
-            \n- Error described in the Response message>Body section')
+        print('FolMe.PSExpGet
+Returns the Point & Shoot experiment selected in Follow Me mode.
+Arguments: None
+Return arguments (if Send response back flag is set to True when sending request message):
+- Point & Shoot experiment (unsigned int16) returns the selected Point & Shoot experiment
+- Size of the list of experiments (int) is the full size in bytes of the List of experiments string array
+- Number of experiments (int) is the number of elements of the List of experiments string array
+- List of experiments (1D array string) returns the list of experiments available in the Pattern section. The
+size of each string item comes right before it as integer 32
+- Error described in the Response message>Body section')
+        return
 
     def FolMePSExpSet(self):
-        print('FolMe.PSExpSet\
-            \nSets the Point & Shoot experiment selected in Follow Me mode.\
-            \nArguments:\
-            \n- Point & Shoot experiment (unsigned int16) returns the selected Point & Shoot experiment\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Error described in the Response message>Body section')
+        print('FolMe.PSExpSet
+Sets the Point & Shoot experiment selected in Follow Me mode.
+Arguments:
+- Point & Shoot experiment (unsigned int16) returns the selected Point & Shoot experiment
+Return arguments (if Send response back flag is set to True when sending request message):
+- Error described in the Response message>Body section')
+        return
 
     def FolMePSPropsGet(self):
-        print('FolMe.PSPropsGet\
-            \nReturns the Point & Shoot configuration in Follow Me mode.\
-            \nArguments: None\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Auto resume (unsigned int32) returns if the scan resumes after running the experiment (=1) or if it remains\
-            \npaused (=0)\
-            \n- Use own basename (unsigned int32) returns if the file basename is the one defined in the experiment\
-            \nmodule (i.e. in Bias Spectroscopy) (=1) or if it uses the basename configured in Point & Shoot (=0)\
-            \n- Basename size (int) is the size in bytes of the Basename string\
-            \n- Basename (string) returns the basename defined in Point & Shoot\
-            \n- External VI path size (int) is the size in bytes of the External VI path string\
-            \n- External VI path (string) returns the path of the External VI selected in Point & Shoot\
-            \n- Pre-measure delay (s) (float32) is the time to wait on each point before performing the experiment\
-            \n- Error described in the Response message>Body section')
+        print('FolMe.PSPropsGet
+Returns the Point & Shoot configuration in Follow Me mode.
+Arguments: None
+Return arguments (if Send response back flag is set to True when sending request message):
+- Auto resume (unsigned int32) returns if the scan resumes after running the experiment (=1) or if it remains
+paused (=0)
+- Use own basename (unsigned int32) returns if the file basename is the one defined in the experiment
+module (i.e. in Bias Spectroscopy) (=1) or if it uses the basename configured in Point & Shoot (=0)
+- Basename size (int) is the size in bytes of the Basename string
+- Basename (string) returns the basename defined in Point & Shoot
+- External VI path size (int) is the size in bytes of the External VI path string
+- External VI path (string) returns the path of the External VI selected in Point & Shoot
+- Pre-measure delay (s) (float32) is the time to wait on each point before performing the experiment
+- Error described in the Response message>Body section')
+        return
 
     def FolMePSPropsSet(self):
-        print('FolMe.PSPropsSet\
-            \nSets the Point & Shoot configuration in Follow Me mode.\
-            \nArguments:\
-            \n- Auto resume (unsigned int32) sets if the scan resumes after running the experiment (=1) or if it remains\
-            \npaused (=2). A value=0 means no change.\
-            \n- Use own basename (unsigned int32) sets if the file basename is the one defined in the experiment module\
-            \n(i.e. in Bias Spectroscopy) (=1) or if it uses the basename configured in Point & Shoot (=2). A value=0\
-            \nmeans no change.\
-            \n- Basename size (int) is the size in bytes of the Basename string\
-            \n- Basename (string) sets the basename in Point & Shoot\
-            \n- External VI path size (int) is the size in bytes of the External VI path string\
-            \n- External VI path (string) sets the path of the External VI selected in Point & Shoot\
-            \n- Pre-measure delay (s) (float32) is the time to wait on each point before performing the experiment\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Error described in the Response message>Body section')
+        print('')
+        return
 
 
     def TipShaperStart(self):

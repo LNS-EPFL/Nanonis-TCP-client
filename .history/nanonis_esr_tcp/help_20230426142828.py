@@ -11,14 +11,14 @@ class help:
         self.general_info = "This is a help module if you want to know more about how to use the funcitons in nanonis_ctrl module \n Call help() to get a list of the function included in the module.\n Call the name of that function to get the help of that function, eg. BiasSet()"        
 
     def help(self):
-        func_list = [func for func in dir(nanonis_ctrl) if callable(getattr(nanonis_ctrl, func)) and not func.startswith("__")]
+        # func_list = [func for func in dir(nanonis_ctrl) if callable(getattr(nanonis_ctrl, func)) and not func.startswith("__")]
 
         print('Here are some tips of using this Nanonis TCP module: \
               \n 1. For a tristate setting, such as "save all" in "BiasSpectrPropsSet" function, there are two possible sets of three valid input values: \n\
               1) 0/-1 --> No change \n\
               2) 1/1 --> Yes/On \n\
               3) 2/0 --> No/Off')
-        print(f'All available {len(func_list)} functions:\n',func_list)
+        # print(f'All available {len(func_list)} functions:\n',func_list)
 
     def BiasSet(self):
         print('Bias.Set\
@@ -35,46 +35,17 @@ class help:
               \n Return arguments (if Send response back flag is set to True when sending request message):\
               \n - Bias value (V) (float32)\
               \n - Error described in the Response message>Body section')
-    def BiasRangeSet(self):
-        print('Bias.RangeSet\
-            \nSets the range of the Bias voltage, if different ranges are available.\
-            \nArguments:\
-            \n- Bias range index (unsigned int16) is the index out of the list of ranges which can be retrieved by the\
-            \nfunction Bias.RangeGet.\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Error described in the Response message>Body section')
+    def BiasRangeSet():
+        print()
 
-    def BiasRangeGet(self):
-        print('Bias.RangeGet\
-            \nReturns the selectable ranges of bias voltage and the index of the selected one.\
-            \nArguments: None\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Bias ranges size (int) is the size in bytes of the bias ranges array\
-            \n- Number of ranges (int) is the number of elements of the bias ranges array\
-            \n- Bias ranges (1D array string) returns an array of selectable bias ranges. Each element of the array is\
-            \npreceded by its size in bytes\
-            \n- Bias range index (unsigned int16) is the index out of the list of bias ranges.\
-            \n- Error described in the Response message>Body section')
+    def BiasRangeGet():
+        print()
 
-    def BiasCalibrSet(self):
-        print('Bias.CalibrSet\
-            \nSets the calibration and offset of bias voltage.\
-            \nIf several ranges are available, this function sets the values for the selected one.\
-            \nArguments:\
-            \n- Calibration (float32)\
-            \n- Offset (float32)\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Error described in the Response message>Body section')
+    def BiasCalibrSet():
+        print()
 
-    def BiasCalibrGet(self):
-        print('Bias.CalibrGet\
-            \nGets the calibration and offset of bias voltage.\
-            \nIf several ranges are available, this function returns the values of the selected one.\
-            \nArguments: None\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Calibration (float32)\
-            \n- Offset (float32)\
-            \n- Error described in the Response message>Body section')
+    def BiasCalibrGet():
+        print()
 
     def BiasPulse(self):
         print("Bias.Pulse\
@@ -645,6 +616,7 @@ class help:
             \n- X (m) (float64) is the current X position of the tip\
             \n- Y (m) (float64) is the current Y position of the tip\
             \n- Error described in the Response message>Body section')
+        return
 
     def FolMeSpeedSet(self):
         print('FolMe.SpeedSet\
@@ -655,6 +627,7 @@ class help:
             \nscan speed is used (=0)\
             \nReturn arguments (if Send response back flag is set to True when sending request message):\
             \n- Error described in the Response message>Body section')
+        return
 
     def FolMeSpeedGet(self):
         print('FolMe.SpeedGet\
@@ -665,6 +638,7 @@ class help:
             \n- Custom speed (unsigned int32) returns whether custom speed setting is used for Follow Me mode (=1) or\
             \nif scan speed is used (=0)\
             \n- Error described in the Response message>Body section')
+        return
 
     def FolMeOversamplSet(self):
         print('FolMe.OversamplSet\
@@ -673,6 +647,7 @@ class help:
             \n- Oversampling (int)\
             \nReturn arguments (if Send response back flag is set to True when sending request message):\
             \n- Error described in the Response message>Body section')
+        return
 
     def FolMeOversamplGet(self):
         print('FolMe.OversamplGet\
@@ -682,6 +657,7 @@ class help:
             \n- Oversampling (int)\
             \n- Sampling rate (Samples/s) (float32)\
             \n- Error described in the Response message>Body section')
+        return
 
     def FolMeStop(self):
         print('FolMe.Stop\
@@ -689,6 +665,7 @@ class help:
             \nArguments: None\
             \nReturn arguments (if Send response back flag is set to True when sending request message):\
             \n- Error described in the Response message>Body section')
+        return
 
     def FolMePSOnOffGet(self):
         print('FolMe.PSOnOffGet\
@@ -697,6 +674,7 @@ class help:
             \nReturn arguments (if Send response back flag is set to True when sending request message):\
             \n- Point & Shoot status (unsigned int32) returns whether Point & Shoot is enabled (=1) or disabled (=0)\
             \n- Error described in the Response message>Body section')
+        return
 
     def FolMePSOnOffSet(self):
         print('FolMe.PSOnOffSet\
@@ -705,6 +683,7 @@ class help:
             \n- Point & Shoot status (unsigned int32) enables (=1) or disables (=0) Point & Shoot\
             \nReturn arguments (if Send response back flag is set to True when sending request message):\
             \n- Error described in the Response message>Body section')
+        return
 
     def FolMePSExpGet(self):
         print('FolMe.PSExpGet\
@@ -717,6 +696,7 @@ class help:
             \n- List of experiments (1D array string) returns the list of experiments available in the Pattern section. The\
             \nsize of each string item comes right before it as integer 32\
             \n- Error described in the Response message>Body section')
+        return
 
     def FolMePSExpSet(self):
         print('FolMe.PSExpSet\
@@ -725,6 +705,7 @@ class help:
             \n- Point & Shoot experiment (unsigned int16) returns the selected Point & Shoot experiment\
             \nReturn arguments (if Send response back flag is set to True when sending request message):\
             \n- Error described in the Response message>Body section')
+        return
 
     def FolMePSPropsGet(self):
         print('FolMe.PSPropsGet\
@@ -741,6 +722,7 @@ class help:
             \n- External VI path (string) returns the path of the External VI selected in Point & Shoot\
             \n- Pre-measure delay (s) (float32) is the time to wait on each point before performing the experiment\
             \n- Error described in the Response message>Body section')
+        return
 
     def FolMePSPropsSet(self):
         print('FolMe.PSPropsSet\
@@ -758,6 +740,7 @@ class help:
             \n- Pre-measure delay (s) (float32) is the time to wait on each point before performing the experiment\
             \nReturn arguments (if Send response back flag is set to True when sending request message):\
             \n- Error described in the Response message>Body section')
+        return
 
 
     def TipShaperStart(self):

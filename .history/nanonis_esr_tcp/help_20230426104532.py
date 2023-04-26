@@ -11,14 +11,14 @@ class help:
         self.general_info = "This is a help module if you want to know more about how to use the funcitons in nanonis_ctrl module \n Call help() to get a list of the function included in the module.\n Call the name of that function to get the help of that function, eg. BiasSet()"        
 
     def help(self):
-        func_list = [func for func in dir(nanonis_ctrl) if callable(getattr(nanonis_ctrl, func)) and not func.startswith("__")]
+        # func_list = [func for func in dir(nanonis_ctrl) if callable(getattr(nanonis_ctrl, func)) and not func.startswith("__")]
 
         print('Here are some tips of using this Nanonis TCP module: \
               \n 1. For a tristate setting, such as "save all" in "BiasSpectrPropsSet" function, there are two possible sets of three valid input values: \n\
               1) 0/-1 --> No change \n\
               2) 1/1 --> Yes/On \n\
               3) 2/0 --> No/Off')
-        print(f'All available {len(func_list)} functions:\n',func_list)
+        # print(f'All available {len(func_list)} functions:\n',func_list)
 
     def BiasSet(self):
         print('Bias.Set\
@@ -35,47 +35,7 @@ class help:
               \n Return arguments (if Send response back flag is set to True when sending request message):\
               \n - Bias value (V) (float32)\
               \n - Error described in the Response message>Body section')
-    def BiasRangeSet(self):
-        print('Bias.RangeSet\
-            \nSets the range of the Bias voltage, if different ranges are available.\
-            \nArguments:\
-            \n- Bias range index (unsigned int16) is the index out of the list of ranges which can be retrieved by the\
-            \nfunction Bias.RangeGet.\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Error described in the Response message>Body section')
-
-    def BiasRangeGet(self):
-        print('Bias.RangeGet\
-            \nReturns the selectable ranges of bias voltage and the index of the selected one.\
-            \nArguments: None\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Bias ranges size (int) is the size in bytes of the bias ranges array\
-            \n- Number of ranges (int) is the number of elements of the bias ranges array\
-            \n- Bias ranges (1D array string) returns an array of selectable bias ranges. Each element of the array is\
-            \npreceded by its size in bytes\
-            \n- Bias range index (unsigned int16) is the index out of the list of bias ranges.\
-            \n- Error described in the Response message>Body section')
-
-    def BiasCalibrSet(self):
-        print('Bias.CalibrSet\
-            \nSets the calibration and offset of bias voltage.\
-            \nIf several ranges are available, this function sets the values for the selected one.\
-            \nArguments:\
-            \n- Calibration (float32)\
-            \n- Offset (float32)\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Error described in the Response message>Body section')
-
-    def BiasCalibrGet(self):
-        print('Bias.CalibrGet\
-            \nGets the calibration and offset of bias voltage.\
-            \nIf several ranges are available, this function returns the values of the selected one.\
-            \nArguments: None\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Calibration (float32)\
-            \n- Offset (float32)\
-            \n- Error described in the Response message>Body section')
-
+    
     def BiasPulse(self):
         print("Bias.Pulse\
               \nGenerates one bias pulse\
@@ -488,276 +448,106 @@ class help:
             \n- Error described in the Response message>Body section')
 
     def ScanFrameGet(self):
-        print('Scan.FrameGet\
-            \nReturns the scan frame parameters.\
-            \nArguments: None\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Center X (m) (float32) is the X position of the scan frame center\
-            \n- Center Y (m) (float32) is the Y position of the scan frame center\
-            \n- Width (m) (float32) is the width of the scan frame\
-            \n- Height (m) (float32) is the height of the scan frame\
-            \n- Angle (deg) (float32) is the angle of the scan frame (positive angle means clockwise rotation)\
-            \n- Error described in the Response message>Body section')
+        print('Scan.FrameGet
+Returns the scan frame parameters.
+Arguments: None
+Return arguments (if Send response back flag is set to True when sending request message):
+- Center X (m) (float32) is the X position of the scan frame center
+- Center Y (m) (float32) is the Y position of the scan frame center
+- Width (m) (float32) is the width of the scan frame
+- Height (m) (float32) is the height of the scan frame
+- Angle (deg) (float32) is the angle of the scan frame (positive angle means clockwise rotation)
+- Error described in the Response message>Body section')
 
     def ScanBufferSet(self):
-        print('Scan.BufferSet\
-            \nConfigures the scan buffer parameters.\
-            \nArguments:\
-            \n- Number of channels (int) is the number of recorded channels. It defines the size of the Channel indexes\
-            \narray\
-            \n- Channel indexes (1D array int) are the indexes of recorded channels. The index is comprised between 0\
-            \nand 127, and it corresponds to the full list of signals available in the system.\
-            \nTo get the signal name and its corresponding index in the list of the 128 available signals in the Nanonis\
-            \nController, use the Signal.NamesGet function, or check the RT Idx value in the Signals Manager module.\
-            \n- Pixels (int) is the number of pixels per line.\
-            \nIn the scan control module this value is coerced to the closest multiple of 16, because the scan data is sent\
-            \nfrom the RT to the host in packages of 16 pixels\
-            \n- Lines (int) is the number of scan lines.\
-            \nBe aware that if the chain button to keep the scan resolution ratio in the scan control module is active and\
-            \nthe number of lines is set to 0 or left unconnected, the number of lines will automatically coerce to keep the\
-            \nscan resolution ratio according to the new number of pixels.\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Error described in the Response message>Body section')
+        print('Scan.BufferSet
+Configures the scan buffer parameters.
+Arguments:
+- Number of channels (int) is the number of recorded channels. It defines the size of the Channel indexes
+array
+- Channel indexes (1D array int) are the indexes of recorded channels. The index is comprised between 0
+and 127, and it corresponds to the full list of signals available in the system.
+To get the signal name and its corresponding index in the list of the 128 available signals in the Nanonis
+Controller, use the Signal.NamesGet function, or check the RT Idx value in the Signals Manager module.
+- Pixels (int) is the number of pixels per line.
+In the scan control module this value is coerced to the closest multiple of 16, because the scan data is sent
+from the RT to the host in packages of 16 pixels
+- Lines (int) is the number of scan lines.
+Be aware that if the chain button to keep the scan resolution ratio in the scan control module is active and
+the number of lines is set to 0 or left unconnected, the number of lines will automatically coerce to keep the
+scan resolution ratio according to the new number of pixels.
+Return arguments (if Send response back flag is set to True when sending request message):
+- Error described in the Response message>Body section')
 
     def ScanBufferGet(self):
-        print('Scan.BufferGet\
-            \nReturns the scan buffer parameters.\
-            \nArguments: None\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Number of channels (int) is the number of recorded channels. It defines the size of the Channel indexes\
-            \narray\
-            \n- Channel indexes (1D array int) are the indexes of recorded channels. The index is comprised between 0\
-            \nand 127, and it corresponds to the full list of signals available in the system.\
-            \nTo get the signal name and its corresponding index in the list of the 128 available signals in the Nanonis\
-            \nController, use the Signal.NamesGet function, or check the RT Idx value in the Signals Manager module.\
-            \n- Pixels (int) is the number of pixels per line\
-            \n- Lines (int) is the number of scan lines\
-            \n- Error described in the Response message>Body section')
+        print('Scan.BufferGet
+Returns the scan buffer parameters.
+Arguments: None
+Return arguments (if Send response back flag is set to True when sending request message):
+- Number of channels (int) is the number of recorded channels. It defines the size of the Channel indexes
+array
+- Channel indexes (1D array int) are the indexes of recorded channels. The index is comprised between 0
+and 127, and it corresponds to the full list of signals available in the system.
+To get the signal name and its corresponding index in the list of the 128 available signals in the Nanonis
+Controller, use the Signal.NamesGet function, or check the RT Idx value in the Signals Manager module.
+- Pixels (int) is the number of pixels per line
+- Lines (int) is the number of scan lines
+- Error described in the Response message>Body section')
 
     def ScanPropsSet(self):
-        print('Scan.PropsSet\
-            \nConfigures some of the scan parameters.\
-            \nArguments:\
-            \n- Continuous scan (unsigned int32) sets whether the scan continues or stops when a frame has been\
-            \ncompleted. 0 means no change, 1 is On, and 2 is Off\
-            \n- Bouncy scan (unsigned int32) sets whether the scan direction changes when a frame has been completed. 0\
-            \nmeans no change, 1 is On, and 2 is Off\
-            \n- Autosave (unsigned int32) defines the save behavior when a frame has been completed. "All" saves all the\
-            \nfuture images. "Next" only saves the next frame. 0 means no change, 1 is All, 2 is Next, and 3 sets this\
-            \nfeature Off\
-            \n- Series name size (int) is the size in bytes of the Series name string\
-            \n- Series name (string) is base name used for the saved images\
-            \n- Comment size (int) is the size in bytes of the Comment string\
-            \n- Comment (string) is comment saved in the file\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Error described in the Response message>Body section')
+        print('Scan.PropsSet
+Configures some of the scan parameters.
+Arguments:
+- Continuous scan (unsigned int32) sets whether the scan continues or stops when a frame has been
+completed. 0 means no change, 1 is On, and 2 is Off
+- Bouncy scan (unsigned int32) sets whether the scan direction changes when a frame has been completed. 0
+means no change, 1 is On, and 2 is Off
+- Autosave (unsigned int32) defines the save behavior when a frame has been completed. "All" saves all the
+future images. "Next" only saves the next frame. 0 means no change, 1 is All, 2 is Next, and 3 sets this
+feature Off
+- Series name size (int) is the size in bytes of the Series name string
+- Series name (string) is base name used for the saved images
+- Comment size (int) is the size in bytes of the Comment string
+- Comment (string) is comment saved in the file
+Return arguments (if Send response back flag is set to True when sending request message):
+- Error described in the Response message>Body section')
 
     def ScanPropsGet(self):
-        print('Scan.PropsGet\
-            \nReturns some of the scan parameters.\
-            \nArguments: None\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Continuous scan (unsigned int32) indicates whether the scan continues or stops when a frame has been\
-            \ncompleted. 0 means Off, and 1 is On\
-            \n- Bouncy scan (unsigned int32) indicates whether the scan direction changes when a frame has been\
-            \ncompleted. 0 means Off, and 1 is On\
-            \n- Autosave (unsigned int32) defines the save behavior when a frame has been completed. "All" saves all the\
-            \nfuture images. "Next" only saves the next frame. 0 is All, 1 is Next, and 2 means Off\
-            \n- Series name size (int) is the size in bytes of the Series name string\
-            \n- Series name (string) is base name used for the saved images\
-            \n- Comment size (int) is the size in bytes of the Comment string\
-            \n- Comment (string) is comment saved in the file\
-            \n- Error described in the Response message>Body section')
+        print('Scan.PropsGet
+Returns some of the scan parameters.
+Arguments: None
+Return arguments (if Send response back flag is set to True when sending request message):
+- Continuous scan (unsigned int32) indicates whether the scan continues or stops when a frame has been
+completed. 0 means Off, and 1 is On
+- Bouncy scan (unsigned int32) indicates whether the scan direction changes when a frame has been
+completed. 0 means Off, and 1 is On
+- Autosave (unsigned int32) defines the save behavior when a frame has been completed. "All" saves all the
+future images. "Next" only saves the next frame. 0 is All, 1 is Next, and 2 means Off
+- Series name size (int) is the size in bytes of the Series name string
+- Series name (string) is base name used for the saved images
+- Comment size (int) is the size in bytes of the Comment string
+- Comment (string) is comment saved in the file
+- Error described in the Response message>Body section')
 
     def ScanSpeedSet(self):
-        print('Scan.SpeedSet\
-            \nConfigures the scan speed parameters.\
-            \nArguments:\
-            \n- Forward linear speed (m/s) (float32)\
-            \n- Backward linear speed (m/s) (float32)\
-            \n- Forward time per line (s) (float32)\
-            \n- Backward time per line (s) (float32)\
-            \n- Keep parameter constant (unsigned int16) defines which speed parameter to keep constant, where 0\
-            \nmeans no change, 1 keeps the linear speed constant, and 2 keeps the time per line constant\
-            \n- Speed ratio (float32) defines the backward tip speed related to the forward speed\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Error described in the Response message>Body section')
+        print('Scan.SpeedSet
+Configures the scan speed parameters.
+Arguments:
+- Forward linear speed (m/s) (float32)
+- Backward linear speed (m/s) (float32)
+- Forward time per line (s) (float32)
+- Backward time per line (s) (float32)
+- Keep parameter constant (unsigned int16) defines which speed parameter to keep constant, where 0
+means no change, 1 keeps the linear speed constant, and 2 keeps the time per line constant
+- Speed ratio (float32) defines the backward tip speed related to the forward speed
+Return arguments (if Send response back flag is set to True when sending request message):
+- Error described in the Response message>Body section')
 
     def ScanSpeedGet(self):
-        print('Scan.SpeedGet\
-            \nReturns the scan speed parameters.\
-            \nArguments: None\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Forward linear speed (m/s) (float32)\
-            \n- Backward linear speed (m/s) (float32)\
-            \n- Forward time per line (s) (float32)\
-            \n- Backward time per line (s) (float32)\
-            \n- Keep parameter constant (unsigned int16) defines which speed parameter to keep constant, where 0\
-            \nkeeps the linear speed constant, and 1 keeps the time per line constant\
-            \n- Speed ratio (float32) is the backward tip speed related to the forward speed\
-            \n- Error described in the Response message>Body section')
+        print('')
 
     def ScanFrameDataGrab(self):
-        print('Scan.FrameDataGrab\
-            \nReturns the scan data of the selected frame.\
-            \nArguments:\
-            \n- Channel index (unsigned int32) selects which channel to get the data from.\
-            \nThe channel must be one of the acquired channels.\
-            \nThe list of acquired channels while scanning can be configured by the function Scan.BufferSet.\
-            \nThe index is comprised between 0 and 127, and it corresponds to the full list of signals available in the\
-            \nsystem.\
-            \nTo get the signal name and its corresponding index in the list of the 128 available signals in the Nanonis\
-            \nController, use the Signal.NamesGet function, or check the RT Idx value in the Signals Manager module.\
-            \n- Data direction (unsigned int32) selects the data direction, where 1 is forward, and 0 is backward\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Channels name size (int) is the size in bytes of the Channel name string\
-            \n- Channel name (string) is the name of the channel selected by Channel index\
-            \n- Scan data rows (int) defines the number of rows of the Scan data array\
-            \n- Scan data columns (int) defines the number of columns of the Scan data array\
-            \n- Scan data (2D array float32) returns the scan frame data of the selected channel\
-            \n- Scan direction (unsigned int32) is the scan direction, where 1 is up, and 0 is down\
-            \n- Error described in the Response message>Body section')
-
-    def FolMeXYPosSet(self):
-        print('FolMe.XYPosSet\
-            \nMoves the tip.\
-            \nThis function moves the tip to the specified X and Y target coordinates (in meters). It moves at the speed specified\
-            \nby the "Speed" parameter in the Follow Me mode of the Scan Control module.\
-            \nThis function will return when the tip reaches its destination or if the movement stops.\
-            \nArguments:\
-            \n- X (m) (float64) sets the target X position of the tip\
-            \n- Y (m) (float64) sets the target Y position of the tip\
-            \n- Wait end of move (unsigned int32) selects whether the function immediately (=0) or if it waits until the\
-            \ntarget is reached or the movement is stopped (=1)\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Error described in the Response message>Body section')
-
-    def FolMeXYPosGet(self):
-        print('FolMe.XYPosGet\
-            \nReturns the X,Y tip coordinates (oversampled during the Acquisition Period time, Tap).\
-            \nArguments:\
-            \n- Wait for newest data (unsigned int32) selects whether the function returns the next available signal value\
-            \nor if it waits for a full period of new data.\
-            \nIf 0, this function returns a value 0 to Tap seconds after being called.\
-            \nIf 1, the function discards the first oversampled signal value received but returns the second value received.\
-            \nThus, the function returns a value Tap to 2*Tap seconds after being called\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- X (m) (float64) is the current X position of the tip\
-            \n- Y (m) (float64) is the current Y position of the tip\
-            \n- Error described in the Response message>Body section')
-
-    def FolMeSpeedSet(self):
-        print('FolMe.SpeedSet\
-            \nConfigures the tip speed when moving in Follow Me mode.\
-            \nArguments:\
-            \n- Speed (m/s) (float32) sets the surface speed in Follow Me mode\
-            \n- Custom speed (unsigned int32) sets whether custom speed setting is used for Follow Me mode (=1) or if\
-            \nscan speed is used (=0)\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Error described in the Response message>Body section')
-
-    def FolMeSpeedGet(self):
-        print('FolMe.SpeedGet\
-            \nReturns the tip speed when moving in Follow Me mode.\
-            \nArguments: None\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Speed (m/s) (float32) is the surface speed in Follow Me mode\
-            \n- Custom speed (unsigned int32) returns whether custom speed setting is used for Follow Me mode (=1) or\
-            \nif scan speed is used (=0)\
-            \n- Error described in the Response message>Body section')
-
-    def FolMeOversamplSet(self):
-        print('FolMe.OversamplSet\
-            \nSets the oversampling of the acquired data when the tip is moving in Follow Me mode.\
-            \nArguments:\
-            \n- Oversampling (int)\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Error described in the Response message>Body section')
-
-    def FolMeOversamplGet(self):
-        print('FolMe.OversamplGet\
-            \nReturns the oversampling and rate of the acquired data when the tip is moving in Follow Me mode.\
-            \nArguments: None\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Oversampling (int)\
-            \n- Sampling rate (Samples/s) (float32)\
-            \n- Error described in the Response message>Body section')
-
-    def FolMeStop(self):
-        print('FolMe.Stop\
-            \nStops the tip movement in Follow Me mode.\
-            \nArguments: None\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Error described in the Response message>Body section')
-
-    def FolMePSOnOffGet(self):
-        print('FolMe.PSOnOffGet\
-            \nReturns if Point & Shoot is enabled or disabled in Follow Me mode.\
-            \nArguments: None\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Point & Shoot status (unsigned int32) returns whether Point & Shoot is enabled (=1) or disabled (=0)\
-            \n- Error described in the Response message>Body section')
-
-    def FolMePSOnOffSet(self):
-        print('FolMe.PSOnOffSet\
-            \nEnables or disables Point & Shoot in Follow Me mode.\
-            \nArguments:\
-            \n- Point & Shoot status (unsigned int32) enables (=1) or disables (=0) Point & Shoot\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Error described in the Response message>Body section')
-
-    def FolMePSExpGet(self):
-        print('FolMe.PSExpGet\
-            \nReturns the Point & Shoot experiment selected in Follow Me mode.\
-            \nArguments: None\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Point & Shoot experiment (unsigned int16) returns the selected Point & Shoot experiment\
-            \n- Size of the list of experiments (int) is the full size in bytes of the List of experiments string array\
-            \n- Number of experiments (int) is the number of elements of the List of experiments string array\
-            \n- List of experiments (1D array string) returns the list of experiments available in the Pattern section. The\
-            \nsize of each string item comes right before it as integer 32\
-            \n- Error described in the Response message>Body section')
-
-    def FolMePSExpSet(self):
-        print('FolMe.PSExpSet\
-            \nSets the Point & Shoot experiment selected in Follow Me mode.\
-            \nArguments:\
-            \n- Point & Shoot experiment (unsigned int16) returns the selected Point & Shoot experiment\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Error described in the Response message>Body section')
-
-    def FolMePSPropsGet(self):
-        print('FolMe.PSPropsGet\
-            \nReturns the Point & Shoot configuration in Follow Me mode.\
-            \nArguments: None\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Auto resume (unsigned int32) returns if the scan resumes after running the experiment (=1) or if it remains\
-            \npaused (=0)\
-            \n- Use own basename (unsigned int32) returns if the file basename is the one defined in the experiment\
-            \nmodule (i.e. in Bias Spectroscopy) (=1) or if it uses the basename configured in Point & Shoot (=0)\
-            \n- Basename size (int) is the size in bytes of the Basename string\
-            \n- Basename (string) returns the basename defined in Point & Shoot\
-            \n- External VI path size (int) is the size in bytes of the External VI path string\
-            \n- External VI path (string) returns the path of the External VI selected in Point & Shoot\
-            \n- Pre-measure delay (s) (float32) is the time to wait on each point before performing the experiment\
-            \n- Error described in the Response message>Body section')
-
-    def FolMePSPropsSet(self):
-        print('FolMe.PSPropsSet\
-            \nSets the Point & Shoot configuration in Follow Me mode.\
-            \nArguments:\
-            \n- Auto resume (unsigned int32) sets if the scan resumes after running the experiment (=1) or if it remains\
-            \npaused (=2). A value=0 means no change.\
-            \n- Use own basename (unsigned int32) sets if the file basename is the one defined in the experiment module\
-            \n(i.e. in Bias Spectroscopy) (=1) or if it uses the basename configured in Point & Shoot (=2). A value=0\
-            \nmeans no change.\
-            \n- Basename size (int) is the size in bytes of the Basename string\
-            \n- Basename (string) sets the basename in Point & Shoot\
-            \n- External VI path size (int) is the size in bytes of the External VI path string\
-            \n- External VI path (string) sets the path of the External VI selected in Point & Shoot\
-            \n- Pre-measure delay (s) (float32) is the time to wait on each point before performing the experiment\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Error described in the Response message>Body section')
+        print('')
 
 
     def TipShaperStart(self):

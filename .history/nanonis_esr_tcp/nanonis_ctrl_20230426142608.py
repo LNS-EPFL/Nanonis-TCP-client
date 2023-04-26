@@ -98,7 +98,7 @@ class nanonis_ctrl:
                                      index=[0]).T
         print('\n'+
               bias_calibr_df.to_string(header=False)+
-              '\n\nBias calibration set.')
+              '\n\nBias range set.')
         return bias_calibr_df
 
     def BiasCalibrGet(self):
@@ -108,13 +108,13 @@ class nanonis_ctrl:
         _, res_arg, res_err = self.tcp.res_recv('float32', 'float32')
 
         self.tcp.print_err(res_err)
-        bias_calibr_df = pd.DataFrame({'Calibration': res_arg[0],
-                                       'Offset': res_arg[1]
-                                       },
+        bias_calibr_df = pd.DataFrame({'Bias ranges size': res_arg[0],
+                                      'Number of ranges': res_arg[1]
+                                      },
                                      index=[0]).T
         print('\n'+
               bias_calibr_df.to_string(header=False)+
-              '\n\nBias calibration returned.')
+              '\n\nBias range returned.')
         return bias_calibr_df
     
     def BiasPulse(self, wait_until_done, bias_pulse_width, bias_value, zctrl_on_hold, pulse_abs_rel):

@@ -65,57 +65,27 @@ class nanonis_ctrl:
         return bias_range_df
 
     def BiasRangeGet(self):
-        header = self.tcp.header_construct('Bias.RangeGet', 0)
+        body  = self.tcp.dtype_cvt(bias_ran_idx, 'uint16', 'bin')
 
-        self.tcp.cmd_send(header)
-        _, res_arg, res_err = self.tcp.res_recv('int', 'int', '1dstr', 'uint16')
-
-        self.tcp.print_err(res_err)
-        bias_range_df = pd.DataFrame({'Bias ranges size': res_arg[0],
-                                      'Number of ranges': res_arg[1],
-                                      'Bias ranges': res_arg[2].tolist(), 
-                                      'Bias range index': res_arg[3]
-                                      },
-                                     index=[0]).T
-        print('\n'+
-              bias_range_df.to_string(header=False)+
-              '\n\nBias range returned.')
-        return bias_range_df
-    
-    def BiasCalibrSet(self, calibr, offset):
-        body  = self.tcp.dtype_cvt(calibr, 'float32', 'bin')
-        body += self.tcp.dtype_cvt(offset, 'float32', 'bin')
-
-        header = self.tcp.header_construct('Bias.CalibrSet', len(body))
+        header = self.tcp.header_construct('Bias.RangeSet', len(body))
         cmd = header + body
 
         self.tcp.cmd_send(cmd)
         _, _, res_err = self.tcp.res_recv()
 
         self.tcp.print_err(res_err)
-        bias_calibr_df = pd.DataFrame({'Calibration': calibr,
-                                      'Offset': offset},
+        bias_range_df = pd.DataFrame({'Bias range index': bias_ran_idx},
                                      index=[0]).T
         print('\n'+
-              bias_calibr_df.to_string(header=False)+
-              '\n\nBias calibration set.')
-        return bias_calibr_df
+              bias_range_df.to_string(header=False)+
+              '\n\nBias range set.')
+        return bias_range_df
+    
+    def BiasCalibrSet(self):
+        return
 
     def BiasCalibrGet(self):
-        header = self.tcp.header_construct('Bias.CalibrGet', 0)
-
-        self.tcp.cmd_send(header)
-        _, res_arg, res_err = self.tcp.res_recv('float32', 'float32')
-
-        self.tcp.print_err(res_err)
-        bias_calibr_df = pd.DataFrame({'Calibration': res_arg[0],
-                                       'Offset': res_arg[1]
-                                       },
-                                     index=[0]).T
-        print('\n'+
-              bias_calibr_df.to_string(header=False)+
-              '\n\nBias calibration returned.')
-        return bias_calibr_df
+        return
     
     def BiasPulse(self, wait_until_done, bias_pulse_width, bias_value, zctrl_on_hold, pulse_abs_rel):
         bias_pulse_width = self.tcp.unit_cvt(bias_pulse_width)

@@ -11,14 +11,14 @@ class help:
         self.general_info = "This is a help module if you want to know more about how to use the funcitons in nanonis_ctrl module \n Call help() to get a list of the function included in the module.\n Call the name of that function to get the help of that function, eg. BiasSet()"        
 
     def help(self):
-        func_list = [func for func in dir(nanonis_ctrl) if callable(getattr(nanonis_ctrl, func)) and not func.startswith("__")]
+        # func_list = [func for func in dir(nanonis_ctrl) if callable(getattr(nanonis_ctrl, func)) and not func.startswith("__")]
 
         print('Here are some tips of using this Nanonis TCP module: \
               \n 1. For a tristate setting, such as "save all" in "BiasSpectrPropsSet" function, there are two possible sets of three valid input values: \n\
               1) 0/-1 --> No change \n\
               2) 1/1 --> Yes/On \n\
               3) 2/0 --> No/Off')
-        print(f'All available {len(func_list)} functions:\n',func_list)
+        # print(f'All available {len(func_list)} functions:\n',func_list)
 
     def BiasSet(self):
         print('Bias.Set\

@@ -98,7 +98,7 @@ class nanonis_ctrl:
                                      index=[0]).T
         print('\n'+
               bias_calibr_df.to_string(header=False)+
-              '\n\nBias calibration set.')
+              '\n\nBias range set.')
         return bias_calibr_df
 
     def BiasCalibrGet(self):
@@ -114,7 +114,7 @@ class nanonis_ctrl:
                                      index=[0]).T
         print('\n'+
               bias_calibr_df.to_string(header=False)+
-              '\n\nBias calibration returned.')
+              '\n\nBias range returned.')
         return bias_calibr_df
     
     def BiasPulse(self, wait_until_done, bias_pulse_width, bias_value, zctrl_on_hold, pulse_abs_rel):

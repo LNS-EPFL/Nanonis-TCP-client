@@ -11,14 +11,14 @@ class help:
         self.general_info = "This is a help module if you want to know more about how to use the funcitons in nanonis_ctrl module \n Call help() to get a list of the function included in the module.\n Call the name of that function to get the help of that function, eg. BiasSet()"        
 
     def help(self):
-        func_list = [func for func in dir(nanonis_ctrl) if callable(getattr(nanonis_ctrl, func)) and not func.startswith("__")]
+        # func_list = [func for func in dir(nanonis_ctrl) if callable(getattr(nanonis_ctrl, func)) and not func.startswith("__")]
 
         print('Here are some tips of using this Nanonis TCP module: \
               \n 1. For a tristate setting, such as "save all" in "BiasSpectrPropsSet" function, there are two possible sets of three valid input values: \n\
               1) 0/-1 --> No change \n\
               2) 1/1 --> Yes/On \n\
               3) 2/0 --> No/Off')
-        print(f'All available {len(func_list)} functions:\n',func_list)
+        # print(f'All available {len(func_list)} functions:\n',func_list)
 
     def BiasSet(self):
         print('Bias.Set\
@@ -45,36 +45,36 @@ class help:
             \n- Error described in the Response message>Body section')
 
     def BiasRangeGet(self):
-        print('Bias.RangeGet\
-            \nReturns the selectable ranges of bias voltage and the index of the selected one.\
-            \nArguments: None\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Bias ranges size (int) is the size in bytes of the bias ranges array\
-            \n- Number of ranges (int) is the number of elements of the bias ranges array\
-            \n- Bias ranges (1D array string) returns an array of selectable bias ranges. Each element of the array is\
-            \npreceded by its size in bytes\
-            \n- Bias range index (unsigned int16) is the index out of the list of bias ranges.\
-            \n- Error described in the Response message>Body section')
+        print('Bias.RangeGet
+Returns the selectable ranges of bias voltage and the index of the selected one.
+Arguments: None
+Return arguments (if Send response back flag is set to True when sending request message):
+- Bias ranges size (int) is the size in bytes of the bias ranges array
+- Number of ranges (int) is the number of elements of the bias ranges array
+- Bias ranges (1D array string) returns an array of selectable bias ranges. Each element of the array is
+preceded by its size in bytes
+- Bias range index (unsigned int16) is the index out of the list of bias ranges.
+- Error described in the Response message>Body section')
 
     def BiasCalibrSet(self):
-        print('Bias.CalibrSet\
-            \nSets the calibration and offset of bias voltage.\
-            \nIf several ranges are available, this function sets the values for the selected one.\
-            \nArguments:\
-            \n- Calibration (float32)\
-            \n- Offset (float32)\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Error described in the Response message>Body section')
+        print('Bias.CalibrSet
+Sets the calibration and offset of bias voltage.
+If several ranges are available, this function sets the values for the selected one.
+Arguments:
+- Calibration (float32)
+- Offset (float32)
+Return arguments (if Send response back flag is set to True when sending request message):
+- Error described in the Response message>Body section')
 
     def BiasCalibrGet(self):
-        print('Bias.CalibrGet\
-            \nGets the calibration and offset of bias voltage.\
-            \nIf several ranges are available, this function returns the values of the selected one.\
-            \nArguments: None\
-            \nReturn arguments (if Send response back flag is set to True when sending request message):\
-            \n- Calibration (float32)\
-            \n- Offset (float32)\
-            \n- Error described in the Response message>Body section')
+        print('Bias.CalibrGet
+Gets the calibration and offset of bias voltage.
+If several ranges are available, this function returns the values of the selected one.
+Arguments: None
+Return arguments (if Send response back flag is set to True when sending request message):
+- Calibration (float32)
+- Offset (float32)
+- Error described in the Response message>Body section')
 
     def BiasPulse(self):
         print("Bias.Pulse\
