@@ -123,8 +123,9 @@ class esr_meas:
         self.connect.BiasSet(bias_ini.loc['Bias (V)', 0])
         dz2 = meas_dz()
         delta_z = dz1 - dz2
+        print(dz1)
         print(f'delta z (pm): {delta_z*1e12}')
-        if abs(delta_z) > 80e-12:
+        if delta_z > 80e-12:
             print('Atom picked up.')
         else:
             print('Atom not picked up. Try again!')

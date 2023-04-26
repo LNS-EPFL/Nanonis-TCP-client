@@ -94,17 +94,17 @@ class esr_meas:
             xy = self.connect.FolMeXYPosGet(1)
             x = xy.loc['X (m)']
             y = xy.loc['Y (m)']
-            surrounding_xy_list_ = [[x-radius, y], [x, y-radius], [x+radius,y], [x, y+radius]]
-            surrounding_z_list = []
+            surrounding_xy_list_1 = [[x-radius, y], [x+radius,y], [x, y-radius], [x, y+radius]]
+            surrounding_z_list_1 = []
 
-            for i in range(len(surrounding_xy_list_)):
-                self.connect.FolMeXYPosSet(*surrounding_xy_list_[i], 1)
+            self.connect.FolMeXYPosSet(*surrounding_xy_list_1[0], 1)
+            for i in range(len(surrounding_xy_list_1)):
+                self.connect.FolMeXYPosSet(*surrounding_xy_list_1[i], 1)
                 self.connect.FolMeXYPosGet(1)
                 surrounding_z = self.connect.ZCtrlZPosGet()
-                surrounding_z_list.append(surrounding_z)
-            self.connect.FolMeXYPosSet(x, y, 1)
-            z_sur = np.mean(surrounding_z_list)
-            return z_cen.iloc[0, 0] - z_sur
+                surrounding_z_list_1.append(surrounding_z)
+            z_sur_1 = np.mean(surrounding_z_list_1)
+            delta_z_1 = z_cen - z_sur_1
 
         bias_ini = self.connect.BiasGet()
 
@@ -116,15 +116,14 @@ class esr_meas:
         self.connect.AtomTrackCtrlSet(0,0)
         self.connect.AtomTrackCtrlSet(1,0)
 
-        dz1 = meas_dz()
         self.connect.BiasSet('50u')
         self.connect.ZCtrlOnOffSet(0)
         self.connect.BiasPulse(1, '150m', '650m', 1, 0)
         self.connect.BiasSet(bias_ini.loc['Bias (V)', 0])
-        dz2 = meas_dz()
-        delta_z = dz1 - dz2
+
+
         print(f'delta z (pm): {delta_z*1e12}')
-        if abs(delta_z) > 80e-12:
+        if delta_z > 80e-12:
             print('Atom picked up.')
         else:
             print('Atom not picked up. Try again!')

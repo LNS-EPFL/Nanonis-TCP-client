@@ -104,7 +104,8 @@ class esr_meas:
                 surrounding_z_list.append(surrounding_z)
             self.connect.FolMeXYPosSet(x, y, 1)
             z_sur = np.mean(surrounding_z_list)
-            return z_cen.iloc[0, 0] - z_sur
+            print('--------------', z_cen - z_sur, '-------------')
+            return z_cen - z_sur
 
         bias_ini = self.connect.BiasGet()
 
@@ -123,8 +124,9 @@ class esr_meas:
         self.connect.BiasSet(bias_ini.loc['Bias (V)', 0])
         dz2 = meas_dz()
         delta_z = dz1 - dz2
+        print(delta_z)
         print(f'delta z (pm): {delta_z*1e12}')
-        if abs(delta_z) > 80e-12:
+        if delta_z > 80e-12:
             print('Atom picked up.')
         else:
             print('Atom not picked up. Try again!')

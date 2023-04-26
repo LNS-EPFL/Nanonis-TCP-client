@@ -8,7 +8,6 @@ import pandas as pd
 from os import mkdir
 from os.path import exists
 import time
-import numpy as np
 
 class esr_meas:
     def __init__(self, connect):
@@ -87,25 +86,10 @@ class esr_meas:
             self.connect.UtilSessionPathSet(sess_path, 0)
             return data, parameters
         
-    ##################################### PICK UP ATOMS ##################################    
+    ##################################### PICK UP ATOMS ##################################
+    def meas_
+    
     def atom_pickup(self):
-        def meas_dz(radius = 1.5e-9):
-            z_cen = self.connect.ZCtrlZPosGet()
-            xy = self.connect.FolMeXYPosGet(1)
-            x = xy.loc['X (m)']
-            y = xy.loc['Y (m)']
-            surrounding_xy_list_ = [[x-radius, y], [x, y-radius], [x+radius,y], [x, y+radius]]
-            surrounding_z_list = []
-
-            for i in range(len(surrounding_xy_list_)):
-                self.connect.FolMeXYPosSet(*surrounding_xy_list_[i], 1)
-                self.connect.FolMeXYPosGet(1)
-                surrounding_z = self.connect.ZCtrlZPosGet()
-                surrounding_z_list.append(surrounding_z)
-            self.connect.FolMeXYPosSet(x, y, 1)
-            z_sur = np.mean(surrounding_z_list)
-            return z_cen.iloc[0, 0] - z_sur
-
         bias_ini = self.connect.BiasGet()
 
         # tracking the atom for 3s
@@ -116,15 +100,34 @@ class esr_meas:
         self.connect.AtomTrackCtrlSet(0,0)
         self.connect.AtomTrackCtrlSet(1,0)
 
-        dz1 = meas_dz()
+        # get z value before picking up Fe
+        self.connect.ZCtrlOnOffSet(1)
+        z_cen_1 = self.connect.ZCtrlZPosGet()
+        xy1 = self.connect.FolMeXYPosGet(0)
+        x1 = xy1['X (m)']
+        y1 = xy1['Y (m)']
+        r = 1.5e-9
+        surrounding_xy_list = [[x1 - r, y1], [x1 + r,y1], [x1, y1 - r], [x1, y1 + r]]
+        surrounding_z_list = []
+        for i in range(len(surrounding_xy_list)):
+            surrounding_z = self.connect.ZCtrlZPosGet()
+            
+
         self.connect.BiasSet('50u')
         self.connect.ZCtrlOnOffSet(0)
         self.connect.BiasPulse(1, '150m', '650m', 1, 0)
         self.connect.BiasSet(bias_ini.loc['Bias (V)', 0])
-        dz2 = meas_dz()
-        delta_z = dz1 - dz2
+
+        # get z value after picking up Fe
+        self.connect.ZCtrlOnOffSet(1)
+        z_cen_2 = self.connect.ZCtrlZPosGet()
+        xy2 = self.connect.FolMeXYPosGet(0)
+        x2 = xy1['X (m)']
+        y2 = xy1['Y (m)']
+        delta_z = z_end.loc['Z position of the tip (m)', 0] - z_start.loc['Z position of the tip (m)', 0] 
+
         print(f'delta z (pm): {delta_z*1e12}')
-        if abs(delta_z) > 80e-12:
+        if delta_z > 80e-12:
             print('Atom picked up.')
         else:
             print('Atom not picked up. Try again!')

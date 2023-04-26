@@ -124,7 +124,7 @@ class esr_meas:
         dz2 = meas_dz()
         delta_z = dz1 - dz2
         print(f'delta z (pm): {delta_z*1e12}')
-        if abs(delta_z) > 80e-12:
+        if delta_z > 80e-12:
             print('Atom picked up.')
         else:
             print('Atom not picked up. Try again!')
