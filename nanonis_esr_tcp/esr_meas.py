@@ -129,3 +129,4 @@ class esr_meas:
         else:
             print('Atom not picked up. Try again!')
         return
+    
