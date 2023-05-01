@@ -130,3 +130,5 @@ class esr_meas:
             print('Atom not picked up. Try again!')
         return
     
+    def grid_scan(num_grids, ):
+        return

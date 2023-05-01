@@ -130,3 +130,7 @@ class esr_meas:
             print('Atom not picked up. Try again!')
         return
     
+    def grid_scan(num_cols, num_rows, grid_size):
+        # divide the entire piezo scan range into num_cols*num_rows grids
+        # scan each grid
+        return
