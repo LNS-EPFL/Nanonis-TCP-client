@@ -88,7 +88,7 @@ class esr_meas:
             return data, parameters
         
     ##################################### PICK UP ATOMS ##################################    
-    def atom_pickup(self, radius = 1.5e-9):
+    def atom_pickup(self, radius = 1e-9):
         def meas_dz():
             z_cen = self.connect.ZCtrlZPosGet()
             xy = self.connect.FolMeXYPosGet(1)
@@ -99,7 +99,7 @@ class esr_meas:
 
             for i in range(len(surrounding_xy_list_)):
                 self.connect.FolMeXYPosSet(*surrounding_xy_list_[i], 1)
-                self.connect.FolMeXYPosGet(1)
+                time.sleep(0.2)
                 surrounding_z = self.connect.ZCtrlZPosGet()
                 surrounding_z_list.append(surrounding_z)
             self.connect.FolMeXYPosSet(x, y, 1)
@@ -120,13 +120,12 @@ class esr_meas:
         self.connect.AtomTrackCtrlSet(0,0)
         self.connect.AtomTrackCtrlSet(1,0)
 
-        dz1 = meas_dz()
+        dz1 = meas_dz() # calculate the height of the atom before picking it up
         self.connect.BiasSet('50u')
         self.connect.ZCtrlOnOffSet(0)
         self.connect.BiasPulse(1, '150m', '650m', 1, 0)
         self.connect.ZCtrlOnOffSet(1)
         self.connect.BiasSet(bias_ini.loc['Bias (V)', 0])
-        
         self.connect.ZCtrlTipLiftSet(tiplift_ini.loc['TipLift (m)', 0]) # set tiplift to 0
         dz2 = meas_dz()
         delta_z = dz1 - dz2
