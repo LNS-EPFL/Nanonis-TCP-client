@@ -791,11 +791,37 @@ class nanonis_ctrl:
     def ZCtrlSwitchOffDelayGet(self):
         return
 
-    def ZCtrlTipLiftSet(self):
-        return
+    def ZCtrlTipLiftSet(self, tiplift):
+        tiplift = self.tcp.unit_cvt(tiplift)
+
+        body = self.tcp.dtype_cvt(tiplift, 'float32', 'bin')
+        header = self.tcp.header_construct('ZCtrl.TipLiftSet', len(body))
+        cmd = header + body
+
+        self.tcp.cmd_send(cmd)
+        _, _, res_err = self.tcp.res_recv()
+
+        self.tcp.print_err(res_err)
+        z_ctrl_tiplift_df = pd.DataFrame({'TipLift (m)': tiplift},
+                                 index=[0]).T
+        print('\n'+
+              z_ctrl_tiplift_df.to_string(header=False)+
+              '\n\nZ-controller tiplift set.')
+        return z_ctrl_tiplift_df
 
     def ZCtrlTipLiftGet(self):
-        return
+        header = self.tcp.header_construct('ZCtrl.TipLiftGet', 0)
+
+        self.tcp.cmd_send(header)
+        _, res_arg, res_err = self.tcp.res_recv('float32')
+
+        self.tcp.print_err(res_err)
+        z_ctrl_tiplift_df = pd.DataFrame({'TipLift (m)': res_arg[0]},
+                                 index=[0]).T
+        print('\n'+
+              z_ctrl_tiplift_df.to_string(header=False)+
+              '\n\nZ-controller tiplift returned.')
+        return z_ctrl_tiplift_df
 
     def ZCtrlHome(self):
         return

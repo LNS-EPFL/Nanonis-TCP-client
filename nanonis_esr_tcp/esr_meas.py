@@ -106,7 +106,10 @@ class esr_meas:
             z_sur = np.mean(surrounding_z_list)
             return z_cen.iloc[0, 0] - z_sur
 
+        # get the original bias and tiplift values
         bias_ini = self.connect.BiasGet()
+        tiplift_ini = self.connect.ZCtrlTipLiftGet()
+
 
         # tracking the atom for 3s
         self.connect.AtomTrackCtrlSet(0,1)
@@ -118,9 +121,11 @@ class esr_meas:
 
         dz1 = meas_dz()
         self.connect.BiasSet('50u')
+        self.connect.ZCtrlTipLiftSet(0) # set tiplift to 0
         self.connect.ZCtrlOnOffSet(0)
         self.connect.BiasPulse(1, '150m', '650m', 1, 0)
         self.connect.BiasSet(bias_ini.loc['Bias (V)', 0])
+        self.connect.ZCtrlTipLiftSet(tiplift_ini.loc['TipLift (m)', 0]) # set tiplift to 0
         dz2 = meas_dz()
         delta_z = dz1 - dz2
         print(f'delta z (pm): {delta_z*1e12}')
