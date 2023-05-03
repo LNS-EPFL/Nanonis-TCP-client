@@ -88,8 +88,8 @@ class esr_meas:
             return data, parameters
         
     ##################################### PICK UP ATOMS ##################################    
-    def atom_pickup(self):
-        def meas_dz(radius = 1.5e-9):
+    def atom_pickup(self, radius = 1.5e-9):
+        def meas_dz():
             z_cen = self.connect.ZCtrlZPosGet()
             xy = self.connect.FolMeXYPosGet(1)
             x = xy.loc['X (m)']
@@ -109,6 +109,7 @@ class esr_meas:
         # get the original bias and tiplift values
         bias_ini = self.connect.BiasGet()
         tiplift_ini = self.connect.ZCtrlTipLiftGet()
+        self.connect.ZCtrlTipLiftSet(0) # set tiplift to 0
 
 
         # tracking the atom for 3s
@@ -121,10 +122,11 @@ class esr_meas:
 
         dz1 = meas_dz()
         self.connect.BiasSet('50u')
-        self.connect.ZCtrlTipLiftSet(0) # set tiplift to 0
         self.connect.ZCtrlOnOffSet(0)
         self.connect.BiasPulse(1, '150m', '650m', 1, 0)
+        self.connect.ZCtrlOnOffSet(1)
         self.connect.BiasSet(bias_ini.loc['Bias (V)', 0])
+        
         self.connect.ZCtrlTipLiftSet(tiplift_ini.loc['TipLift (m)', 0]) # set tiplift to 0
         dz2 = meas_dz()
         delta_z = dz1 - dz2
