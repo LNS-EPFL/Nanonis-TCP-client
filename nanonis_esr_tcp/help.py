@@ -455,6 +455,23 @@ class help:
             \nReturn arguments (if Send response back flag is set to True when sending request message):\
             \n- Z-Controller setpoint (float32)\
             \n- Error described in the Response message>Body section')
+        
+    def ZCtrlTipLiftSet(self):
+        print('ZCtrl.TipLiftSet\
+              \nSets the TipLift of the Z-Controller.\
+              \nRetracts the tip by the specified amount when turning off the Z-controller.\
+              \nArguments:\
+              \n- TipLift (m) (float32)\
+              \nReturn arguments (if Send response back flag is set to True when sending request message):\
+              \n- Error described in the Response message>Body section')
+    def ZCtrlTipLiftSet(self):
+        print('ZCtrl.TipLiftGet\
+            \nReturns the TipLift of the Z-Controller.\
+            \nRetracts the tip by the specified amount when turning off the Z-controller.\
+            \nArguments: None\
+            \nReturn arguments (if Send response back flag is set to True when sending request message):\
+            \n- TipLift (m) (float32)\
+            \n- Error described in the Response message>Body section')
 
     def ScanAction(self):
         print('Scan.Action\
@@ -1102,3 +1119,8 @@ class esr_meas_help:
               \n'par' should be the dictionary returned by 'bias_spectr_par_load' function.\
               \n'data_folder' is the subfolder of the current session folder.\
               \n'basename' is the name of the file, eg. '%Y%m%d_', 'STS_%Y%m%d_', etc. ")
+        
+    def atom_pickup(self):
+        print('atom_pickup(radius)\
+              \nRun the atom pickup procedure. The function measures the delta z before and after the pickup process.\
+              \n"radius" is the distance used for measuring four points on the substrate around the atom. The default value is 1 nm. ')
