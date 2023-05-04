@@ -88,23 +88,27 @@ class esr_meas:
             return data, parameters
         
     ##################################### PICK UP ATOMS ##################################    
-    def atom_pickup(self, radius = 1e-9):
+    def atom_pickup(self, radius = 1e-9, num_aqui = 3):
+        def multiple_z_get():
+            z_list = []
+            for i in range(num_aqui):
+                time.sleep(0.2)
+                z = self.connect.ZCtrlZPosGet()
+                z_list.append(z.loc['Z position of the tip (m)', 0])
+            return np.mean(z_list)
+
         def meas_dz():
-            z_cen = self.connect.ZCtrlZPosGet()
-            xy = self.connect.FolMeXYPosGet(1)
-            x = xy.loc['X (m)']
-            y = xy.loc['Y (m)']
+            z_cen = multiple_z_get()
             surrounding_xy_list_ = [[x-radius, y], [x, y-radius], [x+radius,y], [x, y+radius]]
             surrounding_z_list = []
 
             for i in range(len(surrounding_xy_list_)):
                 self.connect.FolMeXYPosSet(*surrounding_xy_list_[i], 1)
-                time.sleep(0.2)
-                surrounding_z = self.connect.ZCtrlZPosGet()
+                surrounding_z = multiple_z_get()
                 surrounding_z_list.append(surrounding_z)
             self.connect.FolMeXYPosSet(x, y, 1)
             z_sur = np.mean(surrounding_z_list)
-            return z_cen.iloc[0, 0] - z_sur
+            return z_cen - z_sur
 
         # get the original bias and tiplift values
         bias_ini = self.connect.BiasGet()
@@ -115,11 +119,14 @@ class esr_meas:
         # tracking the atom for 3s
         self.connect.AtomTrackCtrlSet(0,1)
         self.connect.AtomTrackCtrlSet(1,1)
-        print('Wait atom tracking for 3 seconds...')
-        time.sleep(3)
+        print('Wait atom tracking for 4 seconds...')
+        time.sleep(4)
         self.connect.AtomTrackCtrlSet(0,0)
         self.connect.AtomTrackCtrlSet(1,0)
 
+        xy = self.connect.FolMeXYPosGet(1)
+        x = xy.loc['X (m)']
+        y = xy.loc['Y (m)']
         dz1 = meas_dz() # calculate the height of the atom before picking it up
         self.connect.BiasSet('50u')
         self.connect.ZCtrlOnOffSet(0)
@@ -130,7 +137,7 @@ class esr_meas:
         dz2 = meas_dz()
         delta_z = dz1 - dz2
         print(f'delta z (pm): {delta_z*1e12}')
-        if abs(delta_z) > 80e-12:
+        if abs(delta_z) > 90e-12:
             print('Atom picked up.')
         else:
             print('Atom not picked up. Try again!')
