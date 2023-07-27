@@ -572,7 +572,7 @@ class nanonis_ctrl:
         header = self.tcp.header_construct('BiasSpectr.MLSModeGet', 0)
 
         self.tcp.cmd_send(header)
-        _, res_arg, res_err = self.tcp.res_recv('int', 'str') # for string, no need to put 'int' before 'str'
+        _, res_arg, res_err = self.tcp.res_recv('int', 'str') 
 
         self.tcp.print_err(res_err)
         mls_mode_df = pd.DataFrame({'Sweep mode': res_arg[1]},
@@ -1364,8 +1364,9 @@ class nanonis_ctrl:
               '\n\nPoint & Shoot properties returned.')
         return ps_props_df
 
-    def FolMePSPropsSet(self, auto_resume, use_own_basename, basename_size, basename, ext_VI_path_size, ext_VI_path, pre_meas_delay):
+    def FolMePSPropsSet(self, auto_resume, use_own_basename, basename, ext_VI_path_size, ext_VI_path, pre_meas_delay):
         pre_meas_delay = self.tcp.unit_cvt(pre_meas_delay)
+        basename_size = len(basename)
 
         body  = self.tcp.dtype_cvt(auto_resume, 'uint32', 'bin')
         body += self.tcp.dtype_cvt(use_own_basename, 'uint32', 'bin')
@@ -1394,6 +1395,247 @@ class nanonis_ctrl:
               ps_props_df.to_string(header=False)+
               '\n\nPoint & Shoot properties set.')
         return ps_props_df
+######################################## Marks in Scan Module #############################################
+    def MarksPointDraw(self, x, y, txt, color):
+        x = self.tcp.unit_cvt(x)
+        y = self.tcp.unit_cvt(y)
+
+        txt_size = len(txt)
+        
+        body  = self.tcp.dtype_cvt(x, 'float32', 'bin')
+        body += self.tcp.dtype_cvt(y, 'float32', 'bin')
+        body += self.tcp.dtype_cvt(txt_size, 'int', 'bin')
+        body += self.tcp.dtype_cvt(txt, 'str', 'bin')
+        body += self.tcp.dtype_cvt(color, 'uint32', 'bin')
+        
+        header = self.tcp.header_construct('Marks.PointDraw', len(body))
+        cmd = header + body
+
+        self.tcp.cmd_send(cmd)
+        _, _, res_err = self.tcp.res_recv()
+
+        self.tcp.print_err(res_err)
+        marks_piont_draw_df = pd.DataFrame({'X (m)': x,
+                                            'Y (m)': y,
+                                            'Text': txt,
+                                            'Color': color
+                                            },
+                                            index=[0]).T
+        print('\n'+
+              marks_piont_draw_df.to_string(header=False)+
+              '\n\nPoint mark is drawn.')
+        return marks_piont_draw_df
+
+    def MarksPointsDraw(self, num_pts, x_1d, y_1d, txt_1d, color_1d):
+        x_1d = [self.tcp.unit_cvt(x) for x in x_1d]
+        y_1d = [self.tcp.unit_cvt(y) for y in y_1d]
+        
+        body  = self.tcp.dtype_cvt(num_pts, 'int', 'bin')
+        body += self.tcp.dtype_cvt(x_1d, '1dfloat32', 'bin')
+        body += self.tcp.dtype_cvt(y_1d, '1dfloat32', 'bin')
+        body += self.tcp.dtype_cvt(txt_1d, '1dstr', 'bin')
+        body += self.tcp.dtype_cvt(color_1d, '1duint32', 'bin')
+        
+        header = self.tcp.header_construct('Marks.PointsDraw', len(body))
+        cmd = header + body
+
+        self.tcp.cmd_send(cmd)
+        _, _, res_err = self.tcp.res_recv()
+
+        self.tcp.print_err(res_err)
+        marks_points_draw_df = pd.DataFrame({'Number of points': num_pts,
+                                            'X (m)': x_1d,
+                                            'Y (m)': y_1d,
+                                            'Text': txt_1d,
+                                            'Color': color_1d
+                                            },
+                                            index=[0]).T
+        print('\n'+
+              marks_points_draw_df.to_string(header=False)+
+              '\n\nPoint marks are drawn.')
+        return marks_points_draw_df
+
+    def MarksLineDraw(self, x_start, y_start, x_end, y_end, color):
+        x_start = self.tcp.unit_cvt(x_start)
+        y_start = self.tcp.unit_cvt(y_start)
+        x_end = self.tcp.unit_cvt(x_end)
+        y_end = self.tcp.unit_cvt(y_end)
+
+        body  = self.tcp.dtype_cvt(x_start, 'float32', 'bin')
+        body += self.tcp.dtype_cvt(y_start, 'float32', 'bin')
+        body += self.tcp.dtype_cvt(x_end, 'float32', 'bin')
+        body += self.tcp.dtype_cvt(y_end, 'float32', 'bin')
+        body += self.tcp.dtype_cvt(color, 'uint32', 'bin')
+        
+        header = self.tcp.header_construct('Marks.LineDraw', len(body))
+        cmd = header + body
+
+        self.tcp.cmd_send(cmd)
+        _, _, res_err = self.tcp.res_recv()
+
+        self.tcp.print_err(res_err)
+        marks_line_draw_df = pd.DataFrame({'Start point X coordinate (m)': x_start,
+                                            'Start point Y coordinate (m)': y_start,
+                                            'End point X coordinate (m)': x_end,
+                                            'End point Y coordinate (m)': y_end, 
+                                            'Color': color
+                                            },
+                                            index=[0]).T
+        print('\n'+
+              marks_line_draw_df.to_string(header=False)+
+              '\n\nLine mark is drawn.')
+        return marks_line_draw_df
+
+    def MarksLinesDraw(self, num_lines, x_start_1d, y_start_1d, x_end_1d, y_end_1d, color_1d):
+        x_start_1d = [self.tcp.unit_cvt(x_start) for x_start in x_start_1d]
+        y_start_1d = [self.tcp.unit_cvt(y_start) for y_start in y_start_1d]
+        x_end_1d = [self.tcp.unit_cvt(x_end) for x_end in x_end_1d]
+        y_end_1d = [self.tcp.unit_cvt(y_end) for y_end in y_end_1d]
+
+        body  = self.tcp.dtype_cvt(num_lines, 'int', 'bin')
+        body += self.tcp.dtype_cvt(x_start_1d, '1dfloat32', 'bin')
+        body += self.tcp.dtype_cvt(y_start_1d, '1dfloat32', 'bin')
+        body += self.tcp.dtype_cvt(x_end_1d, '1dfloat32', 'bin')
+        body += self.tcp.dtype_cvt(y_end_1d, '1dfloat32', 'bin')
+        body += self.tcp.dtype_cvt(color_1d, '1duint32', 'bin')
+        
+        header = self.tcp.header_construct('Marks.LinesDraw', len(body))
+        cmd = header + body
+
+        self.tcp.cmd_send(cmd)
+        _, _, res_err = self.tcp.res_recv()
+
+        self.tcp.print_err(res_err)
+        marks_lines_draw_df = pd.DataFrame({'Number of lines': num_lines,
+                                           'Start point X coordinate (m)': x_start_1d,
+                                           'Start point Y coordinate (m)': y_start_1d,
+                                           'End point X coordinate (m)': x_end_1d,
+                                           'End point Y coordinate (m)': y_end_1d, 
+                                           'Color': color_1d
+                                            },
+                                            index=[0]).T
+        print('\n'+
+              marks_lines_draw_df.to_string(header=False)+
+              '\n\nLine marks are drawn.')
+        return marks_lines_draw_df
+
+    def MarksPointsErase(self, pt_idx):
+        body  = self.tcp.dtype_cvt(pt_idx, 'int', 'bin')
+
+        header = self.tcp.header_construct('Marks.PointsErase', len(body))
+        cmd = header + body
+
+        self.tcp.cmd_send(cmd)
+        _, _, res_err = self.tcp.res_recv()
+
+        self.tcp.print_err(res_err)
+        point_idx_df = pd.DataFrame({'Point index': pt_idx,
+                                },
+                                index=[0]).T
+        print('\n'+
+              point_idx_df.to_string(header=False)+
+              '\n\nPoint erased.')
+        return point_idx_df
+
+    def MarksLinesErase(self, line_idx):
+        body  = self.tcp.dtype_cvt(line_idx, 'int', 'bin')
+
+        header = self.tcp.header_construct('Marks.LinesErase', len(body))
+        cmd = header + body
+
+        self.tcp.cmd_send(cmd)
+        _, _, res_err = self.tcp.res_recv()
+
+        self.tcp.print_err(res_err)
+        line_idx_df = pd.DataFrame({'Line index': pt_idx,
+                                },
+                                index=[0]).T
+        print('\n'+
+              line_idx_df.to_string(header=False)+
+              '\n\nLine erased.')
+        return line_idx_df
+
+    def MarksPointsVisibleSet(self, pt_idx, visib):
+        body  = self.tcp.dtype_cvt(pt_idx, 'int', 'bin')
+        body += self.tcp.dtype_cvt(visib, 'uint16', 'bin')
+
+        header = self.tcp.header_construct('Marks.PointsVisibleSet', len(body))
+        cmd = header + body
+
+        self.tcp.cmd_send(cmd)
+        _, _, res_err = self.tcp.res_recv()
+
+        self.tcp.print_err(res_err)
+        point_visi_df = pd.DataFrame({'Point index': pt_idx,
+                                    'Show/hide': visib,
+                                },
+                                index=[0]).T
+        print('\n'+
+              point_visi_df.to_string(header=False)+
+              '\n\nPoint visibility set.')
+        return point_visi_df
+
+    def MarksLinesVisibleSet(self, line_idx, visib):
+        body  = self.tcp.dtype_cvt(line_idx, 'int', 'bin')
+        body += self.tcp.dtype_cvt(visib, 'uint16', 'bin')
+
+        header = self.tcp.header_construct('Marks.LinesVisibleSet', len(body))
+        cmd = header + body
+
+        self.tcp.cmd_send(cmd)
+        _, _, res_err = self.tcp.res_recv()
+
+        self.tcp.print_err(res_err)
+        line_visi_df = pd.DataFrame({'Line index': line_idx,
+                                     'Show/hide': visib,
+                                    },
+                                    index=[0]).T
+        print('\n'+
+              line_visi_df.to_string(header=False)+
+              '\n\Line visibility set.')
+        return line_visi_df
+
+    def MarksPointsGet(self):
+        header = self.tcp.header_construct('Marks.PointsGet', 0)
+
+        self.tcp.cmd_send(header)
+        _, res_arg, res_err = self.tcp.res_recv('int', '1dfloat32', '1dfloat32', 'int', '1dstr', '1duint32', '1duint32')
+
+        self.tcp.print_err(res_err)
+        points_df = pd.DataFrame({'Number of points': res_arg[0],
+                                 'X coordinate (m)': res_arg[1],
+                                 'Y coordinate (m)': res_arg[2],
+                                 'Text': res_arg[4],
+                                 'Color': res_arg[5],
+                                 'Visible':res_arg[6],
+                                 },
+                                 index=[0]).T
+        print('\n'+
+              points_df.to_string(header=False)+
+              '\n\nPoint list returned.')
+        return points_df
+
+    def MarksLinesGet(self):
+        header = self.tcp.header_construct('Marks.LinesGet', 0)
+
+        self.tcp.cmd_send(header)
+        _, res_arg, res_err = self.tcp.res_recv('int', '1dfloat32', '1dfloat32', '1dfloat32', '1dfloat32', '1duint32', '1duint32')
+
+        self.tcp.print_err(res_err)
+        lines_df = pd.DataFrame({'Number of lines': res_arg[0],
+                                  'Start point X coordinate (m)': res_arg[1],
+                                  'Start point Y coordinate (m)': res_arg[2],
+                                  'End point X coordinate (m)': res_arg[3],
+                                  'End point Y coordinate (m)': res_arg[4],
+                                  'Color':res_arg[5],
+                                  'Visible':res_arg[6],
+                                  },
+                                  index=[0]).T
+        print('\n'+
+              lines_df.to_string(header=False)+
+              '\n\Line list returned.')
+        return lines_df
+
 
 ######################################## Tip Shaper Module #############################################
     def TipShaperStart(self, wait_until_fin, timeout):
@@ -2007,7 +2249,159 @@ class nanonis_ctrl:
               signal_name_df.to_string()+
               '\n\nSignal name list returned.')
         return signal_name_df
+######################################## Data Logger Module #############################################
+    def DataLogOpen(self):
+        header = self.tcp.header_construct('DataLog.Open', 0)
 
+        self.tcp.cmd_send(header)
+        _, _, res_err = self.tcp.res_recv()
+
+        self.tcp.print_err(res_err)
+        print('Data Logger opened.')
+        
+    def DataLogStart(self):
+        header = self.tcp.header_construct('DataLog.Start', 0)
+
+        self.tcp.cmd_send(header)
+        _, _, res_err = self.tcp.res_recv()
+
+        self.tcp.print_err(res_err)
+        print('Data Logger acquisition started.')
+        
+    def DataLogStop(self):
+        header = self.tcp.header_construct('DataLog.Stop', 0)
+
+        self.tcp.cmd_send(header)
+        _, _, res_err = self.tcp.res_recv()
+
+        self.tcp.print_err(res_err)
+        print('Data Logger acquisition stopped.')
+        
+    def DataLogStatusGet(self):
+        header = self.tcp.header_construct('DataLog.StatusGet', body_size = 0)
+
+        self.tcp.cmd_send(header)
+        _, res_arg, res_err = self.tcp.res_recv('int', 'str', 'uint16', 'uint16', 'float32', 'int', 'str', 'int', 'str', 'int')
+
+        self.tcp.print_err(res_err)
+        datalog_status_df = pd.DataFrame({'Start time': res_arg[1], 
+                                 'Acquisition elapsed hours': res_arg[2], 
+                                 'Acquisition elapsed minutes': res_arg[3], 
+                                 'Acquisition elapsed seconds': res_arg[4], 
+                                 'Stop time': res_arg[6],
+                                 'Saved file path': res_arg[8], 
+                                 'Points counter': res_arg[9],
+                                 },
+                                 index=[0]).T
+        print('\n'+
+              datalog_status_df.to_string(header=False) + 
+              '\n\nData Logger status returned.')
+        return datalog_status_df
+        
+    def DataLogChsSet(self, num_chs, ch_idx):
+        print('To get the signal name and its corresponding index in the list of the 128 available signals in the Nanonis Controller, use the "Signal.NamesGet" function, or check the RT Idx value in the Signals Manager module.')
+
+        body  = self.tcp.dtype_cvt(num_chs, 'int', 'bin')
+        body += self.tcp.dtype_cvt(ch_idx, '1dint', 'bin')
+        header = self.tcp.header_construct('DataLog.ChsSet', len(body))
+        cmd = header + body
+
+        self.tcp.cmd_send(cmd)
+        _, _, res_err = self.tcp.res_recv()
+
+        self.tcp.print_err(res_err)
+        chs_df = pd.DataFrame({'Number of channels': num_chs,
+                               'Channel indexes': ch_idx},
+                               index=[0]).T
+
+        print('\n'+
+              chs_df.to_string(header=False)+
+              '\n\nData Logger channels set.')
+        return chs_df
+        
+    def DataLogChsGet(self):
+        header = self.tcp.header_construct('DataLog.ChsGet', body_size = 0)
+
+        self.tcp.cmd_send(header)
+        _, res_arg, res_err = self.tcp.res_recv('int', '1dint')
+
+        self.tcp.print_err(res_err)
+        chs_df = pd.DataFrame({'Number of channels': res_arg[0],
+                               'Channel indexes': [res_arg[1]]},
+                               index=[0]).T
+
+        print('\n'+
+              chs_df.to_string(header=False)+
+              '\n\nData Logger channels returned.')
+        return chs_df
+    
+    #! Attention!!!
+    def DataLogPropsSet(self, acq_mode, acq_dura_h, acq_dura_m, acq_dura_s, avg, basename, cmt, lst_module):
+        
+        
+        basename_size = len(basename)
+        cmt_size = len(cmt)
+        lst_modules_size = sum(len(ele) for ele in lst_module)
+        num_modules = len(lst_module)
+
+        body  = self.tcp.dtype_cvt(acq_mode, 'uint16', 'bin')
+        body += self.tcp.dtype_cvt(acq_dura_h, 'int', 'bin')
+        body += self.tcp.dtype_cvt(acq_dura_m, 'int', 'bin')
+        body += self.tcp.dtype_cvt(acq_dura_s, 'float32', 'bin')
+        body += self.tcp.dtype_cvt(avg, 'int', 'bin')
+        body += self.tcp.dtype_cvt(basename_size, 'int', 'bin')
+        body += self.tcp.dtype_cvt(basename, 'str', 'bin')
+        body += self.tcp.dtype_cvt(cmt_size, 'int', 'bin')
+        body += self.tcp.dtype_cvt(cmt, 'str', 'bin')
+        body += self.tcp.dtype_cvt(lst_modules_size, 'int', 'bin')
+        body += self.tcp.dtype_cvt(num_modules, 'int', 'bin')
+        body += self.tcp.dtype_cvt(lst_module, '1dstr', 'bin')
+
+        header = self.tcp.header_construct('DataLog.PropsSet', len(body))
+        cmd = header + body
+
+        self.tcp.cmd_send(cmd)
+        _, _, res_err = self.tcp.res_recv()
+
+        self.tcp.print_err(res_err)
+        datalog_props_df = pd.DataFrame({'Acquisition mode': acq_mode,
+                                      'Acquisition duration (hours)':acq_dura_h,
+                                      'Acquisition duration (minutes)': acq_dura_m,
+                                      'Acquisition duration (seconds)': acq_dura_s,
+                                      'Averaging': avg,
+                                      'Basename': basename,
+                                      'Comment':cmt,
+                                      'Number of modules':num_modules, 
+                                      'List of modules': lst_module,
+                                      },
+                                      index=[0]).T
+        print('\n'+
+              datalog_props_df.to_string(header=False)+
+              '\n\nData Logger properties set.')
+        return datalog_props_df
+        
+    def DataLogPropsGet(self):
+        header = self.tcp.header_construct('DataLog.PropsGet', body_size = 0)
+
+        self.tcp.cmd_send(header)
+        _, res_arg, res_err = self.tcp.res_recv('uint16', 'int', 'int', 'float32', 'int', 'int', 'str', 'int', 'str')
+
+        self.tcp.print_err(res_err)
+        datalog_props_df = pd.DataFrame({'Acquisition mode': res_arg[0],
+                               'Acquisition duration (hours)': res_arg[1],
+                               'Acquisition duration (minutes)': res_arg[2],
+                               'Acquisition duration (seconds)': res_arg[3],
+                               'Averaging': res_arg[4],
+                               'Basename': res_arg[6],
+                               'Comment': res_arg[8],
+                               },
+                               index=[0]).T
+
+        print('\n'+
+              datalog_props_df.to_string(header=False)+
+              '\n\nData Logger properties returned.')
+        return datalog_props_df
+        
 ######################################## Utilities Module #############################################
     def UtilSessionPathGet(self):
         header = self.tcp.header_construct('Util.SessionPathGet', 0)

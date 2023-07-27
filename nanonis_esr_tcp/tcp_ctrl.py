@@ -46,7 +46,15 @@ class tcp_ctrl:
             return np.array(data, '>S').tobytes()
         #* 1dstr to binary
         elif original_fmt == '1dstr' and target_fmt == 'bin': 
-            return print('in progress......')        
+            str_array_in_bytes = ''
+            for ele in data:
+                # Each element of the array must be preceded by its size in bytes in 'int' format
+                ele_bytes_size = np.array(len(ele), '>i').tobytes()
+                ele_bytes = np.array(ele, '>S').tobytes()
+                
+                str_array_in_bytes += ele_bytes_size
+                str_array_in_bytes += ele_bytes
+            return str_array_in_bytes        
         #* int32 to binary
         elif original_fmt in ['int', '1dint'] and target_fmt == 'bin': 
             return np.array(data, '>i').tobytes()
