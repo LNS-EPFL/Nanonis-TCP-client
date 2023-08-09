@@ -1182,7 +1182,7 @@ class nanonis_ctrl:
         self.tcp.print_err(res_err)
         folme_xypos_df = pd.DataFrame({'X (m)': res_arg[0],
                                       'Y (m)': res_arg[1],
-                                      'Wait for newest dara': wait_for_new_data
+                                      'Wait for newest data': wait_for_new_data
                                       },
                                       index=[0]).T
         print('\n'+
@@ -1401,7 +1401,9 @@ class nanonis_ctrl:
         y = self.tcp.unit_cvt(y)
 
         txt_size = len(txt)
-        
+
+        color_int = self.tcp.rgb_to_int(color)  
+
         body  = self.tcp.dtype_cvt(x, 'float32', 'bin')
         body += self.tcp.dtype_cvt(y, 'float32', 'bin')
         body += self.tcp.dtype_cvt(txt_size, 'int', 'bin')
@@ -1418,7 +1420,7 @@ class nanonis_ctrl:
         marks_piont_draw_df = pd.DataFrame({'X (m)': x,
                                             'Y (m)': y,
                                             'Text': txt,
-                                            'Color': color
+                                            'Color': [color]
                                             },
                                             index=[0]).T
         print('\n'+
@@ -1426,28 +1428,34 @@ class nanonis_ctrl:
               '\n\nPoint mark is drawn.')
         return marks_piont_draw_df
 
-    def MarksPointsDraw(self, num_pts, x_1d, y_1d, txt_1d, color_1d):
+    def MarksPointsDraw(self, x_1d, y_1d, txt_1d, color_1d):
         x_1d = [self.tcp.unit_cvt(x) for x in x_1d]
         y_1d = [self.tcp.unit_cvt(y) for y in y_1d]
+
+        num_pts = len(x_1d)
+        txt_1d_bin = self.tcp.dtype_cvt(txt_1d, '1dstr', 'bin')
+
+        color_1d_int = [self.tcp.rgb_to_int(color) for color in color_1d]
         
         body  = self.tcp.dtype_cvt(num_pts, 'int', 'bin')
         body += self.tcp.dtype_cvt(x_1d, '1dfloat32', 'bin')
         body += self.tcp.dtype_cvt(y_1d, '1dfloat32', 'bin')
-        body += self.tcp.dtype_cvt(txt_1d, '1dstr', 'bin')
-        body += self.tcp.dtype_cvt(color_1d, '1duint32', 'bin')
-        
+        body += self.tcp.dtype_cvt(len(txt_1d_bin), 'int', 'bin')
+        body += txt_1d_bin
+        body += self.tcp.dtype_cvt(color_1d_int, '1duint32', 'bin')
         header = self.tcp.header_construct('Marks.PointsDraw', len(body))
         cmd = header + body
-
+        
         self.tcp.cmd_send(cmd)
+        
         _, _, res_err = self.tcp.res_recv()
 
         self.tcp.print_err(res_err)
         marks_points_draw_df = pd.DataFrame({'Number of points': num_pts,
-                                            'X (m)': x_1d,
-                                            'Y (m)': y_1d,
-                                            'Text': txt_1d,
-                                            'Color': color_1d
+                                            'X (m)': [x_1d],
+                                            'Y (m)': [y_1d],
+                                            'Text': [txt_1d],
+                                            'Color': [color_1d]
                                             },
                                             index=[0]).T
         print('\n'+
@@ -1461,11 +1469,14 @@ class nanonis_ctrl:
         x_end = self.tcp.unit_cvt(x_end)
         y_end = self.tcp.unit_cvt(y_end)
 
+        color_int = self.tcp.rgb_to_int(color)  
+
+
         body  = self.tcp.dtype_cvt(x_start, 'float32', 'bin')
         body += self.tcp.dtype_cvt(y_start, 'float32', 'bin')
         body += self.tcp.dtype_cvt(x_end, 'float32', 'bin')
         body += self.tcp.dtype_cvt(y_end, 'float32', 'bin')
-        body += self.tcp.dtype_cvt(color, 'uint32', 'bin')
+        body += self.tcp.dtype_cvt(color_int, 'uint32', 'bin')
         
         header = self.tcp.header_construct('Marks.LineDraw', len(body))
         cmd = header + body
@@ -1478,7 +1489,7 @@ class nanonis_ctrl:
                                             'Start point Y coordinate (m)': y_start,
                                             'End point X coordinate (m)': x_end,
                                             'End point Y coordinate (m)': y_end, 
-                                            'Color': color
+                                            'Color': [color]
                                             },
                                             index=[0]).T
         print('\n'+
@@ -1486,18 +1497,22 @@ class nanonis_ctrl:
               '\n\nLine mark is drawn.')
         return marks_line_draw_df
 
-    def MarksLinesDraw(self, num_lines, x_start_1d, y_start_1d, x_end_1d, y_end_1d, color_1d):
+    def MarksLinesDraw(self, x_start_1d, y_start_1d, x_end_1d, y_end_1d, color_1d):
+        num_lines = len(x_start_1d)
         x_start_1d = [self.tcp.unit_cvt(x_start) for x_start in x_start_1d]
         y_start_1d = [self.tcp.unit_cvt(y_start) for y_start in y_start_1d]
         x_end_1d = [self.tcp.unit_cvt(x_end) for x_end in x_end_1d]
         y_end_1d = [self.tcp.unit_cvt(y_end) for y_end in y_end_1d]
+
+        color_1d_int = [self.tcp.rgb_to_int(color) for color in color_1d]
+
 
         body  = self.tcp.dtype_cvt(num_lines, 'int', 'bin')
         body += self.tcp.dtype_cvt(x_start_1d, '1dfloat32', 'bin')
         body += self.tcp.dtype_cvt(y_start_1d, '1dfloat32', 'bin')
         body += self.tcp.dtype_cvt(x_end_1d, '1dfloat32', 'bin')
         body += self.tcp.dtype_cvt(y_end_1d, '1dfloat32', 'bin')
-        body += self.tcp.dtype_cvt(color_1d, '1duint32', 'bin')
+        body += self.tcp.dtype_cvt(color_1d_int, '1duint32', 'bin')
         
         header = self.tcp.header_construct('Marks.LinesDraw', len(body))
         cmd = header + body
@@ -1507,11 +1522,11 @@ class nanonis_ctrl:
 
         self.tcp.print_err(res_err)
         marks_lines_draw_df = pd.DataFrame({'Number of lines': num_lines,
-                                           'Start point X coordinate (m)': x_start_1d,
-                                           'Start point Y coordinate (m)': y_start_1d,
-                                           'End point X coordinate (m)': x_end_1d,
-                                           'End point Y coordinate (m)': y_end_1d, 
-                                           'Color': color_1d
+                                           'Start point X coordinate (m)': [x_start_1d],
+                                           'Start point Y coordinate (m)': [y_start_1d],
+                                           'End point X coordinate (m)': [x_end_1d],
+                                           'End point Y coordinate (m)': [y_end_1d], 
+                                           'Color': [color_1d]
                                             },
                                             index=[0]).T
         print('\n'+
@@ -1547,7 +1562,7 @@ class nanonis_ctrl:
         _, _, res_err = self.tcp.res_recv()
 
         self.tcp.print_err(res_err)
-        line_idx_df = pd.DataFrame({'Line index': pt_idx,
+        line_idx_df = pd.DataFrame({'Line index': line_idx,
                                 },
                                 index=[0]).T
         print('\n'+
@@ -1592,22 +1607,23 @@ class nanonis_ctrl:
                                     index=[0]).T
         print('\n'+
               line_visi_df.to_string(header=False)+
-              '\n\Line visibility set.')
+              '\n\nLine visibility set.')
         return line_visi_df
 
     def MarksPointsGet(self):
         header = self.tcp.header_construct('Marks.PointsGet', 0)
 
         self.tcp.cmd_send(header)
-        _, res_arg, res_err = self.tcp.res_recv('int', '1dfloat32', '1dfloat32', 'int', '1dstr', '1duint32', '1duint32')
+        # This function is an special case for processing the response from Nanonis. The 'res_recv' function cannot process the command because the second 'int' argument in the middle of the non-string arrays.
+        _, res_arg, res_err = self.tcp.res_recv_MarksPointsGet('int', '1dfloat32', '1dfloat32', 'int', '1dstr', '1duint32', '1duint32')
 
         self.tcp.print_err(res_err)
         points_df = pd.DataFrame({'Number of points': res_arg[0],
-                                 'X coordinate (m)': res_arg[1],
-                                 'Y coordinate (m)': res_arg[2],
+                                 'X coordinate (m)': [res_arg[1]],
+                                 'Y coordinate (m)': [res_arg[2]],
                                  'Text': res_arg[4],
-                                 'Color': res_arg[5],
-                                 'Visible':res_arg[6],
+                                 'Color': [res_arg[5]],
+                                 'Visible':[res_arg[6]],
                                  },
                                  index=[0]).T
         print('\n'+
@@ -1617,23 +1633,22 @@ class nanonis_ctrl:
 
     def MarksLinesGet(self):
         header = self.tcp.header_construct('Marks.LinesGet', 0)
-
         self.tcp.cmd_send(header)
         _, res_arg, res_err = self.tcp.res_recv('int', '1dfloat32', '1dfloat32', '1dfloat32', '1dfloat32', '1duint32', '1duint32')
 
         self.tcp.print_err(res_err)
         lines_df = pd.DataFrame({'Number of lines': res_arg[0],
-                                  'Start point X coordinate (m)': res_arg[1],
-                                  'Start point Y coordinate (m)': res_arg[2],
-                                  'End point X coordinate (m)': res_arg[3],
-                                  'End point Y coordinate (m)': res_arg[4],
-                                  'Color':res_arg[5],
-                                  'Visible':res_arg[6],
+                                  'Start point X coordinate (m)': [res_arg[1]],
+                                  'Start point Y coordinate (m)': [res_arg[2]],
+                                  'End point X coordinate (m)':[res_arg[3]],
+                                  'End point Y coordinate (m)':[res_arg[4]],
+                                  'Color': [res_arg[5]],
+                                  'Visible': [res_arg[6]],
                                   },
                                   index=[0]).T
         print('\n'+
               lines_df.to_string(header=False)+
-              '\n\Line list returned.')
+              '\n\nLine list returned.')
         return lines_df
 
 
@@ -1743,7 +1758,7 @@ class nanonis_ctrl:
 
         self.tcp.print_err(res_err)
         gen_swp_chs_df = pd.DataFrame({'Number of channels': num_chs,
-                                 'Channel indexes': ch_idx},
+                                 'Channel indexes': [ch_idx]},
                                  index=[0]).T
         print('\n'+
               gen_swp_chs_df.to_string(header=False)+
@@ -2298,9 +2313,9 @@ class nanonis_ctrl:
               '\n\nData Logger status returned.')
         return datalog_status_df
         
-    def DataLogChsSet(self, num_chs, ch_idx):
+    def DataLogChsSet(self, ch_idx):
         print('To get the signal name and its corresponding index in the list of the 128 available signals in the Nanonis Controller, use the "Signal.NamesGet" function, or check the RT Idx value in the Signals Manager module.')
-
+        num_chs = len(ch_idx)
         body  = self.tcp.dtype_cvt(num_chs, 'int', 'bin')
         body += self.tcp.dtype_cvt(ch_idx, '1dint', 'bin')
         header = self.tcp.header_construct('DataLog.ChsSet', len(body))
@@ -2311,7 +2326,7 @@ class nanonis_ctrl:
 
         self.tcp.print_err(res_err)
         chs_df = pd.DataFrame({'Number of channels': num_chs,
-                               'Channel indexes': ch_idx},
+                               'Channel indexes': [ch_idx]},
                                index=[0]).T
 
         print('\n'+
@@ -2372,7 +2387,7 @@ class nanonis_ctrl:
                                       'Basename': basename,
                                       'Comment':cmt,
                                       'Number of modules':num_modules, 
-                                      'List of modules': lst_module,
+                                      'List of modules': [lst_module],
                                       },
                                       index=[0]).T
         print('\n'+
