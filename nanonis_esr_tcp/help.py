@@ -1075,6 +1075,125 @@ class help:
             \n- Signals names (1D array string) returns an array of signals names strings, where each string comes prepended by its size in bytes\
             \n- Error described in the Response message>Body sectionSignals.CalibrGet\
             \nReturns the calibration and offset of the selected signal.')
+        
+
+    def DataLogOpen(self):
+        print('DataLog.Open\
+            \nOpens the Data Logger module.\
+            \nArguments: None\
+            \nReturn arguments (if Send response back flag is set to True when sending request message):\
+            \n- Error described in the Response message>Body section')
+        
+    def DataLogStart(self):
+        print('DataLog.Start\
+            \nStarts the acquisition in the Data Logger module.\
+            \nBefore using this function, select the channels to record in the Data Logger.\
+            \nArguments: None\
+            \nReturn arguments (if Send response back flag is set to True when sending request message):\
+            \n- Error described in the Response message>Body section')
+        
+    def DataLogStop(self):
+        print('DataLog.Stop\
+            \nStops the acquisition in the Data Logger module.\
+            \nArguments: None\
+            \nReturn arguments (if Send response back flag is set to True when sending request message):\
+            \n- Error described in the Response message>Body section')
+        
+    def DataLogStatusGet(self):
+        print('DataLog.StatusGet\
+            \nReturns the status parameters from the Data Logger module.\
+            \nArguments: None\
+            \nReturn arguments (if Send response back flag is set to True when sending request message):\
+            \n- Start time size (int) returns the number of bytes corresponding to the Start time string\
+            \n- Start time (string) returns a timestamp of the moment when the acquisition started\
+            \n- Acquisition elapsed hours (unsigned int16) returns the number of hours already passed since the\
+            \nacquisition started\
+            \n- Acquisition elapsed minutes (unsigned int16) returns the number of minutes displayed on the Data Logger\
+            \n- Acquisition elapsed seconds (float32) returns the number of seconds displayed on the Data Logger\
+            \n- Stop time size (int) returns the number of bytes corresponding to the Stop time string\
+            \n- Stop time (string) returns a timestamp of the moment when the acquisition Stopped\
+            \n- Saved file path size (int) returns the number of bytes corresponding to the Saved file path string\
+            \n- Saved file path (string) returns the path of the last saved file\
+            \n- Points counter (int) returns the number of points (averaged samples) to save into file.\
+            \nThis parameter updates while running the acquisition\
+            \n- Error described in the Response message>Body section')
+        
+    def DataLogChsSet(self):
+        print('DataLog.ChsSet\
+            \nSets the list of recorded channels in the Data Logger module.\
+            \nArguments:\
+            \n- Number of channels (int) is the number of recorded channels. It defines the size of the Channel indexes\
+            \narray\
+            \n- Channel indexes (1D array int) are the indexes of recorded channels. The index is comprised between 0\
+            \nand 127, and it corresponds to the full list of signals available in the system.\
+            \nTo get the signal name and its corresponding index in the list of the 128 available signals in the Nanonis\
+            \nController, use the Signal.NamesGet function, or check the RT Idx value in the Signals Manager module.\
+            \nReturn arguments (if Send response back flag is set to True when sending request message):\
+            \n- Error described in the Response message>Body section')
+        
+    def DataLogChsGet(self):
+        print('DataLog.ChsGet\
+            \nReturns the list of recorded channels in the Data Logger module.\
+            \nArguments: None\
+            \nReturn arguments (if Send response back flag is set to True when sending request message):\
+            \n- Number of channels (int) is the number of recorded channels. It defines the size of the Channel indexes\
+            \narray\
+            \n- Channel indexes (1D array int) are the indexes of recorded channels. The index is comprised between 0\
+            \nand 127, and it corresponds to the full list of signals available in the system.\
+            \nTo get the signal name and its corresponding index in the list of the 128 available signals in the Nanonis\
+            \nController, use the Signal.NamesGet function, or check the RT Idx value in the Signals Manager module\
+            \n- Error described in the Response message>Body section')
+        
+    def DataLogPropsSet(self):
+        print('DataLog.PropsSet\
+            \nSets the acquisition configuration and the save options in the Data Logger module.\
+            \nArguments:\
+            \n- Acquisition mode (unsigned int16) means that if Timed (=2), the selected channels are acquired during the\
+            \nacquisition duration time or until the user presses the Stop button.\
+            \nIf Continuous (=1), the selected channels are acquired continuously until the user presses the Stop button.\
+            \nIf 0, the is no change in the acquisition mode.\
+            \nThe acquired data are saved every time the averaged samples buffer reaches 25.000 samples and when the\
+            \nacquisition stops\
+            \n- Acquisition duration( hours) (int) sets the number of hours the acquisition should last. Value -1 means no\
+            \nchange\
+            \n- Acquisition duration (minutes) (int) sets the number of minutes. Value -1 means no change\
+            \n- Acquisition duration (seconds) (float32) sets the number of seconds. Value -1 means no change\
+            \n- Averaging (int) sets how many data samples (received from the real-time system) are averaged for one\
+            \ndata point saved into file. By increasing this value, the noise might decrease, and fewer points per seconds\
+            \nare recorded.\
+            \nUse 0 to skip changing this parameter\
+            \n- Basename size (int) is the size in bytes of the Basename string\
+            \n- Basename (string) is base name used for the saved images\
+            \n- Comment size (int) is the size in bytes of the Comment string\
+            \n- Comment (string) is comment saved in the file\
+            \n- Size of the list of moduless (int) is the size in bytes of the List of modules string array\
+            \n- Number of modules (int) is the number of elements of the List of modules string array\
+            \n- List of modules (1D array string) sets the modules names whose parameters will be saved in the header of\
+            \nthe files. The size of each string item should come right before it as integer 32\
+            \nReturn arguments (if Send response back flag is set to True when sending request message):\
+            \n- Error described in the Response message>Body section')
+        
+    def DataLogPropsGet(self):
+        print('DataLog.PropsGet\
+            \nReturns the acquisition configuration and the save options in the Data Logger module.\
+            \nArguments: None\
+            \nReturn arguments (if Send response back flag is set to True when sending request message):\
+            \n- Acquisition mode (unsigned int16) means that if Timed (=1), the selected channels are acquired during the\
+            \nacquisition duration time or until the user presses the Stop button.\
+            \nIf Continuous (=0), the selected channels are acquired continuously until the user presses the Stop button.\
+            \nThe acquired data are saved every time the averaged samples buffer reaches 25.000 samples and when the\
+            \nacquisition stops\
+            \n- Acquisition duration( hours) (int) returns the number of hours the acquisition lasts\
+            \n- Acquisition duration (minutes) (int) returns the number of minutes\
+            \n- Acquisition duration (seconds) (float32) returns the number of seconds\
+            \n- Averaging (int) returns how many data samples (received from the real-time system) are averaged for one\
+            \ndata point saved into file\
+            \n- Basename size (int) returns the size in bytes of the Basename string\
+            \n- Basename (string) returns the base name used for the saved images\
+            \n- Comment size (int) returns the size in bytes of the Comment string\
+            \n- Comment (string) returns the comment saved in the file\
+            \n- Error described in the Response message>Body section')
+        
 
     def UtilSessionPathGet(self):
         print('Util.SessionPathGet\
