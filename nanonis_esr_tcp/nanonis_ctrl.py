@@ -984,7 +984,7 @@ class nanonis_ctrl:
 
         self.tcp.print_err(res_err)
         scan_buffer_df = pd.DataFrame({'Number of channels': num_chs,
-                                       'Channel indexes': ch_idx,
+                                       'Channel indexes': [ch_idx],
                                        'Pixels': px,
                                        'Lines': lines
                                       },
