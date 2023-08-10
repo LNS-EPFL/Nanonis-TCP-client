@@ -46,7 +46,15 @@ class tcp_ctrl:
             return np.array(data, '>S').tobytes()
         #* 1dstr to binary
         elif original_fmt == '1dstr' and target_fmt == 'bin': 
-            return print('in progress......')        
+            str_array_in_bytes = b''
+            for ele in data:
+                # Each element of the array must be preceded by its size in bytes in 'int' format
+                ele_bytes_size = np.array(len(ele), '>i').tobytes()
+                ele_bytes = np.array(ele, '>S').tobytes()
+
+                str_array_in_bytes += ele_bytes_size
+                str_array_in_bytes += ele_bytes
+            return str_array_in_bytes        
         #* int32 to binary
         elif original_fmt in ['int', '1dint'] and target_fmt == 'bin': 
             return np.array(data, '>i').tobytes()
@@ -67,7 +75,7 @@ class tcp_ctrl:
         #* binary to string (expression after '%' gives the size of the string in bytes)
         #* for string, no need to put 'int' before 'str'
         elif original_fmt == 'bin' and target_fmt == 'str': 
-            data_cvted = np.frombuffer(data, '>%dS' % arg)[0].decode('utf-8') 
+            data_cvted = np.frombuffer(data, '>%dS' % arg)[0].decode('iso-8859-1') 
             return [data_cvted, len(data)]
         #* binary to 1d or 2d string
         elif original_fmt == 'bin' and target_fmt in ['1dstr', '2dstr']: 
@@ -154,9 +162,76 @@ class tcp_ctrl:
         '''
         supported argument formats (arg_fmt) are: 
             'str', 'int', 'uint16', 'uint32', 'float32', 'float64', 
-            '1dstr', '1dint', '1duint8'(noy supported now), '1duint32', 
+            '1dstr', '1dint', '1duint8'(not supported now), '1duint32', 
             '1dfloat32', '1dfloat64', '2dfloat32', '2dstr'
         '''
+    def res_recv_MarksPointsGet(self, *varg_fmt, get_header = True, get_arg = True, get_err = True):
+        res_bin_rep = self.sk.recv(self.buffersize)
+        
+        res_arg = []
+        res_err = pd.DataFrame()
+        res_header = pd.DataFrame()
+
+        num_pts = None
+
+        # parse the header of a response message
+        if get_header:
+            res_header['commmand name'] = self.dtype_cvt(res_bin_rep[0:32], 'bin', 'str', 32) # drop all '\x00' in the string
+            res_header['body size'] = self.dtype_cvt(res_bin_rep[32:36], 'bin', 'int')  
+        # parse the arguments values of a response message
+        if get_arg:
+            arg_byte_idx = 40   
+            arg_size_dict = {'int': 4,'uint16': 2,'uint32': 4,'float32': 4,'float64': 8}
+            for idx, arg_fmt in enumerate(varg_fmt):
+                if arg_fmt == 'int':
+                    arg, arg_size = self.dtype_cvt(res_bin_rep[arg_byte_idx: arg_byte_idx + arg_size_dict[arg_fmt]], 'bin', arg_fmt)
+                    arg_byte_idx += arg_size
+                    res_arg.append(arg)
+                    if num_pts == None:
+                        num_pts = arg
+
+                elif arg_fmt == '1dstr':
+                    num_rows = 1
+                    num_cols = num_pts
+                    
+                    # calculate the total size of the string array
+                    interal_byte_idx = arg_byte_idx
+                    for ele_idx in range(num_rows*num_cols): 
+                        ele_size, len_int = self.dtype_cvt(res_bin_rep[interal_byte_idx: interal_byte_idx + arg_size_dict['int']], 'bin', 'int')
+                        interal_byte_idx += ele_size + len_int
+                    array_size = interal_byte_idx - arg_byte_idx
+
+                    arg, arg_size = self.dtype_cvt(res_bin_rep[arg_byte_idx: arg_byte_idx + array_size], 'bin', arg_fmt, num_rows, num_cols)
+                    arg_byte_idx += arg_size
+
+                    if array_size == arg_size:
+                        res_arg.append(arg)
+                    else:
+                        print('There might be an error when parsing the string array. Possible causes could be: \n 1) the argument format (arg_fmt) input is wrong. \n 2) the previous arg_fmt is wrong. ' )
+                        res_arg.append(arg)
+
+                elif arg_fmt in ['1dint', '1duint32', '1dfloat32', '1dfloat64']:
+                    num_rows = 1
+                    num_cols = num_pts
+
+                    array_size = num_rows * num_cols * arg_size_dict[arg_fmt[2:]]
+                    arg, arg_size = self.dtype_cvt(res_bin_rep[arg_byte_idx: arg_byte_idx + array_size], 'bin', arg_fmt, num_rows, num_cols)
+                    arg_byte_idx += arg_size
+                    res_arg.append(arg)
+                else: 
+                    raise TypeError('Please check the data types! Supported data types are: \
+                                    "bin", "str", "int", "uint16", "uint32", "float32", "float64", \
+                                    "1dstr", "1dint", "1duint8" (currently unavailable), "1duint32", "1dfloat32", "1dfloat64", \
+                                    "2dfloat32", "2dstr"')
+                
+            res_bin_rep = res_bin_rep[arg_byte_idx-1:] # for parsing the error in a request or a response
+
+            # parse the error of a response message
+            if get_err:
+                res_err['error status'] = [self.dtype_cvt(res_bin_rep[0:4], 'bin', 'uint32')[0]] # error status
+                res_err['error body size'] = [self.dtype_cvt(res_bin_rep[4:8], 'bin', 'int')[0]]# error description size
+                res_err['error description'] = [self.dtype_cvt(res_bin_rep[8:], 'bin', 'str', len(res_bin_rep[8:]))[0]] # error description
+            return res_header, res_arg, res_err
 
     def res_recv(self, *varg_fmt, get_header = True, get_arg = True, get_err = True):  
         res_bin_rep = self.sk.recv(self.buffersize)
@@ -169,7 +244,6 @@ class tcp_ctrl:
         if get_header:
             res_header['commmand name'] = self.dtype_cvt(res_bin_rep[0:32], 'bin', 'str', 32) # drop all '\x00' in the string
             res_header['body size'] = self.dtype_cvt(res_bin_rep[32:36], 'bin', 'int')            
-
         # parse the arguments values of a response message
         if get_arg:
             arg_byte_idx = 40   
@@ -227,14 +301,14 @@ class tcp_ctrl:
 
         # parse the error of a response message
         if get_err:
-            res_err['error status'], _ = self.dtype_cvt(res_bin_rep[0:4], 'bin', 'uint32') # error status
-            res_err['error body size'], _ = self.dtype_cvt(res_bin_rep[4:8], 'bin', 'int') # error description size
-            res_err['error description'], _ = self.dtype_cvt(res_bin_rep[8:], 'bin', 'str', len(res_bin_rep[8:])) # error description
+            res_err['error status'] = [self.dtype_cvt(res_bin_rep[0:4], 'bin', 'uint32')[0]] # error status
+            res_err['error body size'] = [self.dtype_cvt(res_bin_rep[4:8], 'bin', 'int')[0]]# error description size
+            res_err['error description'] = [self.dtype_cvt(res_bin_rep[8:], 'bin', 'str', len(res_bin_rep[8:]))[0]] # error description
         return res_header, res_arg, res_err
     
     def print_err(self, res_err):
-        if not res_err.empty:
-            print(res_err['error description'])
+        if not res_err.loc[0, 'error body size'] == 0:
+            print(res_err.loc[0, 'error description'])
 
     def tristate_cvt(self, status):
         if status == 0:
@@ -284,3 +358,13 @@ class tcp_ctrl:
             return status      
 
         
+    def rgb_to_int(self, rgb_lst):
+        # Make sure the color components are within the valid range (0-255)
+        r = max(0, min(255, rgb_lst[0]))
+        g = max(0, min(255, rgb_lst[1]))
+        b = max(0, min(255, rgb_lst[2]))
+        
+        # Combine the color components using bitwise left shifts
+        color_int = (r << 16) + (g << 8) + b
+        
+        return color_int
