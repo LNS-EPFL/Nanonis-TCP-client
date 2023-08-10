@@ -1408,7 +1408,7 @@ class nanonis_ctrl:
         body += self.tcp.dtype_cvt(y, 'float32', 'bin')
         body += self.tcp.dtype_cvt(txt_size, 'int', 'bin')
         body += self.tcp.dtype_cvt(txt, 'str', 'bin')
-        body += self.tcp.dtype_cvt(color, 'uint32', 'bin')
+        body += self.tcp.dtype_cvt(color_int, 'uint32', 'bin')
         
         header = self.tcp.header_construct('Marks.PointDraw', len(body))
         cmd = header + body
@@ -1621,7 +1621,7 @@ class nanonis_ctrl:
         points_df = pd.DataFrame({'Number of points': res_arg[0],
                                  'X coordinate (m)': [res_arg[1]],
                                  'Y coordinate (m)': [res_arg[2]],
-                                 'Text': res_arg[4],
+                                 'Text': [txt for txt in res_arg[4]],
                                  'Color': [res_arg[5]],
                                  'Visible':[res_arg[6]],
                                  },
