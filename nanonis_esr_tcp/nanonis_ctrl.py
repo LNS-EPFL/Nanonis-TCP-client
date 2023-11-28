@@ -7,13 +7,16 @@ import pandas as pd
 import numpy as np
 
 class nanonis_ctrl:
+    # Class variables
+    if_print = False
+    # Functions
     def __init__(self, tcp):
         self.tcp = tcp
 
 # it is recommended to construct body first so that you don't need to calculate the body size by yourself
 # SI units are used in this module
 ######################################## Bias Module #############################################
-    def BiasSet(self, bias):
+    def BiasSet(self, bias, prt = if_print):
         bias = self.tcp.unit_cvt(bias)
         if bias > 10:
             raise ValueError('The maximum allowed bias is 10V. Please check your input! Bias has been set to 0 to protect the tip!')    
@@ -28,12 +31,14 @@ class nanonis_ctrl:
         self.tcp.print_err(res_err)
         bias_df = pd.DataFrame({'Bias (V)': bias},
                                 index=[0]).T
-        print('\n'+
-              bias_df.to_string(header=False)+
-              '\n\nBias set.')
+        
+        if prt: 
+            print('\n'+
+                bias_df.to_string(header=False)+
+                '\n\nBias set.')
         return bias_df 
 
-    def BiasGet(self):
+    def BiasGet(self, prt = if_print):
         header = self.tcp.header_construct('Bias.Get', body_size=0) # the body size here is the body size of Bias.Get argument 
 
         self.tcp.cmd_send(header)
@@ -42,12 +47,14 @@ class nanonis_ctrl:
         self.tcp.print_err(res_err)
         bias_df = pd.DataFrame({'Bias (V)': res_arg[0]},
                                 index=[0]).T
-        print('\n'+
-              bias_df.to_string(header=False)+
-              '\n\nBias returned.')
+        
+        if prt: 
+            print('\n'+
+                bias_df.to_string(header=False)+
+                '\n\nBias returned.')
         return bias_df 
     
-    def BiasRangeSet(self, bias_ran_idx): 
+    def BiasRangeSet(self, bias_ran_idx, prt = if_print): 
         body  = self.tcp.dtype_cvt(bias_ran_idx, 'uint16', 'bin')
 
         header = self.tcp.header_construct('Bias.RangeSet', len(body))
@@ -59,12 +66,14 @@ class nanonis_ctrl:
         self.tcp.print_err(res_err)
         bias_range_df = pd.DataFrame({'Bias range index': bias_ran_idx},
                                      index=[0]).T
-        print('\n'+
-              bias_range_df.to_string(header=False)+
-              '\n\nBias range set.')
+        
+        if prt: 
+            print('\n'+
+                bias_range_df.to_string(header=False)+
+                '\n\nBias range set.')
         return bias_range_df
 
-    def BiasRangeGet(self):
+    def BiasRangeGet(self, prt = if_print):
         header = self.tcp.header_construct('Bias.RangeGet', 0)
 
         self.tcp.cmd_send(header)
@@ -77,12 +86,14 @@ class nanonis_ctrl:
                                       'Bias range index': res_arg[3]
                                       },
                                      index=[0]).T
-        print('\n'+
-              bias_range_df.to_string(header=False)+
-              '\n\nBias range returned.')
+        
+        if prt: 
+            print('\n'+
+                bias_range_df.to_string(header=False)+
+                '\n\nBias range returned.')
         return bias_range_df
     
-    def BiasCalibrSet(self, calibr, offset):
+    def BiasCalibrSet(self, calibr, offset, prt = if_print):
         body  = self.tcp.dtype_cvt(calibr, 'float32', 'bin')
         body += self.tcp.dtype_cvt(offset, 'float32', 'bin')
 
@@ -96,12 +107,13 @@ class nanonis_ctrl:
         bias_calibr_df = pd.DataFrame({'Calibration': calibr,
                                       'Offset': offset},
                                      index=[0]).T
-        print('\n'+
-              bias_calibr_df.to_string(header=False)+
-              '\n\nBias calibration set.')
+        if prt: 
+            print('\n'+
+                bias_calibr_df.to_string(header=False)+
+                '\n\nBias calibration set.')
         return bias_calibr_df
 
-    def BiasCalibrGet(self):
+    def BiasCalibrGet(self, prt = if_print):
         header = self.tcp.header_construct('Bias.CalibrGet', 0)
 
         self.tcp.cmd_send(header)
@@ -112,12 +124,13 @@ class nanonis_ctrl:
                                        'Offset': res_arg[1]
                                        },
                                      index=[0]).T
-        print('\n'+
-              bias_calibr_df.to_string(header=False)+
-              '\n\nBias calibration returned.')
+        if prt: 
+            print('\n'+
+                bias_calibr_df.to_string(header=False)+
+                '\n\nBias calibration returned.')
         return bias_calibr_df
     
-    def BiasPulse(self, wait_until_done, bias_pulse_width, bias_value, zctrl_on_hold, pulse_abs_rel):
+    def BiasPulse(self, wait_until_done, bias_pulse_width, bias_value, zctrl_on_hold, pulse_abs_rel, prt = if_print):
         bias_pulse_width = self.tcp.unit_cvt(bias_pulse_width)
         bias_value = self.tcp.unit_cvt(bias_value)
         if bias_value > 10:
@@ -143,22 +156,24 @@ class nanonis_ctrl:
                                       'Pulse absolute/relative': pulse_abs_rel
                                        },
                                 index=[0]).T
-        print('\n'+
-              bias_pulse_df.to_string(header=False)+
-              '\n\nBias pulse set.')
+        if prt: 
+            print('\n'+
+                bias_pulse_df.to_string(header=False)+
+                '\n\nBias pulse set.')
         return bias_pulse_df 
 
 ######################################## Bias Spectroscopy Module #############################################
-    def BiasSpectrOpen(self):
+    def BiasSpectrOpen(self, prt = if_print):
         header = self.tcp.header_construct('BiasSpectr.Open', body_size=0)
 
         self.tcp.cmd_send(header)
         _, _, res_err = self.tcp.res_recv()
 
         self.tcp.print_err(res_err)
-        print('Bias Spectroscopy window opened.')
+        if prt: 
+            print('Bias Spectroscopy window opened.')
 
-    def BiasSpectrStart(self, get_data, save_base_name):
+    def BiasSpectrStart(self, get_data, save_base_name, prt = if_print):
         save_base_name_size = len(save_base_name)
 
         print('Scanning tunneling spectroscopy (STS) launched. Please wait...')
@@ -176,20 +191,22 @@ class nanonis_ctrl:
 
         bias_spectr_param_df = pd.DataFrame(res_arg[7].T)
         print('STS done!')
-        print(bias_spectr_df)
-        print(bias_spectr_param_df)
+        if prt: 
+            print(bias_spectr_df)
+            print(bias_spectr_param_df)
         return bias_spectr_df, bias_spectr_param_df
 
-    def BiasSpectrStop(self):
+    def BiasSpectrStop(self, prt = if_print):
         header = self.tcp.header_construct('BiasSpectr.Stop', body_size=0)
 
         self.tcp.cmd_send(header)
         _, _, res_err = self.tcp.res_recv()
 
         self.tcp.print_err(res_err)
-        print('STS stopped.')
+        if prt: 
+            print('STS stopped.')
 
-    def BiasSpectrStatusGet(self):
+    def BiasSpectrStatusGet(self, prt = if_print):
         header = self.tcp.header_construct('BiasSpectr.StatusGet', body_size=0)
 
         self.tcp.cmd_send(header)
@@ -198,11 +215,13 @@ class nanonis_ctrl:
         self.tcp.print_err(res_err)
         status_df = pd.DataFrame({'Bias spectroscopy status': self.tcp.bistate_cvt(res_arg[0])}, index=[0]).T
 
-        print('\n'+
-              status_df.to_string(header=False)+
-              '\n\nBias Spectroscopy status returned.')
-    
-    def BiasSpectrChsSet(self, num_chs, ch_idx):
+        if prt: 
+            print('\n'+
+                status_df.to_string(header=False)+
+                '\n\nBias Spectroscopy status returned.')
+        return status_df
+
+    def BiasSpectrChsSet(self, num_chs, ch_idx, prt = if_print):
         print('To get the signal name and its corresponding index in the list of the 128 available signals in the Nanonis Controller, use the "Signal.NamesGet" function, or check the RT Idx value in the Signals Manager module.')
 
         body  = self.tcp.dtype_cvt(num_chs, 'int', 'bin')
@@ -218,12 +237,13 @@ class nanonis_ctrl:
                                'Channel indexes': ch_idx},
                                index=[0]).T
 
-        print('\n'+
-              chs_df.to_string(header=False)+
-              '\n\nChannels set.')
+        if prt: 
+            print('\n'+
+                chs_df.to_string(header=False)+
+                '\n\nChannels set.')
         return chs_df
 
-    def BiasSpectrChsGet(self):
+    def BiasSpectrChsGet(self, prt = if_print):
         header = self.tcp.header_construct('BiasSpectr.ChsGet', body_size = 0)
 
         self.tcp.cmd_send(header)
@@ -234,12 +254,13 @@ class nanonis_ctrl:
                                'Channel indexes': [res_arg[1]]},
                                index=[0]).T
 
-        print('\n'+
-              chs_df.to_string(header=False)+
-              '\n\n Channels returned.')
+        if prt: 
+            print('\n'+
+                chs_df.to_string(header=False)+
+                '\n\n Channels returned.')
         return chs_df
 
-    def BiasSpectrPropsSet(self, save_all, num_sweeps, bw_sweep, num_pts, z_offset, auto_save, show_save_dialog):
+    def BiasSpectrPropsSet(self, save_all, num_sweeps, bw_sweep, num_pts, z_offset, auto_save, show_save_dialog, prt = if_print):
         z_offset = self.tcp.unit_cvt(z_offset)
 
         body  = self.tcp.dtype_cvt(save_all, 'uint16', 'bin')
@@ -265,12 +286,13 @@ class nanonis_ctrl:
                                  'Show save dialog': self.tcp.tristate_cvt(show_save_dialog)},
                                  index=[0]).T
 
-        print('\n'+
-              props_df.to_string(header=False)+
-              '\n\nBias spectroscopy properties set.')
+        if prt: 
+            print('\n'+
+                props_df.to_string(header=False)+
+                '\n\nBias spectroscopy properties set.')
         return props_df
 
-    def BiasSpectrPropsGet(self):
+    def BiasSpectrPropsGet(self, prt = if_print):
         header = self.tcp.header_construct('BiasSpectr.PropsGet', body_size = 0)
 
         self.tcp.cmd_send(header)
@@ -289,12 +311,13 @@ class nanonis_ctrl:
                                  'Fixed parameters': res_arg[12].tolist()
                                  },
                                  index=[0]).T
-        print('\n'+
-              props_df.to_string(header=False) + 
-              '\n\nBias spectroscopy properties returned.')
+        if prt: 
+            print('\n'+
+                props_df.to_string(header=False) + 
+                '\n\nBias spectroscopy properties returned.')
         return props_df
     
-    def BiasSpectrAdvPropsSet(self, reset_bias, z_ctrl_hold, rec_final_z, lock_in_run):
+    def BiasSpectrAdvPropsSet(self, reset_bias, z_ctrl_hold, rec_final_z, lock_in_run, prt = if_print):
         body  = self.tcp.dtype_cvt(reset_bias, 'uint16', 'bin')
         body += self.tcp.dtype_cvt(z_ctrl_hold, 'uint16', 'bin')
         body += self.tcp.dtype_cvt(rec_final_z, 'uint16', 'bin')
@@ -312,12 +335,13 @@ class nanonis_ctrl:
                                  'Lockin Run': self.tcp.tristate_cvt(lock_in_run), 
                                  },
                                  index=[0]).T
-        print('\n'+
-              props_df.to_string(header=False)+
-              '\n\nBias spectroscopy advanced properties set.')
+        if prt: 
+            print('\n'+
+                props_df.to_string(header=False)+
+                '\n\nBias spectroscopy advanced properties set.')
         return props_df
     
-    def BiasSpectrAdvPropsGet(self):
+    def BiasSpectrAdvPropsGet(self, prt = if_print):
         header = self.tcp.header_construct('BiasSpectr.AdvPropsGet', body_size = 0)
 
         self.tcp.cmd_send(header)
@@ -330,12 +354,13 @@ class nanonis_ctrl:
                                  'Lockin Run': self.tcp.tristate_cvt(res_arg[3]), 
                                  },
                                  index=[0]).T
-        print('\n'+
-              props_df.to_string(header=False)+
-              '\n\nBias spectroscopy advanced properties returned.')
+        if prt: 
+            print('\n'+
+                props_df.to_string(header=False)+
+                '\n\nBias spectroscopy advanced properties returned.')
         return props_df
     
-    def BiasSpectrLimitsSet(self, start_val, end_val):
+    def BiasSpectrLimitsSet(self, start_val, end_val, prt = if_print):
         start_val = self.tcp.unit_cvt(start_val)
         end_val = self.tcp.unit_cvt(end_val)
 
@@ -352,12 +377,13 @@ class nanonis_ctrl:
                                  'Stop value (V)': end_val, 
                                  },
                                  index=[0]).T
-        print('\n'+
-              limits_df.to_string(header=False)+
-              '\n\nBias limits set.')
+        if prt: 
+            print('\n'+
+                limits_df.to_string(header=False)+
+                '\n\nBias limits set.')
         return limits_df
     
-    def BiasSpectrLimitsGet(self):
+    def BiasSpectrLimitsGet(self, prt = if_print):
         header = self.tcp.header_construct('BiasSpectr.LimitsGet', body_size = 0)
 
         self.tcp.cmd_send(header)
@@ -367,12 +393,13 @@ class nanonis_ctrl:
         limits_df = pd.DataFrame({'Start value (V)': res_arg[0], 
                                  'Stop value (V)': res_arg[1]},
                                  index=[0]).T
-        print('\n'+
-              limits_df.to_string(header=False)+
-              '\n\nBias spectroscopy bias limits returned.')
+        if prt: 
+            print('\n'+
+                limits_df.to_string(header=False)+
+                '\n\nBias spectroscopy bias limits returned.')
         return limits_df
     
-    def BiasSpectrTimingSet(self, z_avg_t, z_offset, init_settling_t, max_slew_rate, settling_t, inte_t, end_settling_t, z_ctrl_t):
+    def BiasSpectrTimingSet(self, z_avg_t, z_offset, init_settling_t, max_slew_rate, settling_t, inte_t, end_settling_t, z_ctrl_t, prt = if_print):
         z_avg_t = self.tcp.unit_cvt(z_avg_t)
         z_offset = self.tcp.unit_cvt(z_offset)
         init_settling_t = self.tcp.unit_cvt(init_settling_t)
@@ -406,12 +433,13 @@ class nanonis_ctrl:
                                    'End settling time (s)': end_settling_t,
                                    'Z control time (s)': z_ctrl_t},
                                  index=[0]).T
-        print('\n'+
-              timing_df.to_string(header=False)+
-              '\n\nBias spectroscopy timing set.')
+        if prt: 
+            print('\n'+
+                timing_df.to_string(header=False)+
+                '\n\nBias spectroscopy timing set.')
         return timing_df
 
-    def BiasSpectrTimingGet(self):
+    def BiasSpectrTimingGet(self, prt = if_print):
         header = self.tcp.header_construct('BiasSpectr.TimingGet', 0)
 
         self.tcp.cmd_send(header)
@@ -427,12 +455,13 @@ class nanonis_ctrl:
                                   'End settling time (s)': res_arg[6],
                                   'Z control time (s)': res_arg[7]},
                                  index=[0]).T
-        print('\n'+
-              timing_df.to_string(header=False)+
-              '\n\nBias spectroscopy timing settings retured.')
+        if prt: 
+            print('\n'+
+                timing_df.to_string(header=False)+
+                '\n\nBias spectroscopy timing settings retured.')
         return timing_df
 
-    def BiasSpectrTTLSyncSet(self, enable, ttl_line, ttl_polarity, t_2_on, on_duration):
+    def BiasSpectrTTLSyncSet(self, enable, ttl_line, ttl_polarity, t_2_on, on_duration, prt = if_print):
         t_2_on = self.tcp.unit_cvt(t_2_on)
         on_duration = self.tcp.unit_cvt(on_duration)
 
@@ -454,12 +483,13 @@ class nanonis_ctrl:
                                'Time to on (s)': t_2_on,
                                'On duration (s)': on_duration},
                                 index=[0]).T
-        print('\n'+
-              ttl_df.to_string(header=False)+
-              '\n\nTTL sychronizetion set.')
+        if prt: 
+            print('\n'+
+                ttl_df.to_string(header=False)+
+                '\n\nTTL sychronizetion set.')
         return ttl_df
     
-    def BiasSpectrTTLSyncGet(self):
+    def BiasSpectrTTLSyncGet(self, prt = if_print):
         header = self.tcp.header_construct('BiasSpectr.TTLSyncGet', body_size = 0)
 
         self.tcp.cmd_send(header)
@@ -472,12 +502,13 @@ class nanonis_ctrl:
                                'Time to on (s)': res_arg[3],
                                'On duration (s)': res_arg[4]},
                                 index=[0]).T
-        print('\n'+
-              ttl_df.to_string(header=False)+
-              '\n\nTTL sychronizetion settings returned.')
+        if prt: 
+            print('\n'+
+                ttl_df.to_string(header=False)+
+                '\n\nTTL sychronizetion settings returned.')
         return ttl_df
 
-    def BiasSpectrAltZCtrlSet(self, alt_z_ctrl_sp, sp, settling_t):
+    def BiasSpectrAltZCtrlSet(self, alt_z_ctrl_sp, sp, settling_t, prt = if_print):
         sp = self.tcp.unit_cvt(sp)
         settling_t = self.tcp.unit_cvt(settling_t)
 
@@ -496,12 +527,13 @@ class nanonis_ctrl:
                                       'Settling time (s)': settling_t
                                       },
                                         index=[0]).T  
-        print('\n'+
-              alt_z_ctrl_df.to_string(header=False)+
-              '\n\nAlternative Z controller set.')
+        if prt: 
+            print('\n'+
+                alt_z_ctrl_df.to_string(header=False)+
+                '\n\nAlternative Z controller set.')
         return alt_z_ctrl_df   
     
-    def BiasSpectrAltZCtrlGet(self):
+    def BiasSpectrAltZCtrlGet(self, prt = if_print):
         header = self.tcp.header_construct('BiasSpectr.AltZCtrlGet', 0)
 
         self.tcp.cmd_send(header)
@@ -513,12 +545,13 @@ class nanonis_ctrl:
                                       'Settling time (s)': res_arg[2]
                                       },
                                       index=[0]).T  
-        print('\n'+
-              alt_z_ctrl_df.to_string(header=False)+
-              '\n\nAlternative Z controller settings returned.')
+        if prt: 
+            print('\n'+
+                alt_z_ctrl_df.to_string(header=False)+
+                '\n\nAlternative Z controller settings returned.')
         return alt_z_ctrl_df   
     
-    def BiasSpectrMLSLockinPerSegSet(self, lockin_per_seg):
+    def BiasSpectrMLSLockinPerSegSet(self, lockin_per_seg, prt = if_print):
         body  = self.tcp.dtype_cvt(lockin_per_seg, 'uint32', 'bin')
         header = self.tcp.header_construct('BiasSpectr.MLSLockinPerSegSet', len(body))
         cmd = header + body
@@ -529,12 +562,13 @@ class nanonis_ctrl:
         self.tcp.print_err(res_err)
         lockin_per_seg_df = pd.DataFrame({'Lock-in per segment': self.tcp.bistate_cvt(lockin_per_seg)},
                                 index=[0]).T
-        print('\n'+
-              lockin_per_seg_df.to_string(header=False)+
-              '\n\nLock-In per Segment flag in Multi line segment editor set.')
+        if prt: 
+            print('\n'+
+                lockin_per_seg_df.to_string(header=False)+
+                '\n\nLock-In per Segment flag in Multi line segment editor set.')
         return lockin_per_seg_df
     
-    def BiasSpectrMLSLockinPerSegGet(self):
+    def BiasSpectrMLSLockinPerSegGet(self, prt = if_print):
         header = self.tcp.header_construct('BiasSpectr.MLSLockinPerSegGet', 0)
 
         self.tcp.cmd_send(header)
@@ -543,12 +577,13 @@ class nanonis_ctrl:
         self.tcp.print_err(res_err)
         lockin_per_seg_df = pd.DataFrame({'Lock-in per segment': self.tcp.bistate_cvt(res_arg[0])},
                                 index=[0]).T
-        print('\n'+
-              lockin_per_seg_df.to_string(header=False)+
-              '\n\nLock-In per Segment flag in Multi line segment editor settings returned.')
+        if prt: 
+            print('\n'+
+                lockin_per_seg_df.to_string(header=False)+
+                '\n\nLock-In per Segment flag in Multi line segment editor settings returned.')
         return lockin_per_seg_df          
     
-    def BiasSpectrMLSModeSet(self, sweep_mode):
+    def BiasSpectrMLSModeSet(self, sweep_mode, prt = if_print):
         # sweep mode: 'Linear' or 'MLS'
         sweep_mode_len = len(sweep_mode)
 
@@ -563,12 +598,13 @@ class nanonis_ctrl:
         self.tcp.print_err(res_err)
         mls_mode_df = pd.DataFrame({'Sweep mode': sweep_mode},
                                  index=[0]).T
-        print('\n'+
-              mls_mode_df.to_string(header=False)+
-              '\n\nBias spectroscopy sweep mode set.')
+        if prt: 
+            print('\n'+
+                mls_mode_df.to_string(header=False)+
+                '\n\nBias spectroscopy sweep mode set.')
         return mls_mode_df
     
-    def BiasSpectrMLSModeGet(self):
+    def BiasSpectrMLSModeGet(self, prt = if_print):
         header = self.tcp.header_construct('BiasSpectr.MLSModeGet', 0)
 
         self.tcp.cmd_send(header)
@@ -577,12 +613,13 @@ class nanonis_ctrl:
         self.tcp.print_err(res_err)
         mls_mode_df = pd.DataFrame({'Sweep mode': res_arg[1]},
                                 index=[0]).T
-        print('\n'+
-              mls_mode_df.to_string(header=False)+
-              '\n\nLock-In per Segment flag in Multi line segment editor settings returned.')
+        if prt: 
+            print('\n'+
+                mls_mode_df.to_string(header=False)+
+                '\n\nLock-In per Segment flag in Multi line segment editor settings returned.')
         return mls_mode_df 
     
-    def BiasSpectrMLSValsSet(self, num_segs, bias_start, bias_end, init_settling_t, settling_t, inte_t, steps, lockin_run):
+    def BiasSpectrMLSValsSet(self, num_segs, bias_start, bias_end, init_settling_t, settling_t, inte_t, steps, lockin_run, prt = if_print):
         bias_start = self.tcp.unit_cvt(bias_start)
         bias_end = self.tcp.unit_cvt(bias_end)
         init_settling_t = self.tcp.unit_cvt(init_settling_t)
@@ -613,12 +650,13 @@ class nanonis_ctrl:
                                'Steps': steps,
                                'Lock-in run': lockin_run},
                                  index=[0]).T
-        print('\n'+
-              mls_df.to_string(header=False)+
-              '\n\nBias sepectroscopy line segment configuration for Multi Line Segment mode set.')
+        if prt: 
+            print('\n'+
+                mls_df.to_string(header=False)+
+                '\n\nBias sepectroscopy line segment configuration for Multi Line Segment mode set.')
         return mls_df 
        
-    def BiasSpectrMLSValsGet(self): # might encounter issues when having multiple segaments
+    def BiasSpectrMLSValsGet(self, prt = if_print): # might encounter issues when having multiple segaments
         header = self.tcp.header_construct('BiasSpectr.MLSValsGet', body_size = 0)
 
         self.tcp.cmd_send(header)
@@ -634,12 +672,13 @@ class nanonis_ctrl:
                                'Steps': res_arg[6],
                                'Lock-in run': res_arg[7]},
                                 index=[0]).T
-        print('\n'+
-              mls_df.to_string(header=False)+
-              '\n\nBias sepectroscopy line segment configuration for Multi Line Segment mode settings returned.')
+        if prt: 
+            print('\n'+
+                mls_df.to_string(header=False)+
+                '\n\nBias sepectroscopy line segment configuration for Multi Line Segment mode settings returned.')
         return mls_df 
 ######################################## Current Module #############################################
-    def CurrentGet(self):
+    def CurrentGet(self, prt = if_print):
         header = self.tcp.header_construct('Current.Get', 0)
 
         self.tcp.cmd_send(header)
@@ -648,27 +687,28 @@ class nanonis_ctrl:
         self.tcp.print_err(res_err)
         current_df = pd.DataFrame({'Current value (A)': res_arg},
                                 index=[0]).T
-        print('\n'+
-              current_df.to_string(header=False)+
-              '\n\nCurrent value returned.')
+        if prt: 
+            print('\n'+
+                current_df.to_string(header=False)+
+                '\n\nCurrent value returned.')
         return current_df 
 
-    def Current100Get(self):
+    def Current100Get(self, prt = if_print):
         return
 
-    def CurrentBEEMGet(self):
+    def CurrentBEEMGet(self, prt = if_print):
         return
 
-    def CurrentGainSet(self):
+    def CurrentGainSet(self, prt = if_print):
         return
 
-    def CurrentGainsGet(self):
+    def CurrentGainsGet(self, prt = if_print):
         return
 
-    def CurrentCalibrSet(self):
+    def CurrentCalibrSet(self, prt = if_print):
         return
 
-    def CurrentCalibrGet(self):
+    def CurrentCalibrGet(self, prt = if_print):
         header = self.tcp.header_construct('Current.CalibrGet', 0)
 
         self.tcp.cmd_send(header)
@@ -677,13 +717,14 @@ class nanonis_ctrl:
         at_props_df = pd.DataFrame({'Calibration': res_arg[0],
                                     'Offset': res_arg[1]},
                                  index=[0]).T
-        print('\n'+
-              at_props_df.to_string(header=False)+
-              '\n\nCalibration and offset of the selected gain returned.')
+        if prt: 
+            print('\n'+
+                at_props_df.to_string(header=False)+
+                '\n\nCalibration and offset of the selected gain returned.')
         return at_props_df
 
 ######################################## Z-controller Module #############################################
-    def ZCtrlZPosSet(self, z_pos):
+    def ZCtrlZPosSet(self, z_pos, prt = if_print):
         z_pos = self.tcp.unit_cvt(z_pos)
 
         body = self.tcp.dtype_cvt(z_pos, 'float32', 'bin')
@@ -696,12 +737,13 @@ class nanonis_ctrl:
         self.tcp.print_err(res_err)
         z_pos_df = pd.DataFrame({'Z position of the tip (m)': z_pos},
                                  index=[0]).T
-        print('\n'+
-              z_pos_df.to_string(header=False)+
-              '\n\nZ position of the tip set. Note: to change the Z-position of the tip, the Z-controller must be switched OFF!!!')
+        if prt: 
+            print('\n'+
+                z_pos_df.to_string(header=False)+
+                '\n\nZ position of the tip set. Note: to change the Z-position of the tip, the Z-controller must be switched OFF!!!')
         return z_pos_df
           
-    def ZCtrlZPosGet(self):
+    def ZCtrlZPosGet(self, prt = if_print):
         header = self.tcp.header_construct('ZCtrl.ZPosGet', 0)
 
         self.tcp.cmd_send(header)
@@ -710,13 +752,14 @@ class nanonis_ctrl:
         self.tcp.print_err(res_err)
         z_pos_df = pd.DataFrame({'Z position of the tip (m)': res_arg[0]},
                                  index=[0]).T
-        print('\n'+
-              z_pos_df.to_string(header=False)+
-              '\n\nZ position of the tip returned.')
+        if prt: 
+            print('\n'+
+                z_pos_df.to_string(header=False)+
+                '\n\nZ position of the tip returned.')
         return z_pos_df
          
           
-    def ZCtrlOnOffSet(self, z_ctrl_status):
+    def ZCtrlOnOffSet(self, z_ctrl_status, prt = if_print):
         body = self.tcp.dtype_cvt(z_ctrl_status, 'uint32', 'bin')
         header = self.tcp.header_construct('ZCtrl.OnOffSet', len(body))
         cmd = header + body
@@ -727,27 +770,28 @@ class nanonis_ctrl:
         self.tcp.print_err(res_err)
         z_ctrl_df = pd.DataFrame({'Z-controller status': self.tcp.bistate_cvt(z_ctrl_status)},
                                  index=[0]).T
-        print('\n'+
-              z_ctrl_df.to_string(header=False)+
-              '\n\nZ-controller on/off set.')
+        if prt: 
+            print('\n'+
+                z_ctrl_df.to_string(header=False)+
+                '\n\nZ-controller on/off set.')
         return z_ctrl_df
          
-    def ZCtrlOnOffGet(self):
+    def ZCtrlOnOffGet(self, prt = if_print):
         header = self.tcp.header_construct('ZCtrl.OnOffGet', 0)
 
         self.tcp.cmd_send(header)
         _, res_arg, res_err = self.tcp.res_recv('uint32')
-        print(res_arg)
 
         self.tcp.print_err(res_err)
         z_ctrl_df = pd.DataFrame({'Z-controller status': self.tcp.bistate_cvt(res_arg[0])},
                                  index=[0]).T
-        print('\n'+
-              z_ctrl_df.to_string(header=False)+
-              '\n\nZ-controller on/off set.')
+        if prt: 
+            print('\n'+
+                z_ctrl_df.to_string(header=False)+
+                '\n\nZ-controller on/off set.')
         return z_ctrl_df
          
-    def ZCtrlSetpntSet(self, z_ctrl_sp):
+    def ZCtrlSetpntSet(self, z_ctrl_sp, prt = if_print):
         z_ctrl_sp = self.tcp.unit_cvt(z_ctrl_sp)
 
         body = self.tcp.dtype_cvt(z_ctrl_sp, 'float32', 'bin')
@@ -760,12 +804,13 @@ class nanonis_ctrl:
         self.tcp.print_err(res_err)
         z_ctrl_sp_df = pd.DataFrame({'Z-controller setpoint (A)': z_ctrl_sp},
                                  index=[0]).T
-        print('\n'+
-              z_ctrl_sp_df.to_string(header=False)+
-              '\n\nZ-controller setpoint set.')
+        if prt: 
+            print('\n'+
+                z_ctrl_sp_df.to_string(header=False)+
+                '\n\nZ-controller setpoint set.')
         return z_ctrl_sp_df
 
-    def ZCtrlSetpntGet(self):
+    def ZCtrlSetpntGet(self, prt = if_print):
         header = self.tcp.header_construct('ZCtrl.SetpntGet', 0)
 
         self.tcp.cmd_send(header)
@@ -774,24 +819,25 @@ class nanonis_ctrl:
         self.tcp.print_err(res_err)
         z_ctrl_sp_df = pd.DataFrame({'Z-controller setpoint (A)': res_arg[0]},
                                  index=[0]).T
-        print('\n'+
-              z_ctrl_sp_df.to_string(header=False)+
-              '\n\nZ-controller setpoint returned.')
+        if prt: 
+            print('\n'+
+                z_ctrl_sp_df.to_string(header=False)+
+                '\n\nZ-controller setpoint returned.')
         return z_ctrl_sp_df
         
-    def ZCtrlGainSet(self):
+    def ZCtrlGainSet(self, prt = if_print):
         return
           
-    def ZCtrlGainGet(self):
+    def ZCtrlGainGet(self, prt = if_print):
         return
           
-    def ZCtrlSwitchOffDelaySet(self):
+    def ZCtrlSwitchOffDelaySet(self, prt = if_print):
         return
 
-    def ZCtrlSwitchOffDelayGet(self):
+    def ZCtrlSwitchOffDelayGet(self, prt = if_print):
         return
 
-    def ZCtrlTipLiftSet(self, tiplift):
+    def ZCtrlTipLiftSet(self, tiplift, prt = if_print):
         tiplift = self.tcp.unit_cvt(tiplift)
 
         body = self.tcp.dtype_cvt(tiplift, 'float32', 'bin')
@@ -804,12 +850,13 @@ class nanonis_ctrl:
         self.tcp.print_err(res_err)
         z_ctrl_tiplift_df = pd.DataFrame({'TipLift (m)': tiplift},
                                  index=[0]).T
-        print('\n'+
-              z_ctrl_tiplift_df.to_string(header=False)+
-              '\n\nZ-controller tiplift set.')
+        if prt: 
+            print('\n'+
+                z_ctrl_tiplift_df.to_string(header=False)+
+                '\n\nZ-controller tiplift set.')
         return z_ctrl_tiplift_df
 
-    def ZCtrlTipLiftGet(self):
+    def ZCtrlTipLiftGet(self, prt = if_print):
         header = self.tcp.header_construct('ZCtrl.TipLiftGet', 0)
 
         self.tcp.cmd_send(header)
@@ -818,54 +865,55 @@ class nanonis_ctrl:
         self.tcp.print_err(res_err)
         z_ctrl_tiplift_df = pd.DataFrame({'TipLift (m)': res_arg[0]},
                                  index=[0]).T
-        print('\n'+
-              z_ctrl_tiplift_df.to_string(header=False)+
-              '\n\nZ-controller tiplift returned.')
+        if prt: 
+            print('\n'+
+                z_ctrl_tiplift_df.to_string(header=False)+
+                '\n\nZ-controller tiplift returned.')
         return z_ctrl_tiplift_df
 
-    def ZCtrlHome(self):
+    def ZCtrlHome(self, prt = if_print):
         return
 
-    def ZCtrlHomePropsSet(self):
+    def ZCtrlHomePropsSet(self, prt = if_print):
         return
 
-    def ZCtrlHomePropsGet(self):
+    def ZCtrlHomePropsGet(self, prt = if_print):
         return
 
-    def ZCtrlActiveCtrlSet(self):
+    def ZCtrlActiveCtrlSet(self, prt = if_print):
         return
 
-    def ZCtrlCtrlListGet(self):
+    def ZCtrlCtrlListGet(self, prt = if_print):
         return
 
-    def ZCtrlWithdraw(self):
+    def ZCtrlWithdraw(self, prt = if_print):
         return
 
-    def ZCtrlWithdrawRateSet(self):
+    def ZCtrlWithdrawRateSet(self, prt = if_print):
         return
 
-    def ZCtrlWithdrawRateGet(self):
+    def ZCtrlWithdrawRateGet(self, prt = if_print):
         return
 
-    def ZCtrlLimitsEnabledSet(self):
+    def ZCtrlLimitsEnabledSet(self, prt = if_print):
         return
 
-    def ZCtrlLimitsEnabledGet(self):
+    def ZCtrlLimitsEnabledGet(self, prt = if_print):
         return
 
-    def ZCtrlLimitsSet(self):
+    def ZCtrlLimitsSet(self, prt = if_print):
         return
 
-    def ZCtrlLimitsGet(self):
+    def ZCtrlLimitsGet(self, prt = if_print):
         return
 
-    def ZCtrlStatusGet(self):
+    def ZCtrlStatusGet(self, prt = if_print):
         return
 
 ######################################## Safe Tip Module #############################################
 ######################################## Auto Approach Module #############################################
 ######################################## Scan Module #############################################
-    def ScanAction(self, scan_act, scan_dir):
+    def ScanAction(self, scan_act, scan_dir, prt = if_print):
         body  = self.tcp.dtype_cvt(scan_act, 'uint16', 'bin')
         body += self.tcp.dtype_cvt(scan_dir, 'uint32', 'bin')
         header = self.tcp.header_construct('Scan.Action', body_size = len(body))
@@ -879,12 +927,13 @@ class nanonis_ctrl:
                                     'Scan direction': scan_dir},
                                     index=[0]).T
         
-        print('\n'+
-              scan_act_df.to_string(header=False)+
-              '\n\nScan action set.')
+        if prt: 
+            print('\n'+
+                scan_act_df.to_string(header=False)+
+                '\n\nScan action set.')
         return scan_act_df
     
-    def ScanStatusGet(self):
+    def ScanStatusGet(self, prt = if_print):
         header = self.tcp.header_construct('Scan.StatusGet', body_size = 0)
 
         self.tcp.cmd_send(header)
@@ -894,12 +943,13 @@ class nanonis_ctrl:
         scan_status_df = pd.DataFrame({'Scan status': res_arg[0]},
                                         index=[0]).T
         
-        print('\n'+
-              scan_status_df.to_string(header=False)+
-              '\n\nScan status returned.')
+        if prt: 
+            print('\n'+
+                scan_status_df.to_string(header=False)+
+                '\n\nScan status returned.')
         return scan_status_df
     
-    def ScanWaitEndOfScan(self, timeout):
+    def ScanWaitEndOfScan(self, timeout, prt = if_print):
         timeout = int(self.tcp.unit_cvt(timeout)*1000)
 
         body  = self.tcp.dtype_cvt(timeout, 'int', 'bin')
@@ -914,12 +964,13 @@ class nanonis_ctrl:
                                      'File path': res_arg[2]},
                                         index=[0]).T
         
-        print('\n'+
-              wait_scan_df.to_string(header=False)+
-              '\n\nScan status returned.')
+        if prt: 
+            print('\n'+
+                wait_scan_df.to_string(header=False)+
+                '\n\nScan status returned.')
         return wait_scan_df 
        
-    def ScanFrameSet(self, center_x, center_y, w, h, angle):
+    def ScanFrameSet(self, center_x, center_y, w, h, angle, prt = if_print):
         center_x = self.tcp.unit_cvt(center_x)
         center_y = self.tcp.unit_cvt(center_y)
         w = self.tcp.unit_cvt(w)
@@ -946,12 +997,13 @@ class nanonis_ctrl:
                                       'Angle (deg)': angle
                                       },
                                       index=[0]).T
-        print('\n'+
-              scan_frame_df.to_string(header=False)+
-              '\n\nScan frame set.')
+        if prt: 
+            print('\n'+
+                scan_frame_df.to_string(header=False)+
+                '\n\nScan frame set.')
         return scan_frame_df
 
-    def ScanFrameGet(self):
+    def ScanFrameGet(self, prt = if_print):
         header = self.tcp.header_construct('Scan.FrameGet', body_size = 0)
 
         self.tcp.cmd_send(header)
@@ -965,12 +1017,13 @@ class nanonis_ctrl:
                                       'Angle (deg)': res_arg[4]
                                       },
                                       index=[0]).T
-        print('\n'+
-              scan_frame_df.to_string(header=False)+
-              '\n\nScan frame settings returned.')
+        if prt: 
+            print('\n'+
+                scan_frame_df.to_string(header=False)+
+                '\n\nScan frame settings returned.')
         return scan_frame_df
 
-    def ScanBufferSet(self, num_chs, ch_idx, px, lines):
+    def ScanBufferSet(self, num_chs, ch_idx, px, lines, prt = if_print):
         body  = self.tcp.dtype_cvt(num_chs, 'int', 'bin')
         body += self.tcp.dtype_cvt(ch_idx, '1dint', 'bin')
         body += self.tcp.dtype_cvt(px, 'int', 'bin')
@@ -989,13 +1042,14 @@ class nanonis_ctrl:
                                        'Lines': lines
                                       },
                                       index=[0]).T
-        print('\n'+
-              scan_buffer_df.to_string(header=False)+
-              '\n\nScan buffer set.')
+        if prt: 
+            print('\n'+
+                scan_buffer_df.to_string(header=False)+
+                '\n\nScan buffer set.')
         return scan_buffer_df
 
 
-    def ScanBufferGet(self):
+    def ScanBufferGet(self, prt = if_print):
         header = self.tcp.header_construct('Scan.BufferGet', body_size = 0)
         
         self.tcp.cmd_send(header)
@@ -1008,12 +1062,13 @@ class nanonis_ctrl:
                                       'Lines': res_arg[3]
                                       },
                                       index=[0]).T
-        print('\n'+
-              scan_buffer_df.to_string(header=False)+
-              '\n\nScan buffer settings returned.')
+        if prt: 
+            print('\n'+
+                scan_buffer_df.to_string(header=False)+
+                '\n\nScan buffer settings returned.')
         return scan_buffer_df
 
-    def ScanPropsSet(self, cont_scan, bouncy_scan, autosave, series_name, comment):
+    def ScanPropsSet(self, cont_scan, bouncy_scan, autosave, series_name, comment, prt = if_print):
         series_name_size = len(series_name)
         comment_size = len(comment)
 
@@ -1039,13 +1094,14 @@ class nanonis_ctrl:
                                        'Comment': comment
                                       },
                                       index=[0]).T
-        print('\n'+
-              scan_props_df.to_string(header=False)+
-              '\n\nScan properties set.')
+        if prt: 
+            print('\n'+
+                scan_props_df.to_string(header=False)+
+                '\n\nScan properties set.')
         return scan_props_df
         
 
-    def ScanPropsGet(self):
+    def ScanPropsGet(self, prt = if_print):
         header = self.tcp.header_construct('Scan.PropsGet', body_size = 0)
         
         self.tcp.cmd_send(header)
@@ -1059,12 +1115,13 @@ class nanonis_ctrl:
                                        'Comment': res_arg[6]
                                       },
                                       index=[0]).T
-        print('\n'+
-              scan_props_df.to_string(header=False)+
-              '\n\nScan properties returned.')
+        if prt: 
+            print('\n'+
+                scan_props_df.to_string(header=False)+
+                '\n\nScan properties returned.')
         return scan_props_df
 
-    def ScanSpeedSet(self, fwd_li_spd, bwd_li_spd, fwd_t_per_line, bwd_t_per_line, keep_cst, spd_ratio):
+    def ScanSpeedSet(self, fwd_li_spd, bwd_li_spd, fwd_t_per_line, bwd_t_per_line, keep_cst, spd_ratio, prt = if_print):
         fwd_li_spd = self.tcp.unit_cvt(fwd_li_spd)
         bwd_li_spd = self.tcp.unit_cvt(bwd_li_spd)
         fwd_t_per_line = self.tcp.unit_cvt(fwd_t_per_line)
@@ -1093,12 +1150,13 @@ class nanonis_ctrl:
                                     'Speed ratio': spd_ratio
                                     },
                                     index=[0]).T
-        print('\n'+
+        if prt: 
+            print('\n'+
               scan_spd_df.to_string(header=False)+
               '\n\nScan speed set.')
         return scan_spd_df
 
-    def ScanSpeedGet(self):
+    def ScanSpeedGet(self, prt = if_print):
         header = self.tcp.header_construct('Scan.SpeedGet', body_size = 0)
         
         self.tcp.cmd_send(header)
@@ -1113,12 +1171,13 @@ class nanonis_ctrl:
                                     'Speed ratio': res_arg[5]
                                     },
                                     index=[0]).T
-        print('\n'+
+        if prt: 
+            print('\n'+
               scan_spd_df.to_string(header=False)+
               '\n\nScan speed settings returned.')
         return scan_spd_df
 
-    def ScanFrameDataGrab(self, ch_idx, data_dir):
+    def ScanFrameDataGrab(self, ch_idx, data_dir, prt = if_print):
         body  = self.tcp.dtype_cvt(ch_idx, 'uint32', 'bin')
         body += self.tcp.dtype_cvt(data_dir, 'uint32', 'bin')
         
@@ -1139,13 +1198,14 @@ class nanonis_ctrl:
                                        'Scan direction': res_arg[5]
                                       },
                                       index=[0]).T
-        print('\n'+
+        if prt: 
+            print('\n'+
               scan_frame_data_grab_df.to_string(header=False)+
               '\n\nScan data returned.')
         return scan_data_df, scan_frame_data_grab_df
 
 ######################################## Follow Me Module #############################################
-    def FolMeXYPosSet(self, x, y, wait_end_of_mv):
+    def FolMeXYPosSet(self, x, y, wait_end_of_mv, prt = if_print):
         x = self.tcp.unit_cvt(x)
         y = self.tcp.unit_cvt(y)
 
@@ -1165,12 +1225,13 @@ class nanonis_ctrl:
                                       'Wait end of move': wait_end_of_mv
                                       },
                                       index=[0]).T
-        print('\n'+
+        if prt: 
+            print('\n'+
               folme_xypos_df.to_string(header=False)+
               '\n\nTip coordinates set.')
         return folme_xypos_df
 
-    def FolMeXYPosGet(self, wait_for_new_data):
+    def FolMeXYPosGet(self, wait_for_new_data, prt = if_print):
         body  = self.tcp.dtype_cvt(wait_for_new_data, 'uint32', 'bin')
         
         header = self.tcp.header_construct('FolMe.XYPosGet', len(body))
@@ -1185,12 +1246,13 @@ class nanonis_ctrl:
                                       'Wait for newest data': wait_for_new_data
                                       },
                                       index=[0]).T
-        print('\n'+
+        if prt: 
+            print('\n'+
               folme_xypos_df.to_string(header=False)+
               '\n\nTip coordinates returned.')
         return folme_xypos_df
 
-    def FolMeSpeedSet(self, spd, cus_spd):
+    def FolMeSpeedSet(self, spd, cus_spd, prt = if_print):
         spd = self.tcp.unit_cvt(spd)
 
         body  = self.tcp.dtype_cvt(spd, 'float32', 'bin')
@@ -1207,12 +1269,13 @@ class nanonis_ctrl:
                                        'Custom speed': cus_spd,
                                       },
                                       index=[0]).T
-        print('\n'+
+        if prt: 
+            print('\n'+
               speed_df.to_string(header=False)+
               '\n\nTip speed set.')
         return speed_df
 
-    def FolMeSpeedGet(self):
+    def FolMeSpeedGet(self, prt = if_print):
         header = self.tcp.header_construct('FolMe.SpeedGet', 0)
 
         self.tcp.cmd_send(header)
@@ -1223,12 +1286,13 @@ class nanonis_ctrl:
                                 'Custom speed': res_arg[1],
                                 },
                                 index=[0]).T
-        print('\n'+
+        if prt: 
+            print('\n'+
               speed_df.to_string(header=False)+
               '\n\nTip speed returned.')
         return speed_df
 
-    def FolMeOversamplSet(self, oversampling):
+    def FolMeOversamplSet(self, oversampling, prt = if_print):
         body  = self.tcp.dtype_cvt(oversampling, 'int', 'bin')
         
         header = self.tcp.header_construct('FolMe.OversamplSet', len(body))
@@ -1241,12 +1305,13 @@ class nanonis_ctrl:
         oversmp_df = pd.DataFrame({'Oversampling': oversampling,
                                 },
                                 index=[0]).T
-        print('\n'+
+        if prt: 
+            print('\n'+
               oversmp_df.to_string(header=False)+
               '\n\nOversamping set.')
         return oversmp_df
 
-    def FolMeOversamplGet(self):
+    def FolMeOversamplGet(self, prt = if_print):
         header = self.tcp.header_construct('FolMe.OversamplGet', 0)
 
         self.tcp.cmd_send(header)
@@ -1257,12 +1322,13 @@ class nanonis_ctrl:
                                    'Sampling rate (Samples/s)': res_arg[1]
                                     },
                                     index=[0]).T
-        print('\n'+
+        if prt: 
+            print('\n'+
               oversmp_df.to_string(header=False)+
               '\n\nOversamping settings returned.')
         return oversmp_df
 
-    def FolMeStop(self):
+    def FolMeStop(self, prt = if_print):
         header = self.tcp.header_construct('FolMe.Stop', 0)
 
         self.tcp.cmd_send(header)
@@ -1270,11 +1336,12 @@ class nanonis_ctrl:
 
         self.tcp.print_err(res_err)
         
-        print('\n'+
+        if prt: 
+            print('\n'+
               '\n\nTip movement stopped.')
         return 
 
-    def FolMePSOnOffGet(self):
+    def FolMePSOnOffGet(self, prt = if_print):
         header = self.tcp.header_construct('FolMe.PSOnOffGet', 0)
 
         self.tcp.cmd_send(header)
@@ -1284,12 +1351,13 @@ class nanonis_ctrl:
         ps01_df = pd.DataFrame({'Point & Shoot status': res_arg[0],
                                 },
                                 index=[0]).T
-        print('\n'+
+        if prt: 
+            print('\n'+
               ps01_df.to_string(header=False)+
               '\n\nPoint & Shoot status returned.')
         return ps01_df
 
-    def FolMePSOnOffSet(self, ps_01):
+    def FolMePSOnOffSet(self, ps_01, prt = if_print):
         body  = self.tcp.dtype_cvt(ps_01, 'uint32', 'bin')
 
         header = self.tcp.header_construct('FolMe.PSOnOffSet', len(body))
@@ -1302,12 +1370,13 @@ class nanonis_ctrl:
         ps01_df = pd.DataFrame({'Point & Shoot status': ps_01,
                                 },
                                 index=[0]).T
-        print('\n'+
+        if prt: 
+            print('\n'+
               ps01_df.to_string(header=False)+
               '\n\nPoint & Shoot set.')
         return ps01_df
 
-    def FolMePSExpGet(self):
+    def FolMePSExpGet(self, prt = if_print):
         header = self.tcp.header_construct('FolMe.PSExpGet', 0)
 
         self.tcp.cmd_send(header)
@@ -1320,12 +1389,13 @@ class nanonis_ctrl:
                                 'List of experiments': res_arg[3].tolist()
                                 },
                                 index=[0]).T
-        print('\n'+
+        if prt: 
+            print('\n'+
               ps_exp_df.to_string(header=False)+
               '\n\nPoint & Shoot experiment returned.')
         return ps_exp_df
 
-    def FolMePSExpSet(self, ps_exp):
+    def FolMePSExpSet(self, ps_exp, prt = if_print):
         body  = self.tcp.dtype_cvt(ps_exp, 'uint16', 'bin')
 
         header = self.tcp.header_construct('FolMe.PSExpSet', len(body))
@@ -1338,12 +1408,13 @@ class nanonis_ctrl:
         ps_exp_df = pd.DataFrame({'Point & Shoot experiment': ps_exp,
                                 },
                                 index=[0]).T
-        print('\n'+
+        if prt: 
+            print('\n'+
               ps_exp_df.to_string(header=False)+
               '\n\nPoint & Shoot experiment set.')
         return ps_exp_df
 
-    def FolMePSPropsGet(self):
+    def FolMePSPropsGet(self, prt = if_print):
         header = self.tcp.header_construct('FolMe.PSPropsGet', 0)
 
         self.tcp.cmd_send(header)
@@ -1359,12 +1430,13 @@ class nanonis_ctrl:
                                     'Pre-measure delay (s)': res_arg[6]
                                     },
                                     index=[0]).T
-        print('\n'+
+        if prt: 
+            print('\n'+
               ps_props_df.to_string(header=False)+
               '\n\nPoint & Shoot properties returned.')
         return ps_props_df
 
-    def FolMePSPropsSet(self, auto_resume, use_own_basename, basename, ext_VI_path_size, ext_VI_path, pre_meas_delay):
+    def FolMePSPropsSet(self, auto_resume, use_own_basename, basename, ext_VI_path_size, ext_VI_path, pre_meas_delay, prt = if_print):
         pre_meas_delay = self.tcp.unit_cvt(pre_meas_delay)
         basename_size = len(basename)
 
@@ -1391,12 +1463,13 @@ class nanonis_ctrl:
                                          'Pre-measure delay (s)': pre_meas_delay},
                                          index=[0]).T
         
-        print('\n'+
+        if prt: 
+            print('\n'+
               ps_props_df.to_string(header=False)+
               '\n\nPoint & Shoot properties set.')
         return ps_props_df
 ######################################## Marks in Scan Module #############################################
-    def MarksPointDraw(self, x, y, txt, color):
+    def MarksPointDraw(self, x, y, txt, color, prt = if_print):
         x = self.tcp.unit_cvt(x)
         y = self.tcp.unit_cvt(y)
 
@@ -1423,12 +1496,13 @@ class nanonis_ctrl:
                                             'Color': [color]
                                             },
                                             index=[0]).T
-        print('\n'+
+        if prt: 
+            print('\n'+
               marks_piont_draw_df.to_string(header=False)+
               '\n\nPoint mark is drawn.')
         return marks_piont_draw_df
 
-    def MarksPointsDraw(self, x_1d, y_1d, txt_1d, color_1d):
+    def MarksPointsDraw(self, x_1d, y_1d, txt_1d, color_1d, prt = if_print):
         x_1d = [self.tcp.unit_cvt(x) for x in x_1d]
         y_1d = [self.tcp.unit_cvt(y) for y in y_1d]
 
@@ -1458,12 +1532,13 @@ class nanonis_ctrl:
                                             'Color': [color_1d]
                                             },
                                             index=[0]).T
-        print('\n'+
+        if prt: 
+            print('\n'+
               marks_points_draw_df.to_string(header=False)+
               '\n\nPoint marks are drawn.')
         return marks_points_draw_df
 
-    def MarksLineDraw(self, x_start, y_start, x_end, y_end, color):
+    def MarksLineDraw(self, x_start, y_start, x_end, y_end, color, prt = if_print):
         x_start = self.tcp.unit_cvt(x_start)
         y_start = self.tcp.unit_cvt(y_start)
         x_end = self.tcp.unit_cvt(x_end)
@@ -1492,12 +1567,13 @@ class nanonis_ctrl:
                                             'Color': [color]
                                             },
                                             index=[0]).T
-        print('\n'+
+        if prt: 
+            print('\n'+
               marks_line_draw_df.to_string(header=False)+
               '\n\nLine mark is drawn.')
         return marks_line_draw_df
 
-    def MarksLinesDraw(self, x_start_1d, y_start_1d, x_end_1d, y_end_1d, color_1d):
+    def MarksLinesDraw(self, x_start_1d, y_start_1d, x_end_1d, y_end_1d, color_1d, prt = if_print):
         num_lines = len(x_start_1d)
         x_start_1d = [self.tcp.unit_cvt(x_start) for x_start in x_start_1d]
         y_start_1d = [self.tcp.unit_cvt(y_start) for y_start in y_start_1d]
@@ -1529,12 +1605,13 @@ class nanonis_ctrl:
                                            'Color': [color_1d]
                                             },
                                             index=[0]).T
-        print('\n'+
+        if prt: 
+            print('\n'+
               marks_lines_draw_df.to_string(header=False)+
               '\n\nLine marks are drawn.')
         return marks_lines_draw_df
 
-    def MarksPointsErase(self, pt_idx):
+    def MarksPointsErase(self, pt_idx, prt = if_print):
         body  = self.tcp.dtype_cvt(pt_idx, 'int', 'bin')
 
         header = self.tcp.header_construct('Marks.PointsErase', len(body))
@@ -1547,12 +1624,13 @@ class nanonis_ctrl:
         point_idx_df = pd.DataFrame({'Point index': pt_idx,
                                 },
                                 index=[0]).T
-        print('\n'+
+        if prt: 
+            print('\n'+
               point_idx_df.to_string(header=False)+
               '\n\nPoint erased.')
         return point_idx_df
 
-    def MarksLinesErase(self, line_idx):
+    def MarksLinesErase(self, line_idx, prt = if_print):
         body  = self.tcp.dtype_cvt(line_idx, 'int', 'bin')
 
         header = self.tcp.header_construct('Marks.LinesErase', len(body))
@@ -1565,12 +1643,13 @@ class nanonis_ctrl:
         line_idx_df = pd.DataFrame({'Line index': line_idx,
                                 },
                                 index=[0]).T
-        print('\n'+
+        if prt: 
+            print('\n'+
               line_idx_df.to_string(header=False)+
               '\n\nLine erased.')
         return line_idx_df
 
-    def MarksPointsVisibleSet(self, pt_idx, visib):
+    def MarksPointsVisibleSet(self, pt_idx, visib, prt = if_print):
         body  = self.tcp.dtype_cvt(pt_idx, 'int', 'bin')
         body += self.tcp.dtype_cvt(visib, 'uint16', 'bin')
 
@@ -1585,12 +1664,13 @@ class nanonis_ctrl:
                                     'Show/hide': visib,
                                 },
                                 index=[0]).T
-        print('\n'+
+        if prt: 
+            print('\n'+
               point_visi_df.to_string(header=False)+
               '\n\nPoint visibility set.')
         return point_visi_df
 
-    def MarksLinesVisibleSet(self, line_idx, visib):
+    def MarksLinesVisibleSet(self, line_idx, visib, prt = if_print):
         body  = self.tcp.dtype_cvt(line_idx, 'int', 'bin')
         body += self.tcp.dtype_cvt(visib, 'uint16', 'bin')
 
@@ -1605,12 +1685,13 @@ class nanonis_ctrl:
                                      'Show/hide': visib,
                                     },
                                     index=[0]).T
-        print('\n'+
+        if prt: 
+            print('\n'+
               line_visi_df.to_string(header=False)+
               '\n\nLine visibility set.')
         return line_visi_df
 
-    def MarksPointsGet(self):
+    def MarksPointsGet(self, prt = if_print):
         header = self.tcp.header_construct('Marks.PointsGet', 0)
 
         self.tcp.cmd_send(header)
@@ -1626,12 +1707,13 @@ class nanonis_ctrl:
                                  'Visible':[res_arg[6]],
                                  },
                                  index=[0]).T
-        print('\n'+
+        if prt: 
+            print('\n'+
               points_df.to_string(header=False)+
               '\n\nPoint list returned.')
         return points_df
 
-    def MarksLinesGet(self):
+    def MarksLinesGet(self, prt = if_print):
         header = self.tcp.header_construct('Marks.LinesGet', 0)
         self.tcp.cmd_send(header)
         _, res_arg, res_err = self.tcp.res_recv('int', '1dfloat32', '1dfloat32', '1dfloat32', '1dfloat32', '1duint32', '1duint32')
@@ -1646,14 +1728,15 @@ class nanonis_ctrl:
                                   'Visible': [res_arg[6]],
                                   },
                                   index=[0]).T
-        print('\n'+
+        if prt: 
+            print('\n'+
               lines_df.to_string(header=False)+
               '\n\nLine list returned.')
         return lines_df
 
 
 ######################################## Tip Shaper Module #############################################
-    def TipShaperStart(self, wait_until_fin, timeout):
+    def TipShaperStart(self, wait_until_fin, timeout, prt = if_print):
         timeout = int(self.tcp.unit_cvt(timeout)*1000)
 
         body  = self.tcp.dtype_cvt(wait_until_fin, 'uint32', 'bin')
@@ -1669,12 +1752,13 @@ class nanonis_ctrl:
                                            'Timeout (ms)': timeout},
                                            index=[0]).T
         
-        print('\n'+
+        if prt: 
+            print('\n'+
               tipshaper_start_df.to_string(header=False)+
               '\n\nTip shaping done.')
         return tipshaper_start_df
 
-    def TipShaperPropsSet(self, switch_off_delay, change_bias, bias, tip_lift, lift_t1, bias_lift, bias_settling_t, lift_h, lift_t2, end_wait_t, restore_feedback):
+    def TipShaperPropsSet(self, switch_off_delay, change_bias, bias, tip_lift, lift_t1, bias_lift, bias_settling_t, lift_h, lift_t2, end_wait_t, restore_feedback, prt = if_print):
         switch_off_delay = self.tcp.unit_cvt(switch_off_delay)
         bias = self.tcp.unit_cvt(bias)
         tip_lift = self.tcp.unit_cvt(tip_lift)
@@ -1716,12 +1800,13 @@ class nanonis_ctrl:
                                             'Restore feedback': self.tcp.tristate_cvt(restore_feedback),
                                             },
                                  index=[0]).T
-        print('\n'+
+        if prt: 
+            print('\n'+
               tip_shaper_props_df.to_string(header=False)+
               '\n\nTip shaper procedure set.')
         return tip_shaper_props_df
 
-    def TipShaperPropsGet(self):
+    def TipShaperPropsGet(self, prt = if_print):
         header = self.tcp.header_construct('TipShaper.PropsGet', 0)
 
         self.tcp.cmd_send(header)
@@ -1741,13 +1826,14 @@ class nanonis_ctrl:
                                             'Restore feedback': self.tcp.tristate_cvt(res_arg[10]),
                                             },
                                  index=[0]).T
-        print('\n'+
+        if prt: 
+            print('\n'+
               tip_shaper_props_df.to_string(header=False)+
               '\n\nTip shaper procedure returned.')
         return tip_shaper_props_df
 
 ######################################## Generic Sweeper Module #############################################
-    def GenSwpAcqChsSet(self, num_chs, ch_idx):
+    def GenSwpAcqChsSet(self, num_chs, ch_idx, prt = if_print):
         body  = self.tcp.dtype_cvt(num_chs, 'int', 'bin')
         body += self.tcp.dtype_cvt(ch_idx, '1dint', 'bin')
         header = self.tcp.header_construct('GenSwp.AcqChsSet', len(body))
@@ -1760,12 +1846,13 @@ class nanonis_ctrl:
         gen_swp_chs_df = pd.DataFrame({'Number of channels': num_chs,
                                  'Channel indexes': [ch_idx]},
                                  index=[0]).T
-        print('\n'+
+        if prt: 
+            print('\n'+
               gen_swp_chs_df.to_string(header=False)+
               '\n\nThe recorded channels of the Generic Sweeper set.')
         return gen_swp_chs_df
 
-    def GenSwpAcqChsGet(self):
+    def GenSwpAcqChsGet(self, prt = if_print):
         header = self.tcp.header_construct('GenSwp.AcqChsGet', 0)
 
         self.tcp.cmd_send(header)
@@ -1775,12 +1862,13 @@ class nanonis_ctrl:
         gen_swp_chs_df = pd.DataFrame({'Number of channels': res_arg[0],
                                  'Channel indexes': [res_arg[1]]},
                                  index=[0]).T
-        print('\n'+
+        if prt: 
+            print('\n'+
               gen_swp_chs_df.to_string(header=False)+
               '\n\nThe recorded channels of the Generic Sweeper returned.')
         return gen_swp_chs_df
     
-    def GenSwpSwpSignalSet(self, swp_ch_name_size, swp_ch_name):
+    def GenSwpSwpSignalSet(self, swp_ch_name_size, swp_ch_name, prt = if_print):
         body  = self.tcp.dtype_cvt(swp_ch_name_size, 'int', 'bin')
         body += self.tcp.dtype_cvt(swp_ch_name, 'str', 'bin')
         header = self.tcp.header_construct('GenSwp.SwpSignalSet', len(body))
@@ -1793,12 +1881,13 @@ class nanonis_ctrl:
         gen_swp_sgn_df = pd.DataFrame({'Sweep channel name size': swp_ch_name_size,
                                  'Sweep channel name': swp_ch_name},
                                  index=[0]).T
-        print('\n'+
+        if prt: 
+            print('\n'+
               gen_swp_sgn_df.to_string(header=False)+
               '\n\nThe recorded channels of the Generic Sweeper set.')
         return gen_swp_sgn_df
 
-    def GenSwpSwpSignalGet(self):
+    def GenSwpSwpSignalGet(self, prt = if_print):
         header = self.tcp.header_construct('GenSwp.SwpSignalGet', 0)
 
         self.tcp.cmd_send(header)
@@ -1808,12 +1897,13 @@ class nanonis_ctrl:
         gen_swp_sgn_df = pd.DataFrame({'Sweep channel name': res_arg[1], 
                                        'Channel names': res_arg[4].tolist()},
                                        index=[0]).T
-        print('\n'+
+        if prt: 
+            print('\n'+
               gen_swp_sgn_df.to_string(header=False)+
               '\n\nThe recorded channels of the Generic Sweeper returned.')
         return gen_swp_sgn_df
     
-    def GenSwpLimitsSet(self, lo_lmt, up_lmt):
+    def GenSwpLimitsSet(self, lo_lmt, up_lmt, prt = if_print):
         lo_lmt = self.tcp.unit_cvt(lo_lmt)
         up_lmt = self.tcp.unit_cvt(up_lmt)
 
@@ -1829,12 +1919,13 @@ class nanonis_ctrl:
         gen_swp_lmt_df = pd.DataFrame({'Lower limit': lo_lmt,
                                        'Upper limit': up_lmt},
                                        index=[0]).T
-        print('\n'+
+        if prt: 
+            print('\n'+
               gen_swp_lmt_df.to_string(header=False)+
               '\n\nThe limits of the Sweep signals set.')
         return gen_swp_lmt_df
 
-    def GenSwpLimitsGet(self):
+    def GenSwpLimitsGet(self, prt = if_print):
         header = self.tcp.header_construct('GenSwp.LimitsGet', 0)
 
         self.tcp.cmd_send(header)
@@ -1844,13 +1935,14 @@ class nanonis_ctrl:
         gen_swp_lmt_df = pd.DataFrame({'Lower limit': res_arg[0],
                                        'Upper limit': res_arg[1]},
                                        index=[0]).T
-        print('\n'+
+        if prt: 
+            print('\n'+
               gen_swp_lmt_df.to_string(header=False)+
               '\n\nThe limits of the Sweep signals returned.')
         return gen_swp_lmt_df
 
     # ! -1=no change, 0=Off, 1=On different from other functions!!!
-    def GenSwpPropsSet(self, init_settling_t, max_slew_rate, num_steps, periods, autosave, save_dialog, settling_t):
+    def GenSwpPropsSet(self, init_settling_t, max_slew_rate, num_steps, periods, autosave, save_dialog, settling_t, prt = if_print):
         init_settling_t = self.tcp.unit_cvt(init_settling_t)*1000
         periods = int(self.tcp.unit_cvt(periods)*1000)
         settling_t = self.tcp.unit_cvt(settling_t)*1000
@@ -1878,12 +1970,13 @@ class nanonis_ctrl:
                                          'Settling time (ms)': settling_t},
                                         index=[0]).T
         
-        print('\n'+
+        if prt: 
+            print('\n'+
               gen_swp_props_df.to_string(header=False)+
               '\n\nGeneric sweeper parameters set.')
         return gen_swp_props_df
 
-    def GenSwpPropsGet(self):
+    def GenSwpPropsGet(self, prt = if_print):
         header = self.tcp.header_construct('GenSwp.PropsGet', 0)
 
         self.tcp.cmd_send(header)
@@ -1898,12 +1991,13 @@ class nanonis_ctrl:
                                          'Save dialog box': self.tcp.bistate_cvt(res_arg[5]),
                                          'Settling time (ms)': res_arg[6]},
                                  index=[0]).T
-        print('\n'+
+        if prt: 
+            print('\n'+
               gen_swp_props_df.to_string(header=False)+
               '\n\nGeneric sweeper parameters returned.')
         return gen_swp_props_df
 
-    def GenSwpStart(self, get_data, sweep_dir, save_base_name, reset_signal):
+    def GenSwpStart(self, get_data, sweep_dir, save_base_name, reset_signal, prt = if_print):
         save_base_name_str_size = len(save_base_name)
 
         body  = self.tcp.dtype_cvt(get_data, 'uint32', 'bin')
@@ -1937,7 +2031,7 @@ class nanonis_ctrl:
               '\n\nGeneric sweep done!')
         return gen_swp_df, gen_swp_param_df
 
-    def GenSwpStop(self):
+    def GenSwpStop(self, prt = if_print):
         header = self.tcp.header_construct('GenSwp.Stop', 0)
 
         self.tcp.cmd_send(header)
@@ -1945,11 +2039,12 @@ class nanonis_ctrl:
 
         self.tcp.print_err(res_err)
 
-        print('\n'+
+        if prt: 
+            print('\n'+
               '\n\nGeneric sweeper stopped.')
         return 
 
-    def GenSwpOpen(self):
+    def GenSwpOpen(self, prt = if_print):
         header = self.tcp.header_construct('GenSwp.Open', 0)
 
         self.tcp.cmd_send(header)
@@ -1957,12 +2052,13 @@ class nanonis_ctrl:
 
         self.tcp.print_err(res_err)
 
-        print('\n'+
+        if prt: 
+            print('\n'+
               '\n\nGeneric sweep module opened.')
         return 
 
 ######################################## Atom Tracking Module #############################################
-    def AtomTrackCtrlSet(self, at_ctrl, status): #Modulation: 0; Controller: 1; Drift measurement:2
+    def AtomTrackCtrlSet(self, at_ctrl, status, prt = if_print): #Modulation: 0; Controller: 1; Drift measurement:2
         body  = self.tcp.dtype_cvt(at_ctrl, 'uint16', 'bin')
         body += self.tcp.dtype_cvt(status,'uint16', 'bin')
         header = self.tcp.header_construct('AtomTrack.CtrlSet', len(body))
@@ -1976,12 +2072,13 @@ class nanonis_ctrl:
                                    'Atom tracking control': at_ctrl,
                                    'Status': self.tcp.bistate_cvt(status)},
                                    index=[0]).T
-        print('\n'+
+        if prt: 
+            print('\n'+
               at_ctrl_df.to_string(header=False)+
               '\n\nAtom tracking control set.')
         return at_ctrl_df
 
-    def AtomTrackStatusGet(self, at_ctrl):
+    def AtomTrackStatusGet(self, at_ctrl, prt = if_print):
         body  = self.tcp.dtype_cvt(at_ctrl, 'uint16', 'bin')
         header = self.tcp.header_construct('AtomTrack.CtrlGet', len(body))
         cmd = header + body
@@ -1994,12 +2091,13 @@ class nanonis_ctrl:
                                    'Atom tracking control': at_ctrl,
                                    'Status': self.tcp.bistate_cvt(res_arg[0])},
                                    index=[0]).T
-        print('\n'+
+        if prt: 
+            print('\n'+
               at_ctrl_df.to_string(header=False)+
               '\n\nAtom tracking control status returned.')
         return at_ctrl_df
 
-    def AtomTrackPropsSet(self, inte_gain, freq, ampl, phase, switch_off_delay):
+    def AtomTrackPropsSet(self, inte_gain, freq, ampl, phase, switch_off_delay, prt = if_print):
         inte_gain = self.tcp.unit_cvt(inte_gain)
         freq = self.tcp.unit_cvt(freq)
         ampl = self.tcp.unit_cvt(ampl)
@@ -2023,12 +2121,13 @@ class nanonis_ctrl:
                                     'Switch off delay (s)': switch_off_delay,
                                     },
                                  index=[0]).T
-        print('\n'+
+        if prt: 
+            print('\n'+
               at_props_df.to_string(header=False)+
               '\n\nAtom track parameters set.')
         return at_props_df
 
-    def AtomTrackPropsGet(self):
+    def AtomTrackPropsGet(self, prt = if_print):
         header = self.tcp.header_construct('AtomTrack.PropsGet', 0)
 
         self.tcp.cmd_send(header)
@@ -2041,19 +2140,20 @@ class nanonis_ctrl:
                                     'Switch off delay (s)': res_arg[4],
                                     },
                                  index=[0]).T
-        print('\n'+
+        if prt: 
+            print('\n'+
               at_props_df.to_string(header=False)+
               '\n\nAtom track parameters returned.')
         return at_props_df
 
-    def AtomTrackQuickCompStart(self):
+    def AtomTrackQuickCompStart(self, prt = if_print):
         return
 
-    def AtomTrackDriftComp(self):
+    def AtomTrackDriftComp(self, prt = if_print):
         return
 
 ######################################## Lock-in Module #############################################
-    def LockInModOnOffSet(self, modu_num, lockin_onoff):
+    def LockInModOnOffSet(self, modu_num, lockin_onoff, prt = if_print):
         body  = self.tcp.dtype_cvt(modu_num, 'int', 'bin')
         body += self.tcp.dtype_cvt(lockin_onoff, 'uint32', 'bin')
         header = self.tcp.header_construct('LockIn.ModOnOffSet', len(body))
@@ -2067,12 +2167,13 @@ class nanonis_ctrl:
                                         'Lock-in on/off': self.tcp.bistate_cvt(lockin_onoff)},
                                         index=[0]).T
         
-        print('\n'+
+        if prt: 
+            print('\n'+
               lockin_onoff_df.to_string(header=False)+
               '\n\nLock-in modulator status set.')
         return lockin_onoff_df
 
-    def LockInModOnOffGet(self, modu_num):
+    def LockInModOnOffGet(self, modu_num, prt = if_print):
         body  = self.tcp.dtype_cvt(modu_num, 'int', 'bin')
         header = self.tcp.header_construct('LockIn.ModOnOffGet', len(body))
         cmd = header + body
@@ -2085,30 +2186,31 @@ class nanonis_ctrl:
                                         'Lock-in on/off': self.tcp.bistate_cvt(res_arg[0])},
                                         index=[0]).T
         
-        print('\n'+
+        if prt: 
+            print('\n'+
               lockin_onoff_df.to_string(header=False)+
               '\n\nLock-in modulator status returned.')
         return lockin_onoff_df
 
-    def LockInModSignalSet(self):
+    def LockInModSignalSet(self, prt = if_print):
         return
 
-    def LockInModSignalGet(self):
+    def LockInModSignalGet(self, prt = if_print):
         return
 
-    def LockInModPhasRegSet(self):
+    def LockInModPhasRegSet(self, prt = if_print):
         return
 
-    def LockInModPhasRegGet(self):
+    def LockInModPhasRegGet(self, prt = if_print):
         return
 
-    def LockInModHarmonicSet(self):
+    def LockInModHarmonicSet(self, prt = if_print):
         return
 
-    def LockInModHarmonicGet(self):
+    def LockInModHarmonicGet(self, prt = if_print):
         return
 
-    def LockInModPhasSet(self, modu_num, phase):
+    def LockInModPhasSet(self, modu_num, phase, prt = if_print):
         body  = self.tcp.dtype_cvt(modu_num, 'int', 'bin')
         body += self.tcp.dtype_cvt(phase, 'float32', 'bin')
         header = self.tcp.header_construct('LockIn.ModPhasSet', body_size = len(body))
@@ -2121,10 +2223,10 @@ class nanonis_ctrl:
         print('currently not used in our system.')
         return
 
-    def LockInModPhasGet(self):
+    def LockInModPhasGet(self, prt = if_print):
         return
 
-    def LockInModAmpSet(self, modu_num, ampl):
+    def LockInModAmpSet(self, modu_num, ampl, prt = if_print):
         ampl = self.tcp.unit_cvt(ampl)
 
         body  = self.tcp.dtype_cvt(modu_num, 'int', 'bin')
@@ -2140,12 +2242,13 @@ class nanonis_ctrl:
                                       'Amplitude': ampl},
                                       index=[0]).T
         
-        print('\n'+
+        if prt: 
+            print('\n'+
               lockin_amp_df.to_string(header=False)+
               '\n\nLock-in modulator amplitude set.')
         return lockin_amp_df
 
-    def LockInModAmpGet(self, modu_num):
+    def LockInModAmpGet(self, modu_num, prt = if_print):
         body  = self.tcp.dtype_cvt(modu_num, 'int', 'bin')
         header = self.tcp.header_construct('LockIn.ModAmpGet', len(body))
         cmd = header + body
@@ -2158,12 +2261,13 @@ class nanonis_ctrl:
                                       'Amplitude': res_arg[0]},
                                       index=[0]).T
         
-        print('\n'+
+        if prt: 
+            print('\n'+
               lockin_amp_df.to_string(header=False)+
               '\n\nLock-in modulator amplitude returned.')
         return lockin_amp_df
 
-    def LockInModPhasFreqSet(self, modu_num, freq):
+    def LockInModPhasFreqSet(self, modu_num, freq, prt = if_print):
         freq = self.tcp.unit_cvt(freq)
 
         body  = self.tcp.dtype_cvt(modu_num, 'int', 'bin')
@@ -2179,12 +2283,13 @@ class nanonis_ctrl:
                                       'Frequency (Hz)': freq},
                                       index=[0]).T
         
-        print('\n'+
+        if prt: 
+            print('\n'+
               lockin_freq_df.to_string(header=False)+
               '\n\nLock-in modulator frequency set.')
         return lockin_freq_df
 
-    def LockInModPhasFreqGet(self, modu_num):
+    def LockInModPhasFreqGet(self, modu_num, prt = if_print):
         body  = self.tcp.dtype_cvt(modu_num, 'int', 'bin')
         header = self.tcp.header_construct('LockIn.ModPhasFreqGet', len(body))
         cmd = header + body
@@ -2197,60 +2302,61 @@ class nanonis_ctrl:
                                       'Frequency (Hz)': res_arg[0]},
                                       index=[0]).T
         
-        print('\n'+
+        if prt: 
+            print('\n'+
               lockin_freq_df.to_string(header=False)+
               '\n\nLock-in modulator frequency returned.')
         return lockin_freq_df
 
-    def LockInDemodSignalSet(self):
+    def LockInDemodSignalSet(self, prt = if_print):
         return
 
-    def LockInDemodSignalGet(self):
+    def LockInDemodSignalGet(self, prt = if_print):
         return
 
-    def LockInDemodHarmonicSet(self):
+    def LockInDemodHarmonicSet(self, prt = if_print):
         return
 
-    def LockInDemodHarmonicGet(self):
+    def LockInDemodHarmonicGet(self, prt = if_print):
         return
 
-    def LockInDemodHPFilterSet(self):
+    def LockInDemodHPFilterSet(self, prt = if_print):
         return
 
-    def LockInDemodHPFilterGet(self):
+    def LockInDemodHPFilterGet(self, prt = if_print):
         return
 
-    def LockInDemodLPFilterSet(self):
+    def LockInDemodLPFilterSet(self, prt = if_print):
         return
 
-    def LockInDemodLPFilterGet(self):
+    def LockInDemodLPFilterGet(self, prt = if_print):
         return
 
-    def LockInDemodPhasRegSet(self):
+    def LockInDemodPhasRegSet(self, prt = if_print):
         return
 
-    def LockInDemodPhasRegGet(self):
+    def LockInDemodPhasRegGet(self, prt = if_print):
         return
 
-    def LockInDemodPhasSet(self):
+    def LockInDemodPhasSet(self, prt = if_print):
         return
 
-    def LockInDemodPhasGet(self):
+    def LockInDemodPhasGet(self, prt = if_print):
         return
 
-    def LockInDemodSyncFilterSet(self):
+    def LockInDemodSyncFilterSet(self, prt = if_print):
         return
 
-    def LockInDemodSyncFilterGet(self):
+    def LockInDemodSyncFilterGet(self, prt = if_print):
         return
 
-    def LockInDemodRTSignalsSet(self):
+    def LockInDemodRTSignalsSet(self, prt = if_print):
         return
 
-    def LockInDemodRTSignalsGet(self):
+    def LockInDemodRTSignalsGet(self, prt = if_print):
         return
 ######################################## Signals Module #############################################
-    def SignalsNamesGet(self):
+    def SignalsNamesGet(self, prt = if_print):
         header = self.tcp.header_construct('Signals.NamesGet', 0)
 
         self.tcp.cmd_send(header)
@@ -2258,14 +2364,14 @@ class nanonis_ctrl:
 
         self.tcp.print_err(res_err)
         signal_name_df = pd.DataFrame({'Signal names': res_arg[2].flatten()})
-        # print(res_arg[2][0])
+        
         pd.set_option('display.max_rows', None)
         print('\n'+
-              signal_name_df.to_string()+
-              '\n\nSignal name list returned.')
+            signal_name_df.to_string()+
+            '\n\nSignal name list returned.')
         return signal_name_df
 ######################################## Data Logger Module #############################################
-    def DataLogOpen(self):
+    def DataLogOpen(self, prt = if_print):
         header = self.tcp.header_construct('DataLog.Open', 0)
 
         self.tcp.cmd_send(header)
@@ -2274,7 +2380,7 @@ class nanonis_ctrl:
         self.tcp.print_err(res_err)
         print('Data Logger opened.')
         
-    def DataLogStart(self):
+    def DataLogStart(self, prt = if_print):
         header = self.tcp.header_construct('DataLog.Start', 0)
 
         self.tcp.cmd_send(header)
@@ -2283,7 +2389,7 @@ class nanonis_ctrl:
         self.tcp.print_err(res_err)
         print('Data Logger acquisition started.')
         
-    def DataLogStop(self):
+    def DataLogStop(self, prt = if_print):
         header = self.tcp.header_construct('DataLog.Stop', 0)
 
         self.tcp.cmd_send(header)
@@ -2292,7 +2398,7 @@ class nanonis_ctrl:
         self.tcp.print_err(res_err)
         print('Data Logger acquisition stopped.')
         
-    def DataLogStatusGet(self):
+    def DataLogStatusGet(self, prt = if_print):
         header = self.tcp.header_construct('DataLog.StatusGet', body_size = 0)
 
         self.tcp.cmd_send(header)
@@ -2308,12 +2414,13 @@ class nanonis_ctrl:
                                  'Points counter': res_arg[9],
                                  },
                                  index=[0]).T
-        print('\n'+
+        if prt: 
+            print('\n'+
               datalog_status_df.to_string(header=False) + 
               '\n\nData Logger status returned.')
         return datalog_status_df
         
-    def DataLogChsSet(self, ch_idx):
+    def DataLogChsSet(self, ch_idx, prt = if_print):
         print('To get the signal name and its corresponding index in the list of the 128 available signals in the Nanonis Controller, use the "Signal.NamesGet" function, or check the RT Idx value in the Signals Manager module.')
         num_chs = len(ch_idx)
         body  = self.tcp.dtype_cvt(num_chs, 'int', 'bin')
@@ -2329,12 +2436,13 @@ class nanonis_ctrl:
                                'Channel indexes': [ch_idx]},
                                index=[0]).T
 
-        print('\n'+
+        if prt: 
+            print('\n'+
               chs_df.to_string(header=False)+
               '\n\nData Logger channels set.')
         return chs_df
         
-    def DataLogChsGet(self):
+    def DataLogChsGet(self, prt = if_print):
         header = self.tcp.header_construct('DataLog.ChsGet', body_size = 0)
 
         self.tcp.cmd_send(header)
@@ -2345,13 +2453,14 @@ class nanonis_ctrl:
                                'Channel indexes': [res_arg[1]]},
                                index=[0]).T
 
-        print('\n'+
+        if prt: 
+            print('\n'+
               chs_df.to_string(header=False)+
               '\n\nData Logger channels returned.')
         return chs_df
     
     #! Attention!!!
-    def DataLogPropsSet(self, acq_mode, acq_dura_h, acq_dura_m, acq_dura_s, avg, basename, cmt, lst_module):
+    def DataLogPropsSet(self, acq_mode, acq_dura_h, acq_dura_m, acq_dura_s, avg, basename, cmt, lst_module, prt = if_print):
         
         
         basename_size = len(basename)
@@ -2390,12 +2499,13 @@ class nanonis_ctrl:
                                       'List of modules': [lst_module],
                                       },
                                       index=[0]).T
-        print('\n'+
+        if prt: 
+            print('\n'+
               datalog_props_df.to_string(header=False)+
               '\n\nData Logger properties set.')
         return datalog_props_df
         
-    def DataLogPropsGet(self):
+    def DataLogPropsGet(self, prt = if_print):
         header = self.tcp.header_construct('DataLog.PropsGet', body_size = 0)
 
         self.tcp.cmd_send(header)
@@ -2412,13 +2522,14 @@ class nanonis_ctrl:
                                },
                                index=[0]).T
 
-        print('\n'+
+        if prt: 
+            print('\n'+
               datalog_props_df.to_string(header=False)+
               '\n\nData Logger properties returned.')
         return datalog_props_df
         
 ######################################## Utilities Module #############################################
-    def UtilSessionPathGet(self):
+    def UtilSessionPathGet(self, prt = if_print):
         header = self.tcp.header_construct('Util.SessionPathGet', 0)
 
         self.tcp.cmd_send(header)
@@ -2427,13 +2538,14 @@ class nanonis_ctrl:
         self.tcp.print_err(res_err)
         util_session_path_df = pd.DataFrame({'Session path': res_arg[1]},
                                        index=[0]).T
-        print('\n'+
+        if prt: 
+            print('\n'+
               util_session_path_df.to_string(header=False)+
               '\n\nSession folder path returned.')
         return util_session_path_df
     
 
-    def UtilSessionPathSet(self, sess_path, save_settings_to_prev):
+    def UtilSessionPathSet(self, sess_path, save_settings_to_prev, prt = if_print):
         sess_path_size = len(sess_path)
 
         body  = self.tcp.dtype_cvt(sess_path_size, 'int', 'bin')
@@ -2450,60 +2562,61 @@ class nanonis_ctrl:
                                              'Save settings to previous': self.tcp.bistate_cvt(save_settings_to_prev)}, 
                                              index=[0]).T
         
-        print('\n'+
+        if prt: 
+            print('\n'+
               util_session_path_df.to_string(header=False)+
               '\n\nSession folder path set.')
         return util_session_path_df
     
 
-    def UtilSettingsLoad(self):
+    def UtilSettingsLoad(self, prt = if_print):
 
         return
 
-    def UtilSettingsSave(self):
+    def UtilSettingsSave(self, prt = if_print):
 
         return
 
-    def UtilLayoutLoad(self):
+    def UtilLayoutLoad(self, prt = if_print):
 
         return
 
-    def UtilLayoutSave(self):
+    def UtilLayoutSave(self, prt = if_print):
 
         return
 
-    def UtilLock(self):
+    def UtilLock(self, prt = if_print):
 
         return
 
-    def UtilUnLock(self):
+    def UtilUnLock(self, prt = if_print):
 
         return
 
-    def UtilRTFreqSet(self):
+    def UtilRTFreqSet(self, prt = if_print):
 
         return
 
-    def UtilRTFreqGet(self):
+    def UtilRTFreqGet(self, prt = if_print):
 
         return
 
-    def UtilAcqPeriodSet(self):
+    def UtilAcqPeriodSet(self, prt = if_print):
 
         return
 
-    def UtilAcqPeriodGet(self):
+    def UtilAcqPeriodGet(self, prt = if_print):
 
         return
 
-    def UtilRTOversamplSet(self):
+    def UtilRTOversamplSet(self, prt = if_print):
 
         return
 
-    def UtilRTOversamplGet(self):
+    def UtilRTOversamplGet(self, prt = if_print):
 
         return
 
-    def UtilQuit(self):
+    def UtilQuit(self, prt = if_print):
 
         return
