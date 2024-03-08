@@ -8,10 +8,14 @@ import numpy as np
 
 class nanonis_ctrl:
     # Class variables
+    # To change the value of class variable in your script, use this: 
+    #   import nanonis_esr_tcp as tcp
+    #   tcp.nanonis_ctrl.if_print = True
     if_print = False
     # Functions
     def __init__(self, tcp):
         self.tcp = tcp
+        # self.f_print = False
 
 # it is recommended to construct body first so that you don't need to calculate the body size by yourself
 # SI units are used in this module
@@ -36,6 +40,8 @@ class nanonis_ctrl:
             print('\n'+
                 bias_df.to_string(header=False)+
                 '\n\nBias set.')
+        else:
+            print('output suppressed')
         return bias_df 
 
     def BiasGet(self, prt = if_print):

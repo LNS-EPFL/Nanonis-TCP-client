@@ -10,8 +10,11 @@ pd.set_option('display.max_columns', 100)
 
 
 my_tcp = tcp.tcp_ctrl()
+tcp.nanonis_ctrl.if_print = True
 connect = tcp.nanonis_ctrl(my_tcp)
+# if connect.if_print == True:
+#     print('aaa')
+df = connect.BiasSet(5)
+# print(connect.if_print)
 
-df = connect.BiasGet()
-print(df)
 

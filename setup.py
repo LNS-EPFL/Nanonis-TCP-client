@@ -2,15 +2,15 @@ from setuptools import setup
 import os
 
 setup(
-    name = "nanonis_esr_tcp",
+    name = "nanonis_tcp",
     version = "1.0.1",
     author = "Shixuan Shan, Johannes Schwenk, Clement Soulard ",
     author_email = "shixuan.shan@gmail.com",
 
-    packages = ['nanonis_esr_tcp'],
+    packages = ['nanonis_tcp'],
     url = "https://github.com/LNS-EPFL/Nanonis-TCP-client",
     license = "MIT",
-    keywords = "Nanonis, ESR-STM, TCP",
+    keywords = "Nanonis, SPM, TCP",
     description = ("A TCP client written in Python which communicates with Nanonis software"),
     # long_description=read('README'),
 
