@@ -6,6 +6,7 @@ Here is an example of using the package.
 import nanonis_tcp as tcp
 
 my_tcp = tcp.tcp_ctrl()
+
 connect = tcp.nanonis_ctrl(my_tcp)
 
 connect.BiasSet(0.5)
