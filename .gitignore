@@ -27,6 +27,7 @@ share/python-wheels/
 MANIFEST
 test_scripts/
 .vscode/
+TCPProtocol_SPM.pdf
 
 # PyInstaller
 #  Usually these files are written by a python script from a template

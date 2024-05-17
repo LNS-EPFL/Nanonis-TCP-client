@@ -1701,7 +1701,7 @@ class nanonis_ctrl:
         header = self.tcp.header_construct('Marks.PointsGet', 0)
 
         self.tcp.cmd_send(header)
-        # This function is an special case for processing the response from Nanonis. The 'res_recv' function cannot process the command because the second 'int' argument in the middle of the non-string arrays.
+        #! This function is an special case for processing the response from Nanonis. The 'res_recv' function cannot process the command because the second 'int' argument is in the middle of the non-string arrays.
         _, res_arg, res_err = self.tcp.res_recv_MarksPointsGet('int', '1dfloat32', '1dfloat32', 'int', '1dstr', '1duint32', '1duint32')
 
         self.tcp.print_err(res_err)
@@ -2198,23 +2198,23 @@ class nanonis_ctrl:
               '\n\nLock-in modulator status returned.')
         return lockin_onoff_df
 
-    def LockInModSignalSet(self, prt = if_print):
-        return
+    # def LockInModSignalSet(self, prt = if_print):
+    #     return
 
-    def LockInModSignalGet(self, prt = if_print):
-        return
+    # def LockInModSignalGet(self, prt = if_print):
+    #     return
 
-    def LockInModPhasRegSet(self, prt = if_print):
-        return
+    # def LockInModPhasRegSet(self, prt = if_print):
+    #     return
 
-    def LockInModPhasRegGet(self, prt = if_print):
-        return
+    # def LockInModPhasRegGet(self, prt = if_print):
+    #     return
 
-    def LockInModHarmonicSet(self, prt = if_print):
-        return
+    # def LockInModHarmonicSet(self, prt = if_print):
+    #     return
 
-    def LockInModHarmonicGet(self, prt = if_print):
-        return
+    # def LockInModHarmonicGet(self, prt = if_print):
+    #     return
 
     def LockInModPhasSet(self, modu_num, phase, prt = if_print):
         body  = self.tcp.dtype_cvt(modu_num, 'int', 'bin')
@@ -2229,8 +2229,8 @@ class nanonis_ctrl:
         print('currently not used in our system.')
         return
 
-    def LockInModPhasGet(self, prt = if_print):
-        return
+    # def LockInModPhasGet(self, prt = if_print):
+    #     return
 
     def LockInModAmpSet(self, modu_num, ampl, prt = if_print):
         ampl = self.tcp.unit_cvt(ampl)
@@ -2314,53 +2314,53 @@ class nanonis_ctrl:
               '\n\nLock-in modulator frequency returned.')
         return lockin_freq_df
 
-    def LockInDemodSignalSet(self, prt = if_print):
-        return
+    # def LockInDemodSignalSet(self, prt = if_print):
+    #     return
 
-    def LockInDemodSignalGet(self, prt = if_print):
-        return
+    # def LockInDemodSignalGet(self, prt = if_print):
+    #     return
 
-    def LockInDemodHarmonicSet(self, prt = if_print):
-        return
+    # def LockInDemodHarmonicSet(self, prt = if_print):
+    #     return
 
-    def LockInDemodHarmonicGet(self, prt = if_print):
-        return
+    # def LockInDemodHarmonicGet(self, prt = if_print):
+    #     return
 
-    def LockInDemodHPFilterSet(self, prt = if_print):
-        return
+    # def LockInDemodHPFilterSet(self, prt = if_print):
+    #     return
 
-    def LockInDemodHPFilterGet(self, prt = if_print):
-        return
+    # def LockInDemodHPFilterGet(self, prt = if_print):
+    #     return
 
-    def LockInDemodLPFilterSet(self, prt = if_print):
-        return
+    # def LockInDemodLPFilterSet(self, prt = if_print):
+    #     return
 
-    def LockInDemodLPFilterGet(self, prt = if_print):
-        return
+    # def LockInDemodLPFilterGet(self, prt = if_print):
+    #     return
 
-    def LockInDemodPhasRegSet(self, prt = if_print):
-        return
+    # def LockInDemodPhasRegSet(self, prt = if_print):
+    #     return
 
-    def LockInDemodPhasRegGet(self, prt = if_print):
-        return
+    # def LockInDemodPhasRegGet(self, prt = if_print):
+    #     return
 
-    def LockInDemodPhasSet(self, prt = if_print):
-        return
+    # def LockInDemodPhasSet(self, prt = if_print):
+    #     return
 
-    def LockInDemodPhasGet(self, prt = if_print):
-        return
+    # def LockInDemodPhasGet(self, prt = if_print):
+    #     return
 
-    def LockInDemodSyncFilterSet(self, prt = if_print):
-        return
+    # def LockInDemodSyncFilterSet(self, prt = if_print):
+    #     return
 
-    def LockInDemodSyncFilterGet(self, prt = if_print):
-        return
+    # def LockInDemodSyncFilterGet(self, prt = if_print):
+    #     return
 
-    def LockInDemodRTSignalsSet(self, prt = if_print):
-        return
+    # def LockInDemodRTSignalsSet(self, prt = if_print):
+    #     return
 
-    def LockInDemodRTSignalsGet(self, prt = if_print):
-        return
+    # def LockInDemodRTSignalsGet(self, prt = if_print):
+    #     return
 ######################################## Signals Module #############################################
     def SignalsNamesGet(self, prt = if_print):
         header = self.tcp.header_construct('Signals.NamesGet', 0)
@@ -2575,54 +2575,54 @@ class nanonis_ctrl:
         return util_session_path_df
     
 
-    def UtilSettingsLoad(self, prt = if_print):
+    # def UtilSettingsLoad(self, prt = if_print):
 
-        return
+    #     return
 
-    def UtilSettingsSave(self, prt = if_print):
+    # def UtilSettingsSave(self, prt = if_print):
 
-        return
+    #     return
 
-    def UtilLayoutLoad(self, prt = if_print):
+    # def UtilLayoutLoad(self, prt = if_print):
 
-        return
+    #     return
 
-    def UtilLayoutSave(self, prt = if_print):
+    # def UtilLayoutSave(self, prt = if_print):
 
-        return
+    #     return
 
-    def UtilLock(self, prt = if_print):
+    # def UtilLock(self, prt = if_print):
 
-        return
+    #     return
 
-    def UtilUnLock(self, prt = if_print):
+    # def UtilUnLock(self, prt = if_print):
 
-        return
+    #     return
 
-    def UtilRTFreqSet(self, prt = if_print):
+    # def UtilRTFreqSet(self, prt = if_print):
 
-        return
+    #     return
 
-    def UtilRTFreqGet(self, prt = if_print):
+    # def UtilRTFreqGet(self, prt = if_print):
 
-        return
+    #     return
 
-    def UtilAcqPeriodSet(self, prt = if_print):
+    # def UtilAcqPeriodSet(self, prt = if_print):
 
-        return
+    #     return
 
-    def UtilAcqPeriodGet(self, prt = if_print):
+    # def UtilAcqPeriodGet(self, prt = if_print):
 
-        return
+    #     return
 
-    def UtilRTOversamplSet(self, prt = if_print):
+    # def UtilRTOversamplSet(self, prt = if_print):
 
-        return
+    #     return
 
-    def UtilRTOversamplGet(self, prt = if_print):
+    # def UtilRTOversamplGet(self, prt = if_print):
 
-        return
+    #     return
 
-    def UtilQuit(self, prt = if_print):
+    # def UtilQuit(self, prt = if_print):
 
-        return
+    #     return
