@@ -13,7 +13,7 @@ import nanonis_tcp as tcp
 my_tcp = tcp.tcp_ctrl()
 connect = tcp.nanonis_ctrl(my_tcp)
 
-connect.BiasSet(0.5) 
+connect.BiasSet(0.5) # One can also put strings like '500m', '50u', etc.
 ```
 
 ## Available commands
@@ -59,7 +59,7 @@ Below is an example of programming `BiasSpectr.Start` command in the documentati
 2. The function `res_recv` handles receiving and decoding the response message from Nanonis. `res_recv` converts the binary data to the corresponding data format. For `BiasSpectr.Start`, the formats of 9 return arguments needs to be specified manually, while the last one "error" is always processed inside `res_recv` function. As a result, the formats of 8 arguments needs to be specified: Channels names size (int), Number of channels (int), Channels names (1D array string), Data rows (int), Data columns (int), Data (2D array float32), Number of parameters (int), Parameters (1D array float32). 
 ```
  _, res_arg, res_err= self.tcp.res_recv('int', 'int', '1dstr', 'int', 'int', '2dfloat32', 'int', '1dfloat32')
- self.tcp.print_err(res_err) # print error is there is any 
+ self.tcp.print_err(res_err) # print error if there is any 
 ```
 
 3. Convert the data needed into Pandas DataFrames and print them if necessary. 
