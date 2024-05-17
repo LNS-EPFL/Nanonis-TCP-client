@@ -16,7 +16,7 @@ connect = tcp.nanonis_ctrl(my_tcp)
 connect.BiasSet(0.5) 
 ```
 
-## AVailable commands
+## Available commands
 The commands in this package are programmed based on "Nanonis TCP Protocol-
 TCP Programming Interface" documentation. The following lines gives a list of available commands:
 ```
@@ -26,7 +26,7 @@ tcphelp = tcp.help()
 tcphelp.help()
 ```
 
-## Program commands
+## Programming commands
 If you wish to use commands that are not programmed yet (you are very welcomed to contribute to this package), you could follow the procedure:
 
 The function of a command is composed of two main parts (See details in the Nanonis documentation):
