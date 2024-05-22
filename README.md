@@ -17,8 +17,7 @@ connect.BiasSet(0.5) # One can also put strings like '500m', '50u', etc.
 ```
 
 ## Available commands
-The commands in this package are programmed based on "Nanonis TCP Protocol-
-TCP Programming Interface" documentation. The following lines gives a list of available commands:
+The commands in this package are programmed based on "Nanonis TCP Protocol-TCP Programming Interface" documentation. The following lines gives a list of available commands:
 ```
 import nanonis_esr_tcp as tcp
 
@@ -27,7 +26,7 @@ tcphelp.help()
 ```
 
 ## Programming commands
-If you wish to use commands that are not programmed yet (you are very welcomed to contribute to this package), you could follow the procedure:
+If you wish to use commands that are not programmed yet (you are very welcome to contribute to this package), you could follow the procedure:
 
 The function of a command is composed of two main parts (See details in the Nanonis documentation):
 * The first part is constructing and sending messages to Nanonis. 
@@ -35,7 +34,7 @@ The function of a command is composed of two main parts (See details in the Nano
 
 Below is an example of programming `BiasSpectr.Start` command in the documentation:
 
-1. The command has 3 arguments: Get data (unsigned int32), Save base name string size (int), and Save base name(string). 
+1. The command has 3 arguments: Get data (unsigned int32), Save base name string size (int), and Save base name (string). 
     * It is unnecessary to manually count the length of the "Save base name" string, so we can calculate the length at the beginning of the function:
     ```
     def BiasSpectrStart(self, get_data, save_base_name, prt = if_print):
@@ -53,7 +52,7 @@ Below is an example of programming `BiasSpectr.Start` command in the documentati
     * Function `dtype_cvt` converts different data types to binary or vice versa. The supported data types are: binary (`'bin'`), string (`'str'`), 32-bit signed integer (`'int'`), 16-bit unsigned integer (`'uint16'`), 32-bit unsigned integer (`'uint32'`), 32-bit float (`'float32'`), 64-bit float (`'float64'`), 1D string array (`'1dstr'`), 1D 32-bit signed integer array (`'1dint'`), 1D 32-bit unsigned integer array (`'1duint32'`), 1D 32-bit float array (`'1dfloat32'`), 2D string array (`'2dstr`)', 2D 32-bit float array (`'2dfloat32'`). 
     * When one of the arguments has a unit, this package has a function to convert the user input ("100m", "20p", etc...) to SI base unit. You should convert units at the beginning of the function. 
     ```
-    t_2_on = self.tcp.unit_cvt(t_2_on)
+    t_2_on = self.tcp.unit_cvt(t_2_on) # NOte that these two lines are not a part of "BiasSpectrStart" function
     on_duration = self.tcp.unit_cvt(on_duration)
     ```
 2. The function `res_recv` handles receiving and decoding the response message from Nanonis. `res_recv` converts the binary data to the corresponding data format. For `BiasSpectr.Start`, the formats of 9 return arguments needs to be specified manually, while the last one "error" is always processed inside `res_recv` function. As a result, the formats of 8 arguments needs to be specified: Channels names size (int), Number of channels (int), Channels names (1D array string), Data rows (int), Data columns (int), Data (2D array float32), Number of parameters (int), Parameters (1D array float32). 
