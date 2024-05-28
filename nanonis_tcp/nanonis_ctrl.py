@@ -2015,7 +2015,7 @@ class nanonis_ctrl:
         cmd = header + body
 
         self.tcp.cmd_send(cmd)
-        _, res_arg, res_err = self.tcp.res_recv('int', 'int', '1dstr', 'int', 'int', 'int', '2dfloat32')
+        _, res_arg, res_err = self.tcp.res_recv('int', 'int', '1dstr', 'int', 'int', '2dfloat32')
 
         self.tcp.print_err(res_err)
         gen_swp_df = pd.DataFrame(res_arg[5].T, columns = res_arg[2][0])
