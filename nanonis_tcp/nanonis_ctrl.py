@@ -502,9 +502,9 @@ class nanonis_ctrl:
         _, res_arg, res_err = self.tcp.res_recv('uint16', 'uint16', 'uint16', 'float32', 'float32')
 
         self.tcp.print_err(res_err)
-        ttl_df = pd.DataFrame({'Enable': self.tcp.tristate_cvt(res_arg[0]),
-                               'TTL line': self.tcp.tristate_cvt(res_arg[1]),
-                               'TTL polarity': self.tcp.tristate_cvt(res_arg[2]),
+        ttl_df = pd.DataFrame({'Enable': res_arg[0],
+                               'TTL line': res_arg[1],
+                               'TTL polarity': res_arg[2],
                                'Time to on (s)': res_arg[3],
                                'On duration (s)': res_arg[4]},
                                 index=[0]).T

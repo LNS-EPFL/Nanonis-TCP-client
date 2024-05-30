@@ -26,11 +26,11 @@ class help:
 
         df = pd.DataFrame.from_dict(columns, orient='index').T
 
-        print('Here are some tips of using this Nanonis TCP module: \
-              \n 1. For a tristate setting, such as "save all" in "BiasSpectrPropsSet" function, there are two possible sets of three valid input values: \n\
-              1) 0/-1 --> No change \n\
-              2) 1/1 --> Yes/On \n\
-              3) 2/0 --> No/Off')
+        # print('Here are some tips of using this Nanonis TCP module: \
+        #       \n 1. For a tristate setting, such as "save all" in "BiasSpectrPropsSet" function, there are two possible sets of three valid input values: \n\
+        #       1) 0/-1 --> No change \n\
+        #       2) 1/1 --> Yes/On \n\
+        #       3) 2/0 --> No/Off')
         print(f'All available {len(func_list)} functions:\n', df)
 
     def BiasSet(self):
