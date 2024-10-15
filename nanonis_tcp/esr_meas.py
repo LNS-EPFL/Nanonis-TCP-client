@@ -143,4 +143,41 @@ class esr_meas:
             print('Atom not picked up. Try again!')
         return
     
-######################################## datalog measurements #############################################
+######################################## moving an atom #############################################
+    def move_atom(self, moire_hollow_1, moire_hollow_2, angle_with_Moire_deg, moving_distance, bias_during_moving = '50u', setpnt_during_moving = '1n', tip_speed = '0.8n'):
+        # Get the original tunneling conditions
+        bias_orig = self.connect.BiasGet().loc['Bias (V)', 0]
+        i_setpnt_orig = self.connect.ZCtrlSetpntGet().loc['Z-controller setpoint (A)', 0]
+        # Set tip moving speed
+        self.connect.FolMeSpeedSet(tip_speed, 1)
+
+        # calculate the angle between the reference direction and the x axis of Nanonis scan frame
+        moire_slope = (moire_hollow_2.loc['Y (m)', 0]-moire_hollow_1.loc['Y (m)', 0])/(moire_hollow_2.loc['X (m)', 0]-moire_hollow_1.loc['X (m)', 0])
+        moire_angle = np.arctan(moire_slope)
+
+        # convert the angle between the reference axis and the desired direction of movement from degrees to radians
+        angle_with_Moire_rad = np.radians(angle_with_Moire_deg)
+
+        self.connect.AtomTrackCtrlSet(0,1) # turn on modulation
+        self.connect.AtomTrackCtrlSet(1,1) # turn on AT controller
+        time.sleep(3) # track the atom for 3 seconds
+        self.connect.AtomTrackCtrlSet(0,0) # turn off modulation
+        self.connect.AtomTrackCtrlSet(1,0) # turn off AT controller
+
+        # Approach the tip to the atom
+        self.connect.BiasSet(bias_during_moving)
+        self.connect.ZCtrlSetpntSet(setpnt_during_moving)
+
+        # Move atom to the next position
+        atom_pos_1 = self.connect.FolMeXYPosGet(1)
+        atom_pos_2 = pd.DataFrame({
+            'X (m)': [atom_pos_1.loc['X (m)', 0] + moving_distance*np.cos(moire_angle + angle_with_Moire_rad)],
+            'Y (m)': [atom_pos_1.loc['Y (m)', 0] + moving_distance*np.sin(moire_angle + angle_with_Moire_rad)]
+            }).T # calculate the coordinate of the destination point
+        self.connect.FolMeXYPosSet(atom_pos_2.loc['X (m)', 0], atom_pos_2.loc['Y (m)', 0], 1)
+
+        # Restore the original tunneling conditions
+        self.connect.BiasSet(bias_orig)
+        self.connect.ZCtrlSetpntSet(i_setpnt_orig)
+
+        self.connect.FolMeSpeedSet('1n', 0)
