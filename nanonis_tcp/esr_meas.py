@@ -144,7 +144,7 @@ class esr_meas:
         return
     
 ######################################## moving an atom #############################################
-    def move_atom(self, moire_hollow_1, moire_hollow_2, angle_with_Moire_deg, moving_distance, bias_during_moving = '50u', setpnt_during_moving = '1n', tip_speed = '0.8n'):
+    def move_atom(self, moire_hollow_1, moire_hollow_2, angle_with_Moire_deg, moving_distance, atom_tracking = True, bias_during_moving = '50u', setpnt_during_moving = '1n', tip_speed = '0.8n'):
         # Get the original tunneling conditions
         bias_orig = self.connect.BiasGet().loc['Bias (V)', 0]
         i_setpnt_orig = self.connect.ZCtrlSetpntGet().loc['Z-controller setpoint (A)', 0]
@@ -158,11 +158,12 @@ class esr_meas:
         # convert the angle between the reference axis and the desired direction of movement from degrees to radians
         angle_with_Moire_rad = np.radians(angle_with_Moire_deg)
 
-        self.connect.AtomTrackCtrlSet(0,1) # turn on modulation
-        self.connect.AtomTrackCtrlSet(1,1) # turn on AT controller
-        time.sleep(3) # track the atom for 3 seconds
-        self.connect.AtomTrackCtrlSet(0,0) # turn off modulation
-        self.connect.AtomTrackCtrlSet(1,0) # turn off AT controller
+        if atom_tracking:
+            self.connect.AtomTrackCtrlSet(0,1) # turn on modulation
+            self.connect.AtomTrackCtrlSet(1,1) # turn on AT controller
+            time.sleep(3) # track the atom for 3 seconds
+            self.connect.AtomTrackCtrlSet(0,0) # turn off modulation
+            self.connect.AtomTrackCtrlSet(1,0) # turn off AT controller
 
         # Approach the tip to the atom
         self.connect.BiasSet(bias_during_moving)
