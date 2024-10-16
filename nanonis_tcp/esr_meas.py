@@ -181,3 +181,4 @@ class esr_meas:
         self.connect.ZCtrlSetpntSet(i_setpnt_orig)
 
         self.connect.FolMeSpeedSet('1n', 0)
+        return atom_pos_2
